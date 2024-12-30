@@ -1,2 +1,5 @@
 ## ingnore ds_store files
 .DS_Store
+# ignore themes folder alacritty/.config/alacritty/themes 
+alacritty/.config/alacritty/themes
+
