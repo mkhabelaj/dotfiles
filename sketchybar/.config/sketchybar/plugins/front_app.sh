@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env zsh
 
 ICON_PADDING_RIGHT=5
 
@@ -62,6 +62,14 @@ case $INFO in
 "Transmission")
     ICON_PADDING_RIGHT=3
     ICON=󰶘
+    ;;
+"Ghostty")
+    ICON_PADDING_RIGHT=3
+    ICON=󰊠
+    ;;
+"Music")
+    ICON_PADDING_RIGHT=3
+    ICON=
     ;;
 *)
     ICON_PADDING_RIGHT=2
