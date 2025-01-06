@@ -16,8 +16,8 @@ return {
 		map("o", "gs", function()
 			require("pounce").pounce({})
 		end)
-		map("n", "S", function()
-			require("pounce").pounce({ input = { reg = "/" } })
-		end)
+		-- map("n", "S", function()
+		-- 	require("pounce").pounce({ input = { reg = "/" } })
+		-- end)
 	end,
 }
