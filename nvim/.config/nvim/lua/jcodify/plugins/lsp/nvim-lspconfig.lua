@@ -12,6 +12,7 @@ return {
 
 		-- import mason_lspconfig plugin
 		local mason_lspconfig = require("mason-lspconfig")
+		local util = require("lspconfig.util")
 
 		-- import cmp-nvim-lsp plugin
 		local cmp_nvim_lsp = require("cmp_nvim_lsp")
@@ -85,6 +86,23 @@ return {
 			function(server_name)
 				lspconfig[server_name].setup({
 					capabilities = capabilities,
+				})
+			end,
+			["gopls"] = function()
+				lspconfig["gopls"].setup({
+					capabilities = capabilities,
+					cmd = { "gopls", "-remote=auto" },
+					filetypes = { "go", "gomod", "gowork", "gotmpl" },
+					root_dir = util.root_pattern("go.work", "go.mod", ".git"),
+					settings = {
+						gopls = {
+							completeUnimported = true,
+							usePlaceholders = true,
+							analyses = {
+								unusedparams = true,
+							},
+						},
+					},
 				})
 			end,
 			["emmet_ls"] = function()

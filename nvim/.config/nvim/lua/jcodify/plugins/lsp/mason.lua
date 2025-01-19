@@ -36,6 +36,7 @@ return {
 				"pyright",
 				"jsonls",
 				"intelephense", -- php language server premium
+				"gopls", -- go language server
 			},
 		})
 
@@ -50,6 +51,10 @@ return {
 				"phpcs", -- php linter
 				"php-cs-fixer", -- php formatter
 				"stylelint", -- css linter
+				"goimports-reviser", -- go formatter
+				"gofumpt", -- go formatter
+				"golines", -- go formatter,
+				"delve", -- go debugger
 			},
 		})
 	end,

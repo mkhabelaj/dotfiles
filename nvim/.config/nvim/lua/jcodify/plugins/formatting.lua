@@ -23,6 +23,7 @@ return {
 				lua = { "stylua" },
 				python = { "isort", "black" },
 				php = { "php-cs-fixer" },
+				go = { "gofumpt", "golines", "goimports-reviser" },
 			},
 			formatters = {
 				["php-cs-fixer"] = {
