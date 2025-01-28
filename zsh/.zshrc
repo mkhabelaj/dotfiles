@@ -120,10 +120,14 @@ export PATH="/opt/homebrew/bin:$PATH"
 # Java maven 3.9.6 setup
 export PATH="$HOME/apache-maven-3.9.6/bin:$PATH"
 
-# Zoxide setup
+# ---- Go setup ----
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
+
+# ---- zoxide setup ----
 eval "$(zoxide init zsh)"
 
-# setup fzf for zsh
+# ---- fzf setup ----
 eval "$(fzf --zsh)"
 # Set up fzf key bindings and fuzzy completion
 # history setup
@@ -138,6 +142,7 @@ setopt hist_verify
 # completion using arrow keys (based on history)
 bindkey '^[[A' history-search-backward
 bindkey '^[[B' history-search-forward
+
 
 
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh

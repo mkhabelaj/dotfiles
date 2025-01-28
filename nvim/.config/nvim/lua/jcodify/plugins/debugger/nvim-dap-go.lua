@@ -1,9 +1,10 @@
 return {
 	"leoluz/nvim-dap-go",
 	ft = "go",
-	dependencies = {
-		"mfussenegger/nvim-dap",
-	},
+	dependencies = "mfussenegger/nvim-dap",
+	config = function(_, opts)
+		require("dap-go").setup(opts)
+	end,
 	keys = {
 		{
 			"<leader>dgt",
@@ -20,7 +21,4 @@ return {
 			desc = "Debug Go Last",
 		},
 	},
-	config = function(_, opts)
-		require("dap-go").setup(opts)
-	end,
 }
