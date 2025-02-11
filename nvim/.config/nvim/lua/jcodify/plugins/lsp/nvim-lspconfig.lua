@@ -29,12 +29,6 @@ return {
 					{ "<leader>l", buffer = ev.buf, group = "LSP" },
 					{ "<leader>lR", ":LspRestart<CR>", buffer = ev.buf, desc = "Restart LSP" },
 					{ "<leader>ld", buffer = ev.buf, group = "Diagnostics" },
-					{
-						"<leader>ldb",
-						"<cmd>Telescope diagnostics bufnr=0<CR>",
-						buffer = ev.buf,
-						desc = "Show buffer diagnostics",
-					},
 					{ "<leader>ldj", vim.diagnostic.goto_next, buffer = ev.buf, desc = "Go to next diagnostic" },
 					{ "<leader>ldk", vim.diagnostic.goto_prev, buffer = ev.buf, desc = "Go to previous diagnostic" },
 					{ "<leader>ldl", vim.diagnostic.open_float, buffer = ev.buf, desc = "Show line diagnostics" },
@@ -50,21 +44,6 @@ return {
 				wk.add({
 					{ "gl", "<cmd>Lspsaga peek_definition<CR>", buffer = ev.buf, desc = "Peek definition" },
 					{ "gF", "<cmd>Lspsaga finder<CR>", buffer = ev.buf, desc = "Show LSP references" },
-					{ "gR", "<cmd>Telescope lsp_references<CR>", buffer = ev.buf, desc = "Show LSP references" },
-					{ "gD", vim.lsp.buf.declaration, buffer = ev.buf, desc = "Go to declaration" },
-					{ "gd", "<cmd>Telescope lsp_definitions<CR>", buffer = ev.buf, desc = "Show LSP definitions" },
-					{
-						"gi",
-						"<cmd>Telescope lsp_implementations<CR>",
-						buffer = ev.buf,
-						desc = "Show LSP implementations",
-					},
-					{
-						"gt",
-						"<cmd>Telescope lsp_type_definitions<CR>",
-						buffer = ev.buf,
-						desc = "Show LSP type definitions",
-					},
 					{ "K", vim.lsp.buf.hover, buffer = ev.buf, desc = "Show documentation for what is under cursor" },
 				})
 			end,

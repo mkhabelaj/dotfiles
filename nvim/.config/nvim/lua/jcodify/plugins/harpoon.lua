@@ -46,7 +46,6 @@ return {
 					end,
 					desc = "Quick Menu",
 				},
-				{ "<leader>hs", "<cmd>Telescope harpoon marks<cr>", desc = "Show marks" },
 			},
 		})
 		harpoon.setup()

@@ -9,7 +9,6 @@ return {
 
 		wk.add({
 			{ "<leader>T", group = "Todo Comments" },
-			{ "<leader>Ta", "<cmd>TodoTelescope<CR>", desc = "Search todo comments" },
 			{
 				"<leader>Tj",
 				function()
