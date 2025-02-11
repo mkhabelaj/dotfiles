@@ -14,7 +14,7 @@ return {
 
 		telescope.setup({
 			defaults = {
-				path_display = { "smart" },
+				path_display = { shorten = { len = 4, exclude = { 1, -1 } } },
 				mappings = {
 					i = {
 						["<C-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
