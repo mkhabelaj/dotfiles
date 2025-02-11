@@ -46,3 +46,7 @@ opt.swapfile = false
 opt.spelllang = "en_ca"
 -- enable spell check
 opt.spell = true
+
+-- folding
+opt.foldmethod = "indent"
+opt.foldlevel = 99
