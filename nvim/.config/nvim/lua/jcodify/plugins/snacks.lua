@@ -23,22 +23,9 @@ return {
 			notification = {
 				-- wo = { wrap = true } -- Wrap notifications
 			},
-			zen = {
-				enter = true,
-				fixbuf = false,
-				minimal = true,
-				width = 120,
-				height = 0,
-				backdrop = { transparent = false, blend = 40 },
-				keys = { q = false },
-				zindex = 40,
-				wo = {
-					winhighlight = "NormalFloat:Normal",
-				},
-				w = {
-					snacks_main = true,
-				},
-			},
+		},
+		zen = {
+			enabled = false,
 		},
 	},
 	keys = {
@@ -411,17 +398,17 @@ return {
 		{
 			"<leader>z",
 			function()
-				Snacks.zen()
+				ToggleZenMode()
 			end,
 			desc = "Toggle Zen Mode",
 		},
-		{
-			"<leader>Z",
-			function()
-				Snacks.zen.zoom()
-			end,
-			desc = "Toggle Zoom",
-		},
+		-- {
+		-- 	"<leader>Z",
+		-- 	function()
+		-- 		Snacks.zen.zoom()
+		-- 	end,
+		-- 	desc = "Toggle Zoom",
+		-- },
 		{
 			"<leader>.",
 			function()
