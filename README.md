@@ -43,3 +43,20 @@ brew install ripgrep
 brew install fd
 brew install fzf
 ```
+
+## Yazi - Terminal File Manager
+
+[Yazi installation](https://yazi-rs.github.io/docs/installation)
+
+```zsh
+brew install yazi ffmpeg sevenzip jq poppler fd ripgrep fzf zoxide imagemagick font-symbols-only-nerd-font
+```
+
+## Posting (Terminal Api Client)
+
+[Posting](https://posting.sh/)
+
+```bash
+# quick install on MacOS/Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
