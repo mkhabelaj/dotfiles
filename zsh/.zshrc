@@ -120,6 +120,9 @@ export PATH="/opt/homebrew/bin:$PATH"
 # Java maven 3.9.6 setup
 export PATH="$HOME/apache-maven-3.9.6/bin:$PATH"
 
+# ---- For Yazy setup ----
+export EDITOR=nvim
+
 # ---- Go setup ----
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
