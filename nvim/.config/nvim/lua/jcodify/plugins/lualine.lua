@@ -1,3 +1,12 @@
+local function venv_name()
+	local venv = require("venv-selector").venv()
+	if venv and venv ~= "" then
+		-- :t gives you only the last component of the path
+		return "🐍 " .. vim.fn.fnamemodify(venv, ":t")
+	end
+	return ""
+end
+
 return {
 	"nvim-lualine/lualine.nvim",
 	dependencies = { "nvim-tree/nvim-web-devicons" },
@@ -18,6 +27,7 @@ return {
 						lazy_status.updates,
 						cond = lazy_status.has_updates,
 					},
+					venv_name,
 					{ "encoding" },
 					{ "fileformat" },
 					{ "filetype" },

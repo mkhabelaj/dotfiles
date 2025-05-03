@@ -122,6 +122,7 @@ return {
 			["pyright"] = function()
 				-- configure pyright server
 				lspconfig["pyright"].setup({
+					before_init = require("venv-selector").python, -- use venv-selector
 					capabilities = capabilities,
 					settings = {
 						python = {
