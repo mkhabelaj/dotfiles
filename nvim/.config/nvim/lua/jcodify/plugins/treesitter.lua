@@ -43,6 +43,7 @@ return {
 				"json",
 				"cmake",
 				"scss",
+				"prisma",
 			},
 			incremental_selection = {
 				enable = true,

@@ -26,25 +26,7 @@ return {
 			-- 1) Mason core
 			require("mason").setup(opts)
 
-			-- 2) LSP servers
-			require("mason-lspconfig").setup({
-				ensure_installed = {
-					"ts_ls",
-					"html",
-					"cssls",
-					"tailwindcss",
-					"lua_ls",
-					"emmet_ls",
-					"pyright",
-					"jsonls",
-					"intelephense",
-					"gopls",
-					"volar",
-				},
-				automatic_installation = true,
-			})
-
-			-- 3) Extra tools
+			-- 2) Extra CLI tools
 			require("mason-tool-installer").setup({
 				ensure_installed = {
 					"prettier",
@@ -63,7 +45,47 @@ return {
 				},
 			})
 
-			-- 4) Buffer-local LSP mappings on attach
+			-- 3) LSP servers + handlers
+			local mlsp = require("mason-lspconfig")
+			local lspcfg = require("lspconfig")
+			local caps = require("cmp_nvim_lsp").default_capabilities()
+
+			-- Generic loader: look for `plugins.lsp.servers/<server>.lua`
+			local function setup(server)
+				local ok, server_opts = pcall(require, "plugins.lsp.servers." .. server)
+				if not ok or type(server_opts) ~= "table" then
+					server_opts = {}
+				end
+				server_opts.capabilities = server_opts.capabilities or caps
+				lspcfg[server].setup(server_opts)
+			end
+
+			mlsp.setup({
+				ensure_installed = {
+					"ts_ls",
+					"html",
+					"cssls",
+					"tailwindcss",
+					"lua_ls",
+					"emmet_ls",
+					"pyright",
+					"jsonls",
+					"intelephense",
+					"gopls",
+					"vue_ls",
+					"prismals",
+				},
+				-- automatic_enable is true by default
+				handlers = {
+					-- default for *all* servers
+					setup,
+					-- if you ever need a server-specific override, you can add:
+					-- tsserver = function() ... end,
+					-- volar    = function() ... end,
+				},
+			})
+
+			-- 4) Buffer-local LSP keymaps on attach
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("UserLspConfig", {}),
 				callback = function(ev)
@@ -87,234 +109,6 @@ return {
 						{ "gl", "<cmd>Lspsaga peek_definition<CR>", buffer = ev.buf, desc = "Peek definition" },
 						{ "gF", "<cmd>Lspsaga finder<CR>", buffer = ev.buf, desc = "References" },
 						{ "K", vim.lsp.buf.hover, buffer = ev.buf, desc = "Hover docs" },
-					})
-				end,
-			})
-
-			-- 5) Hook into nvim-lspconfig
-			local lspconfig = require("lspconfig")
-			local util = require("lspconfig.util")
-			local caps = require("cmp_nvim_lsp").default_capabilities()
-
-			require("mason-lspconfig").setup_handlers({
-				-- default handler
-				function(server_name)
-					lspconfig[server_name].setup({ capabilities = caps })
-				end,
-
-				["ts_ls"] = function()
-					lspconfig.ts_ls.setup({
-						capabilities = caps,
-						init_options = {
-							plugins = {
-								{
-									name = "@vue/typescript-plugin",
-									location = vim.fn.stdpath("data")
-										.. "/mason/packages/vue-language-server/node_modules/@vue/language-server",
-									languages = { "vue" },
-								},
-							},
-						},
-						settings = {
-							typescript = {
-								tsserver = {
-									useSyntaxServer = false,
-								},
-								inlayHints = {
-									includeInlayParameterNameHints = "all",
-									includeInlayParameterNameHintsWhenArgumentMatchesName = true,
-									includeInlayFunctionParameterTypeHints = true,
-									includeInlayVariableTypeHints = true,
-									includeInlayVariableTypeHintsWhenTypeMatchesName = true,
-									includeInlayPropertyDeclarationTypeHints = true,
-									includeInlayFunctionLikeReturnTypeHints = true,
-									includeInlayEnumMemberValueHints = true,
-								},
-							},
-						},
-						filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
-					})
-				end,
-				-- volar (Vue)
-				["volar"] = function()
-					lspconfig.volar.setup({
-						capabilities = caps,
-						init_options = {
-							vue = {
-								hybridMode = false,
-							},
-						},
-						settings = {
-							typescript = {
-								inlayHints = {
-									enumMemberValues = {
-										enabled = true,
-									},
-									functionLikeReturnTypes = {
-										enabled = true,
-									},
-									propertyDeclarationTypes = {
-										enabled = true,
-									},
-									parameterTypes = {
-										enabled = true,
-										suppressWhenArgumentMatchesName = true,
-									},
-									variableTypes = {
-										enabled = true,
-									},
-								},
-							},
-						},
-					})
-				end,
-
-				-- gopls (Go)
-				["gopls"] = function()
-					lspconfig.gopls.setup({
-						capabilities = caps,
-						cmd = { "gopls", "-remote=auto" },
-						filetypes = { "go", "gomod", "gowork", "gotmpl" },
-						root_dir = util.root_pattern("go.work", "go.mod", ".git"),
-						settings = {
-							gopls = {
-								completeUnimported = true,
-								usePlaceholders = true,
-								analyses = { unusedparams = true },
-							},
-						},
-					})
-				end,
-
-				-- emmet_ls
-				["emmet_ls"] = function()
-					lspconfig.emmet_ls.setup({
-						capabilities = caps,
-						filetypes = {
-							"html",
-							"typescriptreact",
-							"javascriptreact",
-							"solid",
-							"css",
-							"sass",
-							"scss",
-							"less",
-							"php",
-							"javascript",
-						},
-					})
-				end,
-
-				-- lua_ls (Neovim Lua)
-				["lua_ls"] = function()
-					lspconfig.lua_ls.setup({
-						capabilities = caps,
-						settings = {
-							Lua = {
-								diagnostics = { globals = { "vim" } },
-								completion = { callSnippet = "Replace" },
-							},
-						},
-					})
-				end,
-
-				-- pyright (Python)
-				["pyright"] = function()
-					lspconfig.pyright.setup({
-						before_init = require("venv-selector").python,
-						capabilities = caps,
-						settings = {
-							python = {
-								analysis = {
-									autoSearchPaths = true,
-									useLibraryCodeForTypes = true,
-									diagnosticMode = "workspace",
-									typeCheckingMode = "off",
-									autoImportCompletions = true,
-								},
-							},
-						},
-					})
-				end,
-
-				-- intelephense (PHP)
-				["intelephense"] = function()
-					lspconfig.intelephense.setup({
-						capabilities = caps,
-						settings = {
-							intelephense = {
-								stubs = {
-									"apache",
-									"bcmath",
-									"bz2",
-									"calendar",
-									"com_dotnet",
-									"Core",
-									"ctype",
-									"curl",
-									"date",
-									"dba",
-									"dom",
-									"exif",
-									"fileinfo",
-									"filter",
-									"ftp",
-									"gd",
-									"hash",
-									"iconv",
-									"imap",
-									"intl",
-									"json",
-									"libxml",
-									"mbstring",
-									"oci8",
-									"odbc",
-									"openssl",
-									"phar",
-									"pdo",
-									"pdo_mysql",
-									"pdo_pgsql",
-									"pdo_sqlite",
-									"pgsql",
-									"soap",
-									"sockets",
-									"sodium",
-									"sqlite3",
-									"standard",
-									"tokenizer",
-									"xml",
-									"xmlreader",
-									"xmlrpc",
-									"xmlwriter",
-									"yaml",
-									"zip",
-									"zlib",
-									"wordpress",
-									"phpunit",
-								},
-								diagnostics = { enable = true },
-							},
-						},
-					})
-				end,
-
-				-- jsonls (JSON)
-				["jsonls"] = function()
-					local default_schemas = {}
-					pcall(function()
-						default_schemas = require("nlspsettings.jsonls").get_default_schemas()
-					end)
-					local schemas = {
-						{
-							description = "tsconfig",
-							fileMatch = { "tsconfig*.json" },
-							url = "https://json.schemastore.org/tsconfig.json",
-						},
-						-- add more schemas here…
-					}
-					lspconfig.jsonls.setup({
-						capabilities = caps,
-						settings = { json = { schemas = vim.tbl_extend("keep", default_schemas or {}, schemas) } },
 					})
 				end,
 			})
