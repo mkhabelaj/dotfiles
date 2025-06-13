@@ -1,4 +1,3 @@
--- ~/.config/nvim/lua/plugins/mason.lua
 return {
 	{
 		"williamboman/mason.nvim",
@@ -45,47 +44,48 @@ return {
 				},
 			})
 
-			-- 3) LSP servers + handlers
+			-- 3) LSP servers: install & auto-enable only
 			local mlsp = require("mason-lspconfig")
-			local lspcfg = require("lspconfig")
-			local caps = require("cmp_nvim_lsp").default_capabilities()
+			local servers = {
+				"ts_ls",
+				"html",
+				"cssls",
+				"tailwindcss",
+				"lua_ls",
+				"emmet_ls",
+				"pyright",
+				"jsonls",
+				"intelephense",
+				"gopls",
+				"vue_ls",
+				"prismals",
+			}
+			mlsp.setup({
+				ensure_installed = servers,
+				-- automatic_enable = true,  -- the default
+			})
 
-			-- Generic loader: look for `plugins.lsp.servers/<server>.lua`
+			-- 4) Your generic loader
+			local caps = require("cmp_nvim_lsp").default_capabilities()
 			local function setup(server)
-				local ok, server_opts = pcall(require, "plugins.lsp.servers." .. server)
+				local ok, server_opts = pcall(require, "jcodify.plugins.lsp.servers." .. server)
+				-- print in lua
+				-- print(vim.inspect(server_opts))
+
 				if not ok or type(server_opts) ~= "table" then
+					vim.notify("server_opts is not a table: " .. server, vim.log.levels.WARN)
 					server_opts = {}
 				end
 				server_opts.capabilities = server_opts.capabilities or caps
-				lspcfg[server].setup(server_opts)
+				-- lspcfg[server].setup(server_opts)
+				vim.lsp.config(server, server_opts)
 			end
 
-			mlsp.setup({
-				ensure_installed = {
-					"ts_ls",
-					"html",
-					"cssls",
-					"tailwindcss",
-					"lua_ls",
-					"emmet_ls",
-					"pyright",
-					"jsonls",
-					"intelephense",
-					"gopls",
-					"vue_ls",
-					"prismals",
-				},
-				-- automatic_enable is true by default
-				handlers = {
-					-- default for *all* servers
-					setup,
-					-- if you ever need a server-specific override, you can add:
-					-- tsserver = function() ... end,
-					-- volar    = function() ... end,
-				},
-			})
+			-- 5) Manually configure *all* the servers you installed
+			for _, srv in ipairs(servers) do
+				setup(srv)
+			end
 
-			-- 4) Buffer-local LSP keymaps on attach
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("UserLspConfig", {}),
 				callback = function(ev)
