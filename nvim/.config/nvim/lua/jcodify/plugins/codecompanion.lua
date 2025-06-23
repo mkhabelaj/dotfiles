@@ -6,7 +6,7 @@ return {
 	},
 
 	keys = {
-		{ "<leader>ac", "<cmd>CodeCompanionChat<CR>", desc = "Code companion chat" },
+		{ "<leader>aC", "<cmd>CodeCompanionChat<CR>", desc = "Code companion chat" },
 	},
 	opts = {
 		strategies = {
