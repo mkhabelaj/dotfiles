@@ -50,3 +50,6 @@ opt.spell = true
 -- folding
 opt.foldmethod = "indent"
 opt.foldlevel = 99
+
+-- Set SessionOptions to save session options
+opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"

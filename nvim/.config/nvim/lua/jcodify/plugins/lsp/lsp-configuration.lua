@@ -10,6 +10,7 @@ return {
 			{ "antosha417/nvim-lsp-file-operations", config = true },
 			{ "folke/neodev.nvim", opts = {} },
 			"WhoIsSethDaniel/mason-tool-installer.nvim",
+			"folke/snacks.nvim",
 		},
 		opts = {
 			ui = {
@@ -106,9 +107,50 @@ return {
 						},
 					})
 					wk.add({
+						{ "K", vim.lsp.buf.hover, buffer = ev.buf, desc = "Hover docs" },
 						{ "gl", "<cmd>Lspsaga peek_definition<CR>", buffer = ev.buf, desc = "Peek definition" },
 						{ "gF", "<cmd>Lspsaga finder<CR>", buffer = ev.buf, desc = "References" },
-						{ "K", vim.lsp.buf.hover, buffer = ev.buf, desc = "Hover docs" },
+						{
+							"gd",
+							function()
+								Snacks.picker.lsp_definitions()
+							end,
+							buffer = ev.buf,
+							desc = "Goto Definition",
+						},
+						{
+							"gD",
+							function()
+								Snacks.picker.lsp_declarations()
+							end,
+							buffer = ev.buf,
+							desc = "Goto Declaration",
+						},
+						{
+							"gr",
+							function()
+								Snacks.picker.lsp_references()
+							end,
+							nowait = true,
+							buffer = ev.buf,
+							desc = "References",
+						},
+						{
+							"gI",
+							function()
+								Snacks.picker.lsp_implementations()
+							end,
+							buffer = ev.buf,
+							desc = "Goto Implementation",
+						},
+						{
+							"gy",
+							function()
+								Snacks.picker.lsp_type_definitions()
+							end,
+							buffer = ev.buf,
+							desc = "Goto T[y]pe Definition",
+						},
 					})
 				end,
 			})

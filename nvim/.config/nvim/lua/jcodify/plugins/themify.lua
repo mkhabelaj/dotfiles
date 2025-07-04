@@ -3,7 +3,7 @@ return {
 	lazy = false,
 	priority = 999,
 
-	config = {
+	opts = {
 		"folke/tokyonight.nvim",
 		"sho-87/kanagawa-paper.nvim",
 		"catppuccin/nvim",

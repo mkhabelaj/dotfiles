@@ -44,6 +44,12 @@ return {
 				"cmake",
 				"scss",
 				"prisma",
+				"vue",
+				"regex",
+				"latex",
+				"norg",
+				"svelte",
+				"typst",
 			},
 			incremental_selection = {
 				enable = true,
