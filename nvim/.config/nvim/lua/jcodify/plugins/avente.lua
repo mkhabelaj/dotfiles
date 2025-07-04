@@ -3,6 +3,15 @@ return {
 	event = "VeryLazy",
 	lazy = false,
 	version = false, -- set this if you want to always pull the latest change
+	-- opts = {
+	-- 	provider = "copilot", -- default provider
+	-- 	providers = {
+	-- 		copilot = {
+	-- 			-- you can set this to "o4-mini" or any other OpenAI model
+	-- 			model = "claude-3-5-sonnet",
+	-- 		},
+	-- 	},
+	-- },
 	opts = {
 		provider = "openai",
 		providers = {
@@ -11,6 +20,28 @@ return {
 			},
 		},
 	},
+	-- opts = {
+	-- 	-- change this to use ollama by default, or switch it at runtime
+	-- 	provider = "ollama",
+	--
+	-- 	providers = {
+	-- 		-- keep your OpenAI config if you still want to fall back
+	-- 		openai = {
+	-- 			model = "o4-mini",
+	-- 		},
+	--
+	-- 		-- add ollama here
+	-- 		ollama = {
+	-- 			-- the exact name of the model as Ollama sees it
+	-- 			-- model = "mistral:latest",
+	-- 			model = "gemma3:12b",
+	-- 			-- defaults are fine if Ollama is on localhost:11434,
+	-- 			-- but you can override:
+	-- 			-- host = "127.0.0.1",
+	-- 			-- port = 11434,
+	-- 		},
+	-- 	},
+	-- },
 	-- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
 	build = "make",
 	-- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows

@@ -1,5 +1,7 @@
 return {
 	"ThePrimeagen/harpoon",
+	-- need to replace with harpoon 2
+	enabled = false,
 	dependencies = {
 		"nvim-lua/plenary.nvim",
 	},

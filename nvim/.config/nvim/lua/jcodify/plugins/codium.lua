@@ -1,5 +1,6 @@
 return {
 	"Exafunction/codeium.vim",
+	enabled = false,
 	event = "BufEnter",
 	config = function()
 		local wk = require("which-key")
