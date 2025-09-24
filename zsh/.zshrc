@@ -187,3 +187,7 @@ fi
 
 # oh-my-posh
 eval "$(oh-my-posh init zsh --config $(brew --prefix oh-my-posh)/themes/catppuccin.omp.json)"
+
+# Task Master aliases added on 2025-08-16
+alias tm='task-master'
+alias taskmaster='task-master'
