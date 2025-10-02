@@ -42,7 +42,7 @@ sudo apt update && sudo apt upgrade -y
 
 # Install core dependencies
 print_status "Installing core dependencies..."
-sudo apt install -y git curl wget build-essential zsh tmux neovim fzf ripgrep fd-find stow
+sudo apt install -y git curl wget build-essential zsh tmux fzf ripgrep fd-find stow fuse
 
 # Install modern CLI tools
 print_status "Installing modern CLI alternatives..."
@@ -102,13 +102,28 @@ else
     print_success "Alacritty already installed"
 fi
 
-# Install lazygit
+# Install lazygit (manual installation - no PPA available)
 if ! command -v lazygit &> /dev/null; then
-    print_status "Installing lazygit..."
-    sudo add-apt-repository ppa:lazygit-team/release -y
-    sudo apt update && sudo apt install -y lazygit
+    print_status "Installing lazygit from GitHub releases..."
+    LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
+    curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+    tar xf lazygit.tar.gz lazygit
+    sudo install lazygit /usr/local/bin
+    rm lazygit lazygit.tar.gz
 else
     print_success "lazygit already installed"
+fi
+
+# Install latest Neovim (AppImage for latest version)
+if ! command -v nvim &> /dev/null || [[ $(nvim --version | head -n1 | grep -o '[0-9]\+\.[0-9]\+' | head -n1) < "0.9" ]]; then
+    print_status "Installing latest Neovim..."
+    curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+    chmod u+x nvim.appimage
+    sudo mv nvim.appimage /usr/local/bin/nvim
+    # Create symlink for backward compatibility
+    sudo ln -sf /usr/local/bin/nvim /usr/local/bin/neovim 2>/dev/null || true
+else
+    print_success "Neovim already installed with sufficient version"
 fi
 
 # Install fonts

@@ -106,8 +106,8 @@ Install dependencies:
 # Core utilities
 sudo apt install -y git curl wget build-essential
 
-# Modern CLI tools
-sudo apt install -y zsh tmux neovim fzf ripgrep fd-find
+# Modern CLI tools  
+sudo apt install -y zsh tmux fzf ripgrep fd-find
 
 # Install eza (modern ls replacement)
 sudo mkdir -p /etc/apt/keyrings
@@ -130,9 +130,18 @@ cargo install --locked yazi-fm yazi-cli  # Requires Rust
 sudo add-apt-repository ppa:aslatter/ppa -y
 sudo apt update && sudo apt install -y alacritty
 
-# Install lazygit
-sudo add-apt-repository ppa:lazygit-team/release -y
-sudo apt update && sudo apt install -y lazygit
+# Install lazygit (from GitHub releases)
+LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
+curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+tar xf lazygit.tar.gz lazygit
+sudo install lazygit /usr/local/bin
+rm lazygit lazygit.tar.gz
+
+# Install latest Neovim (AppImage for latest version)
+curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+chmod u+x nvim.appimage
+sudo mv nvim.appimage /usr/local/bin/nvim
+# Note: AppImage requires FUSE. If not available: sudo apt install fuse
 
 # Install fonts
 mkdir -p ~/.local/share/fonts
