@@ -126,7 +126,7 @@ print_status "Creating configuration directories..."
 mkdir -p ~/.config
 
 # Backup existing configs
-backup_dir="$HOME/.dotfiles-backup/$(date +%Y%m%d_%H%M%S)"
+backup_dir="$HOME/dotfiles-backup/$(date +%Y%m%d_%H%M%S)"
 if [[ -f ~/.zshrc ]] || [[ -f ~/.tmux.conf ]] || [[ -d ~/.config/nvim ]]; then
     print_warning "Backing up existing configurations to $backup_dir"
     mkdir -p "$backup_dir"
@@ -142,6 +142,11 @@ print_status "Creating symbolic links with GNU Stow..."
 
 # Stow essential configs (cross-platform)
 stow zsh tmux nvim alacritty posting
+
+# Copy WSL Ubuntu-specific zsh profile
+print_status "Setting up WSL Ubuntu Zsh profile..."
+cp ~/dotfiles/zsh/ubuntuWSLZsh ~/.osZsh
+print_success "WSL Ubuntu Zsh profile installed as ~/.osZsh"
 
 # Skip macOS-specific configs
 print_warning "Skipping macOS-specific configurations (Aerospace, Sketchybar)"

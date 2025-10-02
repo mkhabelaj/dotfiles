@@ -173,12 +173,16 @@ After installing dependencies on either platform:
    stow alacritty  # Links .config/alacritty/
    stow posting    # Links .config/posting/
    
+   # Set up OS-specific profile
+   # For macOS:
+   cp ~/.dotfiles/zsh/macOSZsh ~/.osZsh
+   
+   # For WSL Ubuntu:
+   cp ~/.dotfiles/zsh/ubuntuWSLZsh ~/.osZsh
+   
    # macOS-only packages
    stow aerospace  # macOS only
    stow ghostty    # Optional
-   
-   # Or stow everything at once (be careful with platform-specific configs)
-   stow */
    ```
 
 4. **Install shell framework and plugins:**
@@ -198,6 +202,59 @@ After installing dependencies on either platform:
    # Node.js version manager
    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
    ```
+
+## 🔀 OS-Specific Profiles
+
+This dotfiles setup uses OS-specific profiles to handle platform differences cleanly:
+
+### How It Works
+- **Main `.zshrc`**: Contains cross-platform configurations
+- **OS Profiles**: Platform-specific configurations in separate files
+- **User Profile**: `~/.osZsh` file that gets sourced by main `.zshrc`
+
+### Available Profiles
+
+| Profile | File | Platform | Contains |
+|---------|------|----------|----------|
+| **macOS** | `macOSZsh` | macOS | Homebrew paths, macOS-specific tools, Dock management |
+| **WSL Ubuntu** | `ubuntuWSLZsh` | WSL Ubuntu | APT aliases, Windows integration, WSL-specific fixes |
+
+### Profile Features
+
+**macOSZsh includes:**
+- Homebrew path detection (Intel/Apple Silicon)
+- macOS-specific aliases (`finder`, `brewup`, dock management)
+- oh-my-posh with Homebrew paths
+- System notification functions
+- macOS development tool paths
+
+**ubuntuWSLZsh includes:**
+- WSL display configuration for GUI apps
+- Windows integration (`explorer`, `clip`, `paste` functions)
+- APT package management aliases
+- WSL performance optimizations
+- Ubuntu-specific completions and paths
+
+### Switching Profiles
+```bash
+# Switch to macOS profile
+cp ~/.dotfiles/zsh/macOSZsh ~/.osZsh && source ~/.zshrc
+
+# Switch to WSL Ubuntu profile  
+cp ~/.dotfiles/zsh/ubuntuWSLZsh ~/.osZsh && source ~/.zshrc
+
+# Check current profile
+ls -la ~/.osZsh
+```
+
+### Creating Custom Profiles
+You can create your own profile by copying an existing one:
+```bash
+# Create custom profile based on macOS
+cp ~/.dotfiles/zsh/macOSZsh ~/.dotfiles/zsh/myCustomZsh
+# Edit ~/.dotfiles/zsh/myCustomZsh
+# Then: cp ~/.dotfiles/zsh/myCustomZsh ~/.osZsh
+```
 
 ## 📋 Tool Details & Configuration
 

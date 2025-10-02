@@ -1,0 +1,173 @@
+# WSL Ubuntu-specific Zsh Configuration
+# To use: Copy this file to ~/.osZsh and it will be sourced by .zshrc
+
+# ========================================
+# WSL UBUNTU-SPECIFIC PATH CONFIGURATION
+# ========================================
+
+# Add local binaries to path
+export PATH="$HOME/.local/bin:$PATH"
+
+# Add cargo/rust tools if installed
+[[ -d "$HOME/.cargo/bin" ]] && export PATH="$HOME/.cargo/bin:$PATH"
+
+# Add snap binaries
+[[ -d "/snap/bin" ]] && export PATH="/snap/bin:$PATH"
+
+# ========================================
+# WSL-SPECIFIC ENVIRONMENT VARIABLES
+# ========================================
+
+# WSL display configuration for GUI apps
+if grep -q microsoft /proc/version 2>/dev/null; then
+    # We're running in WSL
+    export WSL_VERSION=$(wsl.exe -l -v 2>/dev/null | grep -E "^\*" | awk '{print $3}' || echo "1")
+    
+    # WSL2 display configuration
+    if [[ "$WSL_VERSION" == "2" ]]; then
+        export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0.0
+        export LIBGL_ALWAYS_INDIRECT=1
+    else
+        # WSL1 display configuration
+        export DISPLAY=:0.0
+    fi
+    
+    # Pulse audio configuration for WSL
+    export PULSE_SERVER=tcp:$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
+fi
+
+# ========================================
+# UBUNTU-SPECIFIC TOOL CONFIGURATIONS  
+# ========================================
+
+# oh-my-posh configuration (manual installation)
+if command -v oh-my-posh &> /dev/null; then
+    # Try different theme locations for oh-my-posh
+    if [[ -f "$HOME/.local/share/oh-my-posh/themes/catppuccin.omp.json" ]]; then
+        eval "$(oh-my-posh init zsh --config $HOME/.local/share/oh-my-posh/themes/catppuccin.omp.json)"
+    elif [[ -f "/usr/local/share/oh-my-posh/themes/catppuccin.omp.json" ]]; then
+        eval "$(oh-my-posh init zsh --config /usr/local/share/oh-my-posh/themes/catppuccin.omp.json)"
+    else
+        # Fallback to a built-in theme
+        eval "$(oh-my-posh init zsh --config https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/catppuccin.omp.json)"
+    fi
+fi
+
+# ========================================
+# UBUNTU PACKAGE MANAGER ALIASES
+# ========================================
+
+# APT package management aliases
+alias apt-up="sudo apt update && sudo apt upgrade"
+alias apt-search="apt search"
+alias apt-install="sudo apt install"
+alias apt-remove="sudo apt remove"
+alias apt-clean="sudo apt autoremove && sudo apt autoclean"
+
+# Snap package management
+alias snap-list="snap list"
+alias snap-find="snap find"
+alias snap-install="sudo snap install"
+alias snap-remove="sudo snap remove"
+
+# ========================================
+# WSL-SPECIFIC ALIASES & FUNCTIONS
+# ========================================
+
+# Windows integration aliases
+alias explorer="explorer.exe"
+alias notepad="notepad.exe"
+alias code="code.exe"
+
+# WSL utilities
+alias wsl-shutdown="wsl.exe --shutdown"
+alias wsl-restart="wsl.exe --terminate $WSL_DISTRO_NAME"
+
+# Quick access to Windows drives
+alias cdwin="/mnt/c"
+alias cdd="/mnt/c/Users/$(whoami)/Desktop"
+alias cddoc="/mnt/c/Users/$(whoami)/Documents"
+alias cddown="/mnt/c/Users/$(whoami)/Downloads"
+
+# ========================================
+# WSL-SPECIFIC FUNCTIONS
+# ========================================
+
+# Function to open files with Windows applications
+winopen() {
+    if [[ $# -eq 0 ]]; then
+        explorer.exe .
+    else
+        local file="$1"
+        # Convert WSL path to Windows path
+        local winpath=$(wslpath -w "$file" 2>/dev/null || echo "$file")
+        explorer.exe "$winpath"
+    fi
+}
+
+# Function to copy to Windows clipboard
+clip() {
+    if [[ $# -eq 0 ]]; then
+        # Read from stdin
+        clip.exe
+    else
+        # Copy arguments
+        echo "$*" | clip.exe
+    fi
+}
+
+# Function to get from Windows clipboard  
+paste() {
+    powershell.exe -Command "Get-Clipboard" | sed 's/\r$//'
+}
+
+# ========================================
+# WSL-SPECIFIC DEVELOPMENT TOOLS
+# ========================================
+
+# Docker configuration for WSL2
+if command -v docker &> /dev/null && [[ "$WSL_VERSION" == "2" ]]; then
+    # Docker Desktop integration
+    export DOCKER_HOST="tcp://localhost:2375"
+fi
+
+# ========================================
+# WSL-SPECIFIC FIXES & OPTIMIZATIONS
+# ========================================
+
+# Fix for WSL file permission issues
+umask 022
+
+# WSL-specific completion fixes
+if [[ -d "/usr/share/bash-completion/completions" ]]; then
+    autoload -U compinit && compinit
+fi
+
+# Speed up WSL directory access
+setopt no_glob_dots
+
+# ========================================
+# UBUNTU-SPECIFIC FEATURES
+# ========================================
+
+# Enable Ubuntu-specific man pages
+export MANPATH="/usr/local/man:/usr/share/man:$MANPATH"
+
+# Ubuntu system information function
+sysinfo() {
+    echo "=== WSL Ubuntu System Information ==="
+    echo "Distro: $(lsb_release -d | cut -f2)"
+    echo "Kernel: $(uname -r)"
+    echo "WSL Version: $WSL_VERSION"
+    echo "Memory: $(free -h | awk 'NR==2{printf "%.1f GB used / %.1f GB total (%.1f%%)", $3/1024/1024, $2/1024/1024, $3*100/$2 }')"
+    echo "Disk: $(df -h / | awk 'NR==2{printf "%s used / %s total (%s)", $3, $2, $5}')"
+    echo "Uptime: $(uptime -p)"
+}
+
+# WSL performance optimization
+if grep -q microsoft /proc/version 2>/dev/null; then
+    # Disable Windows Defender real-time scanning for WSL
+    export WSLENV="$WSLENV:DONT_PROMPT_WSL_INSTALL"
+fi
+
+echo "🐧 WSL Ubuntu profile loaded"

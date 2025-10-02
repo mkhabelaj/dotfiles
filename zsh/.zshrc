@@ -114,11 +114,13 @@ source $ZSH/oh-my-zsh.sh
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 # [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# Add homebrew to path
-export PATH="/opt/homebrew/bin:$PATH"
-
-# Java maven 3.9.6 setup
-export PATH="$HOME/apache-maven-3.9.6/bin:$PATH"
+# OS-specific configurations loaded from ~/.osZsh
+# Copy macOSZsh or ubuntuWSLZsh to ~/.osZsh based on your platform
+if [[ -f ~/.osZsh ]]; then
+    source ~/.osZsh
+else
+    echo "⚠️  No OS profile found. Copy macOSZsh or ubuntuWSLZsh to ~/.osZsh"
+fi
 
 # ---- For Yazy setup ----
 export EDITOR=nvim
@@ -148,12 +150,7 @@ bindkey '^[[B' history-search-forward
 
 
 
-source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-
-source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-# wordpress environment builder
-export PATH="/Users/jacksonmkhabela/projects/sandbox/wordpress-builder/bin:$PATH"
+# OS-specific plugin loading handled in OS profiles
 
 # ---- Eza (better ls) -----
 
@@ -185,8 +182,14 @@ if [ -f ~/.zshrc_secrets ]; then
   source ~/.zshrc_secrets
 fi
 
-# oh-my-posh
-eval "$(oh-my-posh init zsh --config $(brew --prefix oh-my-posh)/themes/catppuccin.omp.json)"
+# Load os-specific aliases and functions
+
+# In dotfiles/zsh/.zshrc
+if [ -f ~/.osZsh ]; then
+  source ~/.osZsh
+fi
+
+# oh-my-posh configuration handled in OS profiles
 
 # Task Master aliases added on 2025-08-16
 alias tm='task-master'

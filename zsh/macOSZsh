@@ -1,0 +1,104 @@
+# macOS-specific Zsh Configuration
+# To use: Copy this file to ~/.osZsh and it will be sourced by .zshrc
+
+# ========================================
+# macOS-SPECIFIC PATH CONFIGURATION
+# ========================================
+
+# Add homebrew to path (macOS Intel and Apple Silicon)
+if [[ -d "/opt/homebrew/bin" ]]; then
+    # Apple Silicon Mac
+    export PATH="/opt/homebrew/bin:$PATH"
+elif [[ -d "/usr/local/bin" ]]; then
+    # Intel Mac
+    export PATH="/usr/local/bin:$PATH"
+fi
+
+# ========================================
+# macOS-SPECIFIC TOOL CONFIGURATIONS
+# ========================================
+
+# Homebrew-based zsh plugins
+if [[ -d "/opt/homebrew/share" ]]; then
+    # Apple Silicon paths
+    ZSH_PLUGINS_DIR="/opt/homebrew/share"
+elif [[ -d "/usr/local/share" ]]; then
+    # Intel Mac paths
+    ZSH_PLUGINS_DIR="/usr/local/share"
+fi
+
+if [[ -n "$ZSH_PLUGINS_DIR" ]]; then
+    # Load zsh-autosuggestions
+    [[ -f "$ZSH_PLUGINS_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && \
+        source "$ZSH_PLUGINS_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
+    
+    # Load zsh-syntax-highlighting
+    [[ -f "$ZSH_PLUGINS_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] && \
+        source "$ZSH_PLUGINS_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
+
+# oh-my-posh configuration (macOS with Homebrew)
+if command -v oh-my-posh &> /dev/null && command -v brew &> /dev/null; then
+    eval "$(oh-my-posh init zsh --config $(brew --prefix oh-my-posh)/themes/catppuccin.omp.json)"
+fi
+
+# ========================================
+# macOS-SPECIFIC DEVELOPMENT TOOLS
+# ========================================
+
+# Java maven setup (if exists)
+if [[ -d "$HOME/apache-maven-3.9.6/bin" ]]; then
+    export PATH="$HOME/apache-maven-3.9.6/bin:$PATH"
+fi
+
+# ========================================
+# macOS-SPECIFIC ALIASES & FUNCTIONS
+# ========================================
+
+# macOS-specific aliases
+alias finder="open ."
+alias brewup="brew update && brew upgrade && brew cleanup"
+
+# Quick access to system preferences
+alias sysprefs="open -b com.apple.systempreferences"
+
+# ========================================
+# macOS-SPECIFIC PROJECT PATHS
+# ========================================
+
+# WordPress environment builder (if exists)
+if [[ -d "/Users/jacksonmkhabela/projects/sandbox/wordpress-builder/bin" ]]; then
+    export PATH="/Users/jacksonmkhabela/projects/sandbox/wordpress-builder/bin:$PATH"
+fi
+
+# ========================================
+# macOS-SPECIFIC FEATURES
+# ========================================
+
+# Enable macOS-specific completions
+if command -v brew &> /dev/null; then
+    # Add brew completions
+    if [[ -d "$(brew --prefix)/share/zsh-completions" ]]; then
+        fpath=($(brew --prefix)/share/zsh-completions $fpath)
+    fi
+fi
+
+# macOS notification function
+notify() {
+    if [[ $# -eq 0 ]]; then
+        echo "Usage: notify 'message' ['title']"
+        return 1
+    fi
+    
+    local message="$1"
+    local title="${2:-Terminal Notification}"
+    
+    osascript -e "display notification \"$message\" with title \"$title\""
+}
+
+# Quick dock management
+alias dock-hide="defaults write com.apple.dock autohide -bool true && killall Dock"
+alias dock-show="defaults write com.apple.dock autohide -bool false && killall Dock"
+alias dock-reset="defaults delete com.apple.dock && killall Dock"
+
+echo "🍎 macOS profile loaded"

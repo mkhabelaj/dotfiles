@@ -50,6 +50,7 @@ return {
 				"norg",
 				"svelte",
 				"typst",
+				"graphql",
 			},
 			incremental_selection = {
 				enable = true,

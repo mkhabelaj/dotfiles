@@ -77,7 +77,7 @@ print_status "Creating configuration directories..."
 mkdir -p ~/.config
 
 # Backup existing configs
-backup_dir="$HOME/.dotfiles-backup/$(date +%Y%m%d_%H%M%S)"
+backup_dir="$HOME/dotfiles-backup/$(date +%Y%m%d_%H%M%S)"
 if [[ -f ~/.zshrc ]] || [[ -f ~/.tmux.conf ]] || [[ -d ~/.config/nvim ]]; then
     print_warning "Backing up existing configurations to $backup_dir"
     mkdir -p "$backup_dir"
@@ -99,10 +99,15 @@ stow zsh tmux nvim alacritty posting
 stow aerospace
 
 # Optional Ghostty config
-if [[ -d ~/.dotfiles/ghostty ]]; then
+if [[ -d ~/dotfiles/ghostty ]]; then
     print_status "Stowing Ghostty configuration..."
     stow ghostty
 fi
+
+# Copy macOS-specific zsh profile
+print_status "Setting up macOS Zsh profile..."
+cp ~/dotfiles/zsh/macOSZsh ~/.osZsh
+print_success "macOS Zsh profile installed as ~/.osZsh"
 
 print_success "All configurations linked with Stow"
 
