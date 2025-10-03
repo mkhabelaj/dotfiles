@@ -117,11 +117,16 @@ fi
 # Install latest Neovim (AppImage for latest version)
 if ! command -v nvim &> /dev/null || [[ $(nvim --version | head -n1 | grep -o '[0-9]\+\.[0-9]\+' | head -n1) < "0.9" ]]; then
     print_status "Installing latest Neovim..."
-    curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
-    chmod u+x nvim.appimage
-    sudo mv nvim.appimage /usr/local/bin/nvim
-    # Create symlink for backward compatibility
-    sudo ln -sf /usr/local/bin/nvim /usr/local/bin/neovim 2>/dev/null || true
+    if curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage; then
+        chmod u+x nvim-linux-x86_64.appimage
+        sudo mv nvim-linux-x86_64.appimage /usr/local/bin/nvim
+        # Create symlink for backward compatibility
+        sudo ln -sf /usr/local/bin/nvim /usr/local/bin/neovim 2>/dev/null || true
+        print_success "Latest Neovim installed via AppImage"
+    else
+        print_warning "AppImage download failed, installing from apt..."
+        sudo apt install -y neovim
+    fi
 else
     print_success "Neovim already installed with sufficient version"
 fi
