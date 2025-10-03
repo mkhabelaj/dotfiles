@@ -247,10 +247,10 @@ This dotfiles setup uses OS-specific profiles to handle platform differences cle
 ### Switching Profiles
 ```bash
 # Switch to macOS profile
-cp ~/.dotfiles/zsh/macOSZsh ~/.osZsh && source ~/.zshrc
+cp ~/dotfiles/zsh/macOSZsh ~/.osZsh && source ~/.zshrc
 
 # Switch to WSL Ubuntu profile  
-cp ~/.dotfiles/zsh/ubuntuWSLZsh ~/.osZsh && source ~/.zshrc
+cp ~/dotfiles/zsh/ubuntuWSLZsh ~/.osZsh && source ~/.zshrc
 
 # Check current profile
 ls -la ~/.osZsh
@@ -260,10 +260,81 @@ ls -la ~/.osZsh
 You can create your own profile by copying an existing one:
 ```bash
 # Create custom profile based on macOS
-cp ~/.dotfiles/zsh/macOSZsh ~/.dotfiles/zsh/myCustomZsh
-# Edit ~/.dotfiles/zsh/myCustomZsh
-# Then: cp ~/.dotfiles/zsh/myCustomZsh ~/.osZsh
+cp ~/dotfiles/zsh/macOSZsh ~/dotfiles/zsh/myCustomZsh
+# Edit ~/dotfiles/zsh/myCustomZsh
+# Then: cp ~/dotfiles/zsh/myCustomZsh ~/.osZsh
 ```
+
+## 🎨 Custom User Configuration
+
+Beyond OS-specific profiles, this setup supports a **personal configuration layer** for user-specific and environment-specific settings.
+
+### How Custom Configuration Works
+- **Template**: `~/dotfiles/zsh/customZsh.template` - Examples and documentation
+- **User File**: `~/.customZsh` - Your personal configuration (created automatically)
+- **Loading Order**: 
+  1. Main `.zshrc` (cross-platform settings)
+  2. OS profile (`~/.osZsh`) 
+  3. Custom config (`~/.customZsh`) ← Your personal overrides
+
+### Use Cases for Custom Configuration
+
+| Scenario | Configuration |
+|----------|---------------|
+| **Home vs Work** | Different `WORK_ENV` variable, different project paths |
+| **Multiple Machines** | Different aliases per machine, different tool configurations |
+| **Development Projects** | Project-specific aliases, custom environment variables |
+| **Personal Preferences** | Custom functions, personal API keys, shortcuts |
+
+### Setting Up Custom Configuration
+
+The installation scripts automatically create an empty `~/.customZsh` file. To customize:
+
+```bash
+# Copy examples from template
+cp ~/dotfiles/zsh/customZsh.template ~/.customZsh
+
+# Edit for your needs
+nvim ~/.customZsh
+
+# Reload shell to apply changes
+source ~/.zshrc
+```
+
+### Example Custom Configurations
+
+**Home Environment:**
+```bash
+# ~/.customZsh
+export WORK_ENV="home"
+export PERSONAL_PROJECT_DIR="$HOME/personal"
+
+alias cdpersonal="cd $PERSONAL_PROJECT_DIR"
+alias blog="cd ~/personal/blog && code ."
+alias homeserver="ssh pi@192.168.1.100"
+```
+
+**Work Environment:**
+```bash
+# ~/.customZsh  
+export WORK_ENV="work"
+export WORK_PROJECT_DIR="$HOME/work/projects"
+
+alias cdwork="cd $WORK_PROJECT_DIR"
+alias vpn="sudo openvpn --config ~/work/vpn/config.ovpn"
+alias work-ssh="ssh user@work-server.company.com"
+
+# Load work secrets securely
+[[ -f ~/.work-secrets ]] && source ~/.work-secrets
+```
+
+### Custom Configuration Features
+- **Environment Detection**: Set `WORK_ENV` variable for conditional logic
+- **Machine-Specific Settings**: Different configurations per machine
+- **Secure Secrets**: Load sensitive information from separate files
+- **Project Shortcuts**: Custom aliases for frequent directories/tasks
+- **Tool Configurations**: Personal settings for Docker, Kubernetes, etc.
+- **Override Capability**: Can override any setting from OS profiles
 
 ## 📋 Tool Details & Configuration
 

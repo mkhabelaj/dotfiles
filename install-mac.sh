@@ -109,6 +109,25 @@ print_status "Setting up macOS Zsh profile..."
 cp ~/dotfiles/zsh/macOSZsh ~/.osZsh
 print_success "macOS Zsh profile installed as ~/.osZsh"
 
+# Create custom configuration file if it doesn't exist
+if [[ ! -f ~/.customZsh ]]; then
+    print_status "Creating custom Zsh configuration file..."
+    cat > ~/.customZsh << 'EOF'
+# Custom Zsh Configuration
+# This file is for your personal/environment-specific settings
+# Copy examples from ~/dotfiles/zsh/customZsh.template if needed
+
+# Example: Set your environment type
+# export WORK_ENV="home"  # or "work", "server", etc.
+
+# Add your custom aliases, functions, and environment variables below:
+
+EOF
+    print_success "Empty ~/.customZsh created for your custom configurations"
+else
+    print_status "Custom Zsh configuration already exists at ~/.customZsh"
+fi
+
 print_success "All configurations linked with Stow"
 
 # Install Oh My Zsh if not present

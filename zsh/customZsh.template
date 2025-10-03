@@ -1,0 +1,177 @@
+# Custom Zsh Configuration Template
+# Copy this file to ~/.customZsh and customize for your specific environment
+# This file is sourced after OS profiles and contains user/environment-specific settings
+
+# ========================================
+# ENVIRONMENT IDENTIFICATION
+# ========================================
+
+# Uncomment and set your environment type
+# export WORK_ENV="home"     # home, work, server, etc.
+# export MACHINE_NAME="personal-laptop"
+
+# ========================================
+# CUSTOM PATHS & ENVIRONMENT VARIABLES
+# ========================================
+
+# Add custom directories to PATH
+# export PATH="$HOME/custom-tools/bin:$PATH"
+# export PATH="$HOME/.local/my-scripts:$PATH"
+
+# Custom environment variables
+# export WORK_PROJECT_DIR="$HOME/work/projects"
+# export PERSONAL_PROJECT_DIR="$HOME/personal"
+
+# ========================================
+# WORK-SPECIFIC CONFIGURATIONS
+# ========================================
+
+# Work-related aliases and functions
+# if [[ "$WORK_ENV" == "work" ]]; then
+#     # VPN and work tools
+#     alias vpn-connect="sudo openvpn --config ~/work/vpn/config.ovpn"
+#     alias work-ssh="ssh user@work-server.company.com"
+#     
+#     # Work project shortcuts
+#     alias cdwork="cd $WORK_PROJECT_DIR"
+#     alias work-logs="tail -f /var/log/work-app.log"
+#     
+#     # Work-specific environment
+#     export COMPANY_API_URL="https://api.company.com"
+#     export WORK_EMAIL="your.name@company.com"
+# fi
+
+# ========================================
+# HOME-SPECIFIC CONFIGURATIONS  
+# ========================================
+
+# Personal development settings
+# if [[ "$WORK_ENV" == "home" ]]; then
+#     # Personal project shortcuts
+#     alias cdpersonal="cd $PERSONAL_PROJECT_DIR"
+#     alias blog="cd ~/personal/blog && code ."
+#     
+#     # Home server management
+#     alias homeserver="ssh pi@192.168.1.100"
+#     alias nas="ssh admin@192.168.1.101"
+#     
+#     # Personal API keys (load from secure location)
+#     if [[ -f ~/.secrets/personal-keys ]]; then
+#         source ~/.secrets/personal-keys
+#     fi
+# fi
+
+# ========================================
+# CUSTOM ALIASES & FUNCTIONS
+# ========================================
+
+# Add your custom aliases here
+# alias ll="ls -la"
+# alias ..="cd .."
+# alias ...="cd ../.."
+# alias grep="grep --color=auto"
+
+# Custom functions
+# weather() {
+#     curl -s "wttr.in/$1"
+# }
+
+# backup() {
+#     local source="$1"
+#     local dest="$HOME/backups/$(basename $source)-$(date +%Y%m%d_%H%M%S)"
+#     cp -r "$source" "$dest"
+#     echo "Backed up $source to $dest"
+# }
+
+# ========================================
+# DEVELOPMENT TOOL CONFIGURATIONS
+# ========================================
+
+# Custom tool configurations
+# Docker shortcuts
+# alias dps="docker ps"
+# alias dimg="docker images"
+# alias dstop="docker stop \$(docker ps -q)"
+
+# Kubernetes shortcuts
+# alias k="kubectl"
+# alias kgp="kubectl get pods"
+# alias kgs="kubectl get services"
+
+# Git shortcuts (in addition to oh-my-zsh git plugin)
+# alias gst="git status"
+# alias gco="git checkout"
+# alias gcb="git checkout -b"
+
+# ========================================
+# LANGUAGE & FRAMEWORK SPECIFIC
+# ========================================
+
+# Node.js project shortcuts
+# alias nr="npm run"
+# alias ni="npm install"
+# alias ns="npm start"
+
+# Python project shortcuts  
+# alias py="python3"
+# alias pip="pip3"
+# alias venv="python3 -m venv"
+
+# Go project shortcuts
+# alias gor="go run"
+# alias gob="go build"
+# alias got="go test"
+
+# ========================================
+# MACHINE-SPECIFIC SETTINGS
+# ========================================
+
+# Settings that vary by specific machine
+# case "$MACHINE_NAME" in
+#     "work-laptop")
+#         export DISPLAY=":0.0"
+#         alias printer="lp -d work-printer"
+#         ;;
+#     "home-desktop")
+#         export DISPLAY=":1.0"
+#         alias gaming="steam &"
+#         ;;
+#     "server")
+#         export HISTSIZE=10000
+#         alias monitoring="htop"
+#         ;;
+# esac
+
+# ========================================
+# CONDITIONAL LOADING
+# ========================================
+
+# Load additional config files if they exist
+# [[ -f ~/.work-secrets ]] && source ~/.work-secrets
+# [[ -f ~/.personal-aliases ]] && source ~/.personal-aliases
+
+# Load project-specific configurations
+# if [[ -f ./.project-env ]]; then
+#     source ./.project-env
+# fi
+
+# ========================================
+# CUSTOM PROMPT MODIFICATIONS
+# ========================================
+
+# Add custom information to prompt (if not using oh-my-posh)
+# if [[ -n "$WORK_ENV" ]]; then
+#     export PS1="[$WORK_ENV] $PS1"
+# fi
+
+# ========================================
+# STARTUP MESSAGES
+# ========================================
+
+# Display custom information on shell startup
+# echo "🔧 Custom environment: ${WORK_ENV:-'default'}"
+# if command -v fortune &> /dev/null; then
+#     fortune
+# fi
+
+# Note: This file is sourced last, so it can override any previous settings

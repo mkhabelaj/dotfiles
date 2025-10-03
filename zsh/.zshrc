@@ -194,3 +194,19 @@ fi
 # Task Master aliases added on 2025-08-16
 alias tm='task-master'
 alias taskmaster='task-master'
+
+# ========================================
+# CUSTOM USER CONFIGURATION
+# ========================================
+
+# Load custom user/environment-specific configurations
+# Copy customZsh.template to ~/.customZsh and customize for your needs
+if [[ -f ~/.customZsh ]]; then
+    source ~/.customZsh
+else
+    # Provide helpful message on first run
+    if [[ ! -f ~/.customZsh_notified ]]; then
+        echo "💡 Tip: Copy ~/dotfiles/zsh/customZsh.template to ~/.customZsh for custom configurations"
+        touch ~/.customZsh_notified
+    fi
+fi
