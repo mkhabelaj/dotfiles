@@ -40,6 +40,27 @@ fi
 # UBUNTU-SPECIFIC TOOL CONFIGURATIONS  
 # ========================================
 
+# fzf configuration (Ubuntu/WSL)
+if command -v fzf &> /dev/null; then
+    # Ubuntu fzf setup - try different installation methods
+    if [[ -f /usr/share/doc/fzf/examples/key-bindings.zsh ]]; then
+        # Standard Ubuntu package installation
+        source /usr/share/doc/fzf/examples/key-bindings.zsh
+        source /usr/share/doc/fzf/examples/completion.zsh
+    elif [[ -f ~/.fzf.zsh ]]; then
+        # Manual installation
+        source ~/.fzf.zsh
+    elif fzf --zsh &>/dev/null; then
+        # Modern fzf with --zsh support
+        eval "$(fzf --zsh)"
+    else
+        # Manual key bindings setup if other methods fail
+        bindkey '^R' fzf-history-widget
+        bindkey '^T' fzf-file-widget
+        bindkey '^[c' fzf-cd-widget
+    fi
+fi
+
 # oh-my-posh configuration (manual installation)
 if command -v oh-my-posh &> /dev/null; then
     # Try different theme locations for oh-my-posh

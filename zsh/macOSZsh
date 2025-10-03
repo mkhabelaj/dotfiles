@@ -37,6 +37,17 @@ if [[ -n "$ZSH_PLUGINS_DIR" ]]; then
         source "$ZSH_PLUGINS_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 fi
 
+# fzf configuration (macOS with Homebrew)
+if command -v fzf &> /dev/null; then
+    # Modern fzf setup for macOS (supports --zsh flag)
+    if fzf --zsh &>/dev/null; then
+        eval "$(fzf --zsh)"
+    else
+        # Fallback for older fzf versions
+        [[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
+    fi
+fi
+
 # oh-my-posh configuration (macOS with Homebrew)
 if command -v oh-my-posh &> /dev/null && command -v brew &> /dev/null; then
     eval "$(oh-my-posh init zsh --config $(brew --prefix oh-my-posh)/themes/catppuccin.omp.json)"

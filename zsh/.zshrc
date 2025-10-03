@@ -133,8 +133,7 @@ export PATH=$PATH:$GOPATH/bin
 eval "$(zoxide init zsh)"
 
 # ---- fzf setup ----
-eval "$(fzf --zsh)"
-# Set up fzf key bindings and fuzzy completion
+# fzf initialization handled in OS-specific profiles
 # history setup
 HISTFILE=$HOME/.zhistory
 SAVEHIST=1000
