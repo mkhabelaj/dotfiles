@@ -181,13 +181,6 @@ if [ -f ~/.zshrc_secrets ]; then
   source ~/.zshrc_secrets
 fi
 
-# Load os-specific aliases and functions
-
-# In dotfiles/zsh/.zshrc
-if [ -f ~/.osZsh ]; then
-  source ~/.osZsh
-fi
-
 # oh-my-posh configuration handled in OS profiles
 
 # Task Master aliases added on 2025-08-16
