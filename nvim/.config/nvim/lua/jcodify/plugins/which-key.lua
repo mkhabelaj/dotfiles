@@ -12,10 +12,6 @@ return {
 		wk.add({
 			-- { "<leader>", group = "General" },
 			-- { "<leader>g", group = "Git" },
-			{
-				"<leader>ag",
-				group = "Gen AI",
-			},
 			{ "<leader>o", group = "Oil Explorer && Obsidian" },
 			{ "<leader>\\", "<cmd>nohl<CR>", desc = "Clear highlights" },
 			{ "<leader>q", "<cmd>q<CR>", desc = "Quit" },

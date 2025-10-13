@@ -361,13 +361,6 @@ return {
 			desc = "LSP Workspace Symbols",
 		},
 		-- Other
-		{
-			"<leader>z",
-			function()
-				ToggleZenMode()
-			end,
-			desc = "Toggle Zen Mode",
-		},
 		-- {
 		-- 	"<leader>Z",
 		-- 	function()
