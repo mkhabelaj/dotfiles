@@ -21,11 +21,16 @@ return {
 				graphql = { "prettier" },
 				liquid = { "prettier" },
 				lua = { "stylua" },
-				python = { "isort", "black" },
+				python = { "black" },
 				php = { "php-cs-fixer" },
 				go = { "gofumpt", "golines", "goimports-reviser" },
 			},
 			formatters = {
+
+				black = {
+					command = "black",
+					args = { "--line-length", "160", "-" },
+				},
 				["php-cs-fixer"] = {
 					command = "php-cs-fixer",
 					args = {
