@@ -80,12 +80,29 @@ export PATH="/Users/jacksonmkhabela/.local/bin:$PATH"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git python pyenv)
 
-# Automatically activate virtualenvs works with python plugin
+# Build plugins array based on what's installed
+plugins=(git)  # git is always available
+
+# Only add python plugin if python is available
+if command -v python &> /dev/null || command -v python3 &> /dev/null; then
+    plugins+=(python)
+fi
+
+# Only add pyenv plugin if pyenv will be available
+if [[ -d "$HOME/.pyenv/bin" ]] || command -v pyenv &> /dev/null; then
+    plugins+=(pyenv)
+fi
+
+# Automatically activate virtualenvs (only if python plugin loaded)
 export PYTHON_AUTO_VRUN=true
 
-source $ZSH/oh-my-zsh.sh
+# Load Oh My Zsh if available
+if [[ -f $ZSH/oh-my-zsh.sh ]]; then
+    source $ZSH/oh-my-zsh.sh
+else
+    echo "⚠️  Oh My Zsh not found. Install: sh -c \"\$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\""
+fi
 
 # User configuration
 
@@ -109,12 +126,15 @@ source $ZSH/oh-my-zsh.sh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 
-# ---- Custom Aliases  for Sesh ----
-alias s='sesh connect "$(sesh list -i | gum filter --limit 1 --placeholder '\''Pick a sesh'\'' --prompt='\''⚡'\'')"'
+# ---- Custom Aliases for Sesh ----
+if command -v sesh &> /dev/null && command -v gum &> /dev/null; then
+    alias s='sesh connect "$(sesh list -i | gum filter --limit 1 --placeholder '\''Pick a sesh'\'' --prompt='\''⚡'\'')"'
+    alias sg='sesh connect "$(sesh list -i | gum filter --limit 1 --placeholder '\''Pick a sesh'\'' --prompt='\''⚡'\'')"'
+fi
 
-alias sg='sesh connect "$(sesh list -i | gum filter --limit 1 --placeholder '\''Pick a sesh'\'' --prompt='\''⚡'\'')"'
-
-alias sf='sesh connect "$(sesh list -i | fzf)"'
+if command -v sesh &> /dev/null && command -v fzf &> /dev/null; then
+    alias sf='sesh connect "$(sesh list -i | fzf)"'
+fi
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
@@ -138,7 +158,11 @@ export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
 
 # ---- zoxide setup ----
-eval "$(zoxide init zsh)"
+if command -v zoxide &> /dev/null; then
+    eval "$(zoxide init zsh)"
+else
+    echo "⚠️  zoxide not found. Install: curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh"
+fi
 
 # ---- fzf setup ----
 # fzf initialization handled in OS-specific profiles
@@ -162,12 +186,14 @@ export FZF_DEFAULT_OPTS='--ansi'
 # OS-specific plugin loading handled in OS profiles
 
 # ---- Eza (better ls) -----
-
-alias ls="eza --icons=always"
+if command -v eza &> /dev/null; then
+    alias ls="eza --icons=always"
+fi
 
 # A better cd
-#
-alias cd="z"
+if command -v zoxide &> /dev/null; then
+    alias cd="z"
+fi
 
 # pyenv setup
 # alias brew='env PATH="${PATH//$(pyenv root)\/shims:/}" brew'
@@ -179,8 +205,12 @@ alias cd="z"
 # eval "$(pyenv init -)"
 
 export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
+if [[ -d $PYENV_ROOT/bin ]]; then
+    export PATH="$PYENV_ROOT/bin:$PATH"
+fi
+if command -v pyenv &> /dev/null; then
+    eval "$(pyenv init -)"
+fi
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
