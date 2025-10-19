@@ -1,0 +1,26 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Sesh Config for Work (macOS)
+# ─────────────────────────────────────────────────────────────────────────────
+# Copy this file to ~/.config/sesh/sesh.toml for work MacBooks
+#
+# Setup:
+#   cd ~/.config/sesh
+#   cp examples/sesh.work-macos.toml sesh.toml
+
+import = [
+  "~/.config/sesh/configs/common.toml",
+  "~/.config/sesh/configs/macos.toml",
+  "~/.config/sesh/configs/work.toml",
+]
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Machine-Specific Overrides
+# ─────────────────────────────────────────────────────────────────────────────
+# Add your personal, machine-specific work sessions below.
+# These won't be committed to git.
+
+# Example:
+# [[session]]
+# name = "work-current-sprint"
+# path = "~/work/sprint-123"
+# startup_command = "nvim"

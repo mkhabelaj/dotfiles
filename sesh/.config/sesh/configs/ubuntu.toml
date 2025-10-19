@@ -1,0 +1,43 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Ubuntu/Linux-Specific Sesh Configuration
+# ─────────────────────────────────────────────────────────────────────────────
+# This file contains sessions that ONLY work on Ubuntu/Linux.
+# Use distinct names to avoid conflicts with other platform configs.
+
+[[session]]
+name = "Linux Downloads"
+path = "~/Downloads"
+startup_command = "yazi"
+preview_command = "eza --all --icons --color=always ~/Downloads"
+
+[[session]]
+name = "Linux Documents"
+path = "~/Documents"
+startup_command = "yazi"
+preview_command = "eza --all --icons --color=always ~/Documents"
+
+# System management
+[[session]]
+name = "system logs 📋"
+path = "/var/log"
+startup_command = "ls -lht | head -20"
+preview_command = "ls -lht /var/log | head -20"
+
+[[session]]
+name = "systemd services"
+path = "/etc/systemd/system"
+startup_command = "systemctl list-units --type=service --state=running"
+preview_command = "systemctl list-units --type=service --state=running"
+
+[[session]]
+name = "/etc config"
+path = "/etc"
+startup_command = "ls -la"
+preview_command = "ls -la /etc"
+
+# Linux-specific system paths
+[[session]]
+name = "/var/www"
+path = "/var/www"
+startup_command = "ls -la"
+preview_command = "ls -la /var/www"

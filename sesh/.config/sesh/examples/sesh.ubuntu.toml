@@ -1,0 +1,25 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Sesh Config for Ubuntu/Linux
+# ─────────────────────────────────────────────────────────────────────────────
+# Copy this file to ~/.config/sesh/sesh.toml to use on Ubuntu/Linux
+#
+# Setup:
+#   cd ~/.config/sesh
+#   cp examples/sesh.ubuntu.toml sesh.toml
+
+import = [
+  "~/.config/sesh/configs/common.toml",
+  "~/.config/sesh/configs/ubuntu.toml",
+]
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Machine-Specific Overrides
+# ─────────────────────────────────────────────────────────────────────────────
+# Add your personal, machine-specific sessions below.
+# These won't be committed to git.
+
+# Example:
+# [[session]]
+# name = "server-monitoring"
+# path = "/var/log"
+# startup_command = "htop"

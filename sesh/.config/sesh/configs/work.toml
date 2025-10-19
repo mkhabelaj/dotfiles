@@ -1,0 +1,67 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Work-Specific Sesh Configuration
+# ─────────────────────────────────────────────────────────────────────────────
+# This file contains sessions specific to work projects.
+# Customize these based on your work environment and projects.
+#
+# NOTE: This file is committed to git. Be careful not to include sensitive info
+# like API keys, passwords, or proprietary project names.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Example Work Sessions
+# ─────────────────────────────────────────────────────────────────────────────
+# Uncomment and customize these for your work projects:
+
+# [[session]]
+# name = "work 💼"
+# path = "~/work"
+# startup_command = "nvim"
+# preview_command = "eza --all --git --icons --tree --level=2 --color=always ~/work"
+
+# [[session]]
+# name = "work-frontend 🎨"
+# path = "~/work/frontend"
+# startup_command = "nvim"
+# preview_command = "eza --all --git --icons --color=always ~/work/frontend"
+
+# [[session]]
+# name = "work-backend ⚙️"
+# path = "~/work/backend"
+# startup_command = "nvim"
+# preview_command = "eza --all --git --icons --color=always ~/work/backend"
+
+# [[session]]
+# name = "work-api 🔌"
+# path = "~/work/api"
+# startup_command = "nvim"
+# preview_command = "eza --all --git --icons --color=always ~/work/api"
+
+# [[session]]
+# name = "work-database 🗄️"
+# path = "~/work/db"
+# startup_command = "nvim"
+# preview_command = "echo 'Database tools and migrations'"
+
+# [[session]]
+# name = "work-docs 📚"
+# path = "~/work/docs"
+# startup_command = "nvim README.md"
+# preview_command = "bat --color=always ~/work/docs/README.md"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Multi-window Example
+# ─────────────────────────────────────────────────────────────────────────────
+
+# [[session]]
+# name = "work-fullstack"
+# path = "~/work/project"
+# startup_command = "nvim"
+# windows = ["git", "logs"]
+
+# [[window]]
+# name = "git"
+# startup_script = "git pull && lazygit"
+
+# [[window]]
+# name = "logs"
+# startup_script = "tail -f logs/development.log"

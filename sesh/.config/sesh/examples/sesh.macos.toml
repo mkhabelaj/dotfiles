@@ -1,0 +1,25 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Sesh Config for macOS
+# ─────────────────────────────────────────────────────────────────────────────
+# Copy this file to ~/.config/sesh/sesh.toml to use on macOS
+#
+# Setup:
+#   cd ~/.config/sesh
+#   cp examples/sesh.macos.toml sesh.toml
+
+import = [
+  "~/.config/sesh/configs/common.toml",
+  "~/.config/sesh/configs/macos.toml",
+]
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Machine-Specific Overrides
+# ─────────────────────────────────────────────────────────────────────────────
+# Add your personal, machine-specific sessions below.
+# These won't be committed to git.
+
+# Example:
+# [[session]]
+# name = "personal-project"
+# path = "~/projects/secret-project"
+# startup_command = "nvim"

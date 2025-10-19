@@ -1,0 +1,31 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# macOS-Specific Sesh Configuration
+# ─────────────────────────────────────────────────────────────────────────────
+# This file contains sessions that ONLY work on macOS.
+# Use distinct names to avoid conflicts with other platform configs.
+
+[[session]]
+name = "macOS Downloads"
+path = "~/Downloads"
+startup_command = "eza --all --long --icons --color=always"
+preview_command = "eza --all --icons --color=always ~/Downloads"
+
+[[session]]
+name = "macOS Desktop"
+path = "~/Desktop"
+startup_command = "yazi"
+preview_command = "eza --all --icons --color=always ~/Desktop"
+
+[[session]]
+name = "macOS Documents"
+path = "~/Documents"
+startup_command = "yazi"
+preview_command = "eza --all --icons --color=always ~/Documents"
+
+[[session]]
+name = "Applications"
+path = "/Applications"
+startup_command = "ls -la"
+preview_command = "ls -la /Applications"
+
+

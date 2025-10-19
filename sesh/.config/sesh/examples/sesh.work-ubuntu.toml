@@ -1,0 +1,26 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Sesh Config for Work (Ubuntu/Linux)
+# ─────────────────────────────────────────────────────────────────────────────
+# Copy this file to ~/.config/sesh/sesh.toml for work Linux servers/machines
+#
+# Setup:
+#   cd ~/.config/sesh
+#   cp examples/sesh.work-ubuntu.toml sesh.toml
+
+import = [
+  "~/.config/sesh/configs/common.toml",
+  "~/.config/sesh/configs/ubuntu.toml",
+  "~/.config/sesh/configs/work.toml",
+]
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Machine-Specific Overrides
+# ─────────────────────────────────────────────────────────────────────────────
+# Add your personal, machine-specific work sessions below.
+# These won't be committed to git.
+
+# Example:
+# [[session]]
+# name = "work-production-logs"
+# path = "/var/log/app"
+# startup_command = "tail -f production.log"

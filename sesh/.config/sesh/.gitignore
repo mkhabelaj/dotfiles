@@ -1,0 +1,6 @@
+# Ignore the main sesh.toml file - it's machine-specific
+# Users should copy an example file from examples/ directory
+sesh.toml
+
+# Ignore any personal/local config files
+*.local.toml
