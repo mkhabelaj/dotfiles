@@ -155,11 +155,10 @@ fi
 # Install Gum (interactive filter)
 if ! command -v gum &> /dev/null; then
     print_status "Installing Gum interactive filter..."
-    GUM_VERSION=$(curl -s "https://api.github.com/repos/charmbracelet/gum/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
-    curl -Lo gum.tar.gz "https://github.com/charmbracelet/gum/releases/latest/download/gum_${GUM_VERSION}_Linux_x86_64.tar.gz"
-    tar xf gum.tar.gz gum
-    sudo install gum /usr/local/bin
-    rm gum gum.tar.gz
+    sudo mkdir -p /etc/apt/keyrings
+    curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
+    echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | sudo tee /etc/apt/sources.list.d/charm.list
+    sudo apt update && sudo apt install -y gum
 else
     print_success "Gum already installed"
 fi
