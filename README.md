@@ -9,6 +9,7 @@ This repository contains my personal dotfiles and application configurations. Th
 | Zsh | ✅ | ✅ | Cross-platform shell |
 | Neovim | ✅ | ✅ | Text editor with Lua config |
 | Tmux | ✅ | ✅ | Terminal multiplexer |
+| Sesh & Gum | ✅ | ✅ | Smart tmux session manager |
 | Alacritty | ✅ | ✅ | GPU-accelerated terminal |
 | Ghostty | ✅ | ⚠️ | Limited Linux support |
 | Aerospace | ✅ | ❌ | macOS-only window manager |
@@ -28,11 +29,13 @@ This collection manages the configuration for the following applications:
 -   **Shell:** Zsh with Oh My Zsh framework and oh-my-posh prompt
 -   **Editor:** Neovim with comprehensive Lua configuration
 -   **Multiplexer:** Tmux for session management
+-   **Session Manager:** Sesh for smart tmux session switching with zoxide integration
 -   **Version Control:** Git with Lazygit TUI
 
-### Terminal Applications  
+### Terminal Applications
 -   **Terminal:** Alacritty (primary) & Ghostty (macOS)
 -   **File Navigation:** Yazi file manager with modern alternatives (eza, zoxide, fzf)
+-   **Session Selection:** Gum for interactive session picker
 -   **API Testing:** Posting HTTP client
 
 ### macOS-Specific Tools
@@ -80,6 +83,9 @@ brew install neovim
 
 # Terminal Applications
 brew install tmux alacritty yazi ffmpeg
+
+# Session Management
+brew install sesh gum
 
 # Fonts
 brew install font-symbols-only-nerd-font
@@ -143,6 +149,24 @@ chmod u+x nvim-linux-x86_64.appimage
 sudo mv nvim-linux-x86_64.appimage /usr/local/bin/nvim
 # Note: AppImage requires FUSE. If not available: sudo apt install fuse
 
+# Install Go (required for sesh)
+wget https://go.dev/dl/go1.21.0.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.21.0.linux-amd64.tar.gz
+export PATH=$PATH:/usr/local/go/bin
+echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.zshrc
+
+# Install Sesh (session manager) via Go
+go install github.com/joshmedeski/sesh/v2@latest
+# Add Go bin to PATH
+echo 'export PATH=$PATH:~/go/bin' >> ~/.zshrc
+
+# Install Gum (interactive filter)
+GUM_VERSION=$(curl -s "https://api.github.com/repos/charmbracelet/gum/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
+curl -Lo gum.tar.gz "https://github.com/charmbracelet/gum/releases/latest/download/gum_${GUM_VERSION}_Linux_x86_64.tar.gz"
+tar xf gum.tar.gz gum
+sudo install gum /usr/local/bin
+rm gum gum.tar.gz
+
 # Install fonts
 mkdir -p ~/.local/share/fonts
 wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/JetBrainsMono.zip
@@ -177,9 +201,10 @@ After installing dependencies on either platform:
    
    # Stow individual packages
    stow zsh        # Links .zshrc
-   stow tmux       # Links .tmux.conf  
+   stow tmux       # Links .tmux.conf
    stow nvim       # Links .config/nvim/
    stow alacritty  # Links .config/alacritty/
+   stow sesh       # Links .config/sesh/
    stow posting    # Links .config/posting/
    
    # Set up OS-specific profile
@@ -192,6 +217,13 @@ After installing dependencies on either platform:
    # macOS-only packages
    stow aerospace  # macOS only
    stow ghostty    # Optional
+
+   # Setup sesh configuration
+   # For macOS:
+   cp ~/.config/sesh/examples/sesh.macos.toml ~/.config/sesh/sesh.toml
+
+   # For WSL Ubuntu:
+   cp ~/.config/sesh/examples/sesh.ubuntu.toml ~/.config/sesh/sesh.toml
    ```
 
 4. **Install shell framework and plugins:**

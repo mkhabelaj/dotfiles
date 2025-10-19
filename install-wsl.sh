@@ -85,6 +85,19 @@ else
     print_success "Rust already installed"
 fi
 
+# Install Go (needed for sesh)
+if ! command -v go &> /dev/null; then
+    print_status "Installing Go..."
+    wget https://go.dev/dl/go1.21.0.linux-amd64.tar.gz
+    sudo tar -C /usr/local -xzf go1.21.0.linux-amd64.tar.gz
+    rm go1.21.0.linux-amd64.tar.gz
+    echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.zshrc
+    echo 'export PATH=$PATH:~/go/bin' >> ~/.zshrc
+    export PATH=$PATH:/usr/local/go/bin
+else
+    print_success "Go already installed"
+fi
+
 # Install Yazi file manager
 if ! command -v yazi &> /dev/null; then
     print_status "Installing Yazi file manager..."
@@ -131,6 +144,26 @@ else
     print_success "Neovim already installed with sufficient version"
 fi
 
+# Install Sesh (session manager) via Go
+if ! command -v sesh &> /dev/null; then
+    print_status "Installing Sesh session manager..."
+    go install github.com/joshmedeski/sesh/v2@latest
+else
+    print_success "Sesh already installed"
+fi
+
+# Install Gum (interactive filter)
+if ! command -v gum &> /dev/null; then
+    print_status "Installing Gum interactive filter..."
+    GUM_VERSION=$(curl -s "https://api.github.com/repos/charmbracelet/gum/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
+    curl -Lo gum.tar.gz "https://github.com/charmbracelet/gum/releases/latest/download/gum_${GUM_VERSION}_Linux_x86_64.tar.gz"
+    tar xf gum.tar.gz gum
+    sudo install gum /usr/local/bin
+    rm gum gum.tar.gz
+else
+    print_success "Gum already installed"
+fi
+
 # Install fonts
 print_status "Installing Nerd Fonts..."
 mkdir -p ~/.local/share/fonts
@@ -161,12 +194,17 @@ fi
 print_status "Creating symbolic links with GNU Stow..."
 
 # Stow essential configs (cross-platform)
-stow zsh tmux nvim alacritty posting
+stow zsh tmux nvim alacritty sesh posting
 
 # Copy WSL Ubuntu-specific zsh profile
 print_status "Setting up WSL Ubuntu Zsh profile..."
 cp ~/dotfiles/zsh/ubuntuWSLZsh ~/.osZsh
 print_success "WSL Ubuntu Zsh profile installed as ~/.osZsh"
+
+# Setup sesh configuration
+print_status "Setting up Sesh session manager..."
+cp ~/.config/sesh/examples/sesh.ubuntu.toml ~/.config/sesh/sesh.toml
+print_success "Sesh configuration installed for Ubuntu"
 
 # Create custom configuration file if it doesn't exist
 if [[ ! -f ~/.customZsh ]]; then

@@ -55,6 +55,7 @@ brew install git lazygit eza zoxide fzf ripgrep fd jq poppler imagemagick sevenz
 brew install zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions
 brew install jandedobbeleer/oh-my-posh/oh-my-posh
 brew install neovim tmux alacritty yazi ffmpeg stow
+brew install sesh gum
 brew install font-symbols-only-nerd-font
 
 # Install macOS-specific tools
@@ -93,7 +94,7 @@ fi
 print_status "Creating symbolic links with GNU Stow..."
 
 # Stow essential configs
-stow zsh tmux nvim alacritty posting
+stow zsh tmux nvim alacritty sesh posting
 
 # Stow macOS-specific configs
 stow aerospace
@@ -108,6 +109,11 @@ fi
 print_status "Setting up macOS Zsh profile..."
 cp ~/dotfiles/zsh/macOSZsh ~/.osZsh
 print_success "macOS Zsh profile installed as ~/.osZsh"
+
+# Setup sesh configuration
+print_status "Setting up Sesh session manager..."
+cp ~/.config/sesh/examples/sesh.macos.toml ~/.config/sesh/sesh.toml
+print_success "Sesh configuration installed for macOS"
 
 # Create custom configuration file if it doesn't exist
 if [[ ! -f ~/.customZsh ]]; then
