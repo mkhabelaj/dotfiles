@@ -1,3 +1,4 @@
+-- testing
 return {
 	"yetone/avante.nvim",
 	event = "VeryLazy",
@@ -13,10 +14,10 @@ return {
 	-- 	},
 	-- },
 	opts = {
-		provider = "openai",
+		provider = "copilot",
 		providers = {
-			openai = {
-				model = "o4-mini",
+			copilot = {
+				model = "gpt-4o",
 			},
 		},
 	},
@@ -52,6 +53,14 @@ return {
 		--- The below dependencies are optional,
 		"nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
 		"folke/snacks.nvim", -- for input provider snacks
+		{
+			"CopilotC-Nvim/CopilotChat.nvim",
+			branch = "main",
+			dependencies = {
+				{ "zbirenbaum/copilot.lua" },
+			},
+			opts = {},
+		},
 		{
 			-- support for image pasting
 			"HakonHarnes/img-clip.nvim",
