@@ -9,12 +9,12 @@ return {
 				auto_trigger = true,
 				debounce = 75,
 				keymap = {
-					accept = "<M-l>",
+					accept = "<C-y>",
 					accept_word = false,
 					accept_line = false,
-					next = "<M-]>",
-					prev = "<M-[>",
-					dismiss = "<C-]>",
+					next = "<C-j>",
+					prev = "<C-k>",
+					dismiss = "<C-e>",
 				},
 			},
 			panel = {
@@ -25,7 +25,7 @@ return {
 					jump_next = "]]",
 					accept = "<CR>",
 					refresh = "gr",
-					open = "<M-CR>",
+					open = "<leader>cp",
 				},
 				layout = {
 					position = "bottom",

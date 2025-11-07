@@ -54,14 +54,6 @@ return {
 		"nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
 		"folke/snacks.nvim", -- for input provider snacks
 		{
-			"CopilotC-Nvim/CopilotChat.nvim",
-			branch = "main",
-			dependencies = {
-				{ "zbirenbaum/copilot.lua" },
-			},
-			opts = {},
-		},
-		{
 			-- support for image pasting
 			"HakonHarnes/img-clip.nvim",
 			event = "VeryLazy",
