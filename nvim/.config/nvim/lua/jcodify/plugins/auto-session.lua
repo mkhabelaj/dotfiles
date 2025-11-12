@@ -9,9 +9,15 @@ return {
 		})
 
 		require("which-key").add({
+			-- ╭─────────────────────────────────────────────────────────╮
+			-- │ Workspace & Session Management                          │
+			-- ╰─────────────────────────────────────────────────────────╯
 			{ "<leader>w", group = "Workspace" },
-			{ "<leader>wr", "<cmd>SessionRestore<CR>", desc = "Restore session for cwd" },
-			{ "<leader>ws", "<cmd>SessionSave<CR>", desc = "Save session for auto session root dir" },
+			{ "<leader>wQ", "<cmd>qa<CR>", desc = "Quit all windows" },
+			{ "<leader>wr", "<cmd>SessionRestore<CR>", desc = "Restore session" },
+			{ "<leader>ws", "<cmd>SessionSave<CR>", desc = "Save session" },
+			{ "<leader>ww", "<cmd>w!<CR>", desc = "Save file" },
+			{ "<leader>wW", "<cmd>noa w!<CR>", desc = "Save without autocmd" },
 		})
 	end,
 }
