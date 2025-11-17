@@ -26,6 +26,7 @@ return {
 		{ "<leader>cf", "<cmd>CopilotChatFix<cr>", mode = { "n", "v" }, desc = "Fix code" },
 		{ "<leader>co", "<cmd>CopilotChatOptimize<cr>", mode = { "n", "v" }, desc = "Optimize code" },
 		{ "<leader>cd", "<cmd>CopilotChatDocs<cr>", mode = { "n", "v" }, desc = "Generate docs" },
+		{ "<leader>cm", "<cmd>CopilotChatModels<cr>", desc = "Select Copilot Chat Model" },
 		-- Custom prompts
 		{
 			"<leader>cq",
