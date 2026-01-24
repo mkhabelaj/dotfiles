@@ -1,0 +1,71 @@
+/* Wofi styling to match Hyprland theme */
+/* Colors: cyan #33ccff, green #00ff99, gray #595959, dark #1a1a1a */
+
+window {
+    margin: 0px;
+    border: 2px solid #33ccff;
+    border-radius: 10px;
+    background-color: rgba(26, 26, 26, 0.9);
+    font-family: monospace;
+    font-size: 14px;
+}
+
+#input {
+    margin: 5px;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: rgba(40, 40, 40, 0.8);
+    color: #ffffff;
+}
+
+#input:focus {
+    border: 2px solid #33ccff;
+    outline: none;
+}
+
+#inner-box {
+    margin: 5px;
+    border: none;
+    background-color: transparent;
+}
+
+#outer-box {
+    margin: 5px;
+    border: none;
+    background-color: transparent;
+}
+
+#scroll {
+    margin: 0px;
+    border: none;
+}
+
+#text {
+    margin: 5px;
+    border: none;
+    color: #ffffff;
+}
+
+#entry {
+    border-radius: 10px;
+    margin: 2px;
+    padding: 5px;
+}
+
+#entry:selected {
+    background: linear-gradient(135deg, rgba(51, 204, 255, 0.3), rgba(0, 255, 153, 0.3));
+    border: 1px solid #33ccff;
+}
+
+#entry:hover {
+    background-color: rgba(51, 204, 255, 0.15);
+}
+
+#text:selected {
+    color: #00ff99;
+}
+
+#img {
+    margin-right: 10px;
+}
