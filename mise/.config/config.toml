@@ -1,0 +1,40 @@
+[tools]
+"cargo:eza" = "latest"
+"cargo:zoxide" = "latest"
+"github:junegunn/fzf" = "latest"
+"github:BurntSushi/ripgrep" = "latest"
+"github:sharkdp/fd" = "latest"
+"github:jesseduffield/lazygit" = "latest"
+node = "24"
+rust = "latest"
+go = "latest"
+tmux = "latest"
+gum = "latest"
+"go:github.com/joshmedeski/sesh" = "latest"
+neovim = "latest"
+yazi = "latest"
+"npm:tree-sitter-cli" = "latest"
+python = "latest"
+bat = "latest"
+"npm:tldr" = "latest"
+claude-code = { version = "latest", bin = "claude", platforms = """
+[linux-arm64]
+url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/{{ version }}/linux-arm64/claude"
+
+[linux-x64]
+url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/{{ version }}/linux-x64/claude"
+
+[macos-arm64]
+url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/{{ version }}/darwin-arm64/claude"
+
+[macos-x64]
+url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/{{ version }}/darwin-x64/claude"
+
+[windows-x64]
+bin = "claude.exe"
+url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/{{ version }}/win32-x64/claude.exe"
+""", version_list_url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/latest" }
+
+[env]
+EDITOR = "nvim"
+VISUAL = "nvim"
