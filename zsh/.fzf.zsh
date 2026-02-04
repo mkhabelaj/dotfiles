@@ -1,4 +1,3 @@
-# Copy this to the home directory and rename .fzf.zsh
 # @document
 # Check if fzf is installed
 if command -v fzf &> /dev/null; then

@@ -18,15 +18,28 @@
     "memory",
     "pulseaudio",
     "network",
-    "tray"
+    "tray",
+    "battery"
   ],
   "hyprland/workspaces": {
     "format": "{id}",
     "on-click": "activate",
     "sort-by-number": true,
     "persistent-workspaces": {
-      "DP-1": [1, 2, 3, 4, 5],
-      "eDP-1": [6, 7, 8, 9, 10]
+      "DP-1": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "eDP-1": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
     }
   },
   "hyprland/window": {
@@ -72,6 +85,14 @@
     "tooltip-format-wifi": "{essid} ({signalStrength}%)",
     "tooltip-format-ethernet": "{ifname}: {ipaddr}/{cidr}",
     "on-click": "nm-connection-editor"
+  },
+  "battery": {
+    "bat": "BAT0", // Use your battery name, usually BAT0
+    "interval": 30,
+    "format": "{capacity}% {icon}",
+    "format-charging": "{capacity}% ",
+    "format-plugged": "{capacity}% ",
+    "format-alt": "{time} {icon}"
   },
   "tray": {
     "icon-size": 16,
