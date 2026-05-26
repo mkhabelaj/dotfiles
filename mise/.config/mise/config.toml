@@ -1,5 +1,10 @@
 [tools]
+go = "latest"
+"go:github.com/joshmedeski/sesh/v2" = "latest"
+gum = "latest"
 lazygit = "latest"
 neovim = "latest"
 node = "latest"
+tmux = "latest"
 usage = "latest"
+zoxide = "latest"

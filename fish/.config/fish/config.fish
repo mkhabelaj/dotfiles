@@ -6,3 +6,4 @@
 #    # smth smth
 #end
 ~/.local/bin/mise activate fish | source
+set -gx TMUX_CONFIG ~/.config/tmux/tmux.conf
