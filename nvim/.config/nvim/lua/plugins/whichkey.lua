@@ -18,24 +18,20 @@ return {
 			-- ╭─────────────────────────────────────────────────────────╮
 			-- │ Core Group Definitions                                  │
 			-- ╰─────────────────────────────────────────────────────────╯
-			{ "<leader>a", group = "Avante/AI" },
 			{ "<leader>b", group = "Buffer" },
-			{ "<leader>c", group = "Code/Copilot" },
-			{ "<leader>d", group = "Debug" },
-			{ "<leader>dg", group = "Go Debug" },
+			{ "<leader>c", group = "Code" },
 			{ "<leader>f", group = "Find" },
 			{ "<leader>g", group = "Git" },
 			{ "<leader>gn", group = "Neo Git" },
 			{ "<leader>l", group = "LSP" },
 			{ "<leader>ld", group = "Diagnostics" },
-			{ "<leader>o", group = "Oil Explorer & Obsidian" },
+			{ "<leader>o", group = "Oil Explorer" },
 			{ "<leader>s", group = "Search" },
 			{ "<leader>t", group = "Theme" },
 			{ "<leader>T", group = "Todo Comments" },
 			{ "<leader>u", group = "UI/Toggle" },
 			{ "<leader>v", group = "Window" },
 			{ "<leader>w", group = "Workspace" },
-			{ "<leader>x", group = "Trouble" },
 			-- ╭─────────────────────────────────────────────────────────╮
 			-- │ General Utilities                                       │
 			-- ╰─────────────────────────────────────────────────────────╯

@@ -6,14 +6,14 @@ return {
 		{
 			"<leader>Tj",
 			function()
-				todo_comments.jump_next()
+				require("todo-comments").jump_next()
 			end,
 			desc = "Next todo comment",
 		},
 		{
 			"<leader>Tk",
 			function()
-				todo_comments.jump_prev()
+				require("todo-comments").jump_prev()
 			end,
 			desc = "Previous todo comment",
 		},
