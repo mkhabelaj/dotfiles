@@ -33,7 +33,22 @@ opt.signcolumn = "yes" -- show sign column so that text doesn't shift
 opt.backspace = "indent,eol,start" -- allow backspace on indent, end of line or insert mode start position
 
 -- clipboard
-opt.clipboard:append("unnamedplus") -- use system clipboard as default register
+-- On WSL, explicitly set the provider to avoid slow auto-detection (10s hang)
+if vim.fn.has("wsl") == 1 then
+	vim.g.clipboard = {
+		name = "win32yank",
+		copy = {
+			["+"] = "win32yank.exe -i --crlf",
+			["*"] = "win32yank.exe -i --crlf",
+		},
+		paste = {
+			["+"] = "win32yank.exe -o --lf",
+			["*"] = "win32yank.exe -o --lf",
+		},
+		cache_enabled = 0,
+	}
+end
+opt.clipboard:append("unnamedplus")
 
 -- split windows
 opt.splitright = true -- split vertical window to the right
@@ -41,6 +56,11 @@ opt.splitbelow = true -- split horizontal window to the bottom
 
 -- turn off swapfile
 opt.swapfile = false
+
+-- faster CursorHold (reduces delay for snacks words/LSP highlights after cursor move)
+opt.updatetime = 250
+-- fast terminal key code timeout (reduces <Esc> sequence ambiguity)
+opt.ttimeoutlen = 50
 
 -- set spell check to English Canada
 opt.spelllang = "en_ca"
