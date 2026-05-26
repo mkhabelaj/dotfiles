@@ -48,10 +48,10 @@ opt.spelllang = "en_ca"
 opt.spell = true
 
 -- folding (treesitter-based)
-opt.foldmethod = "expr"
-opt.foldexpr = "nvim_treesitter#foldexpr()"
-opt.foldlevel = 99 -- start with all folds open
-opt.foldlevelstart = 99 -- open all folds when opening a file
+-- opt.foldmethod = "expr"
+-- opt.foldexpr = "nvim_treesitter#foldexpr()"
+-- opt.foldlevel = 99 -- start with all folds open
+-- opt.foldlevelstart = 99 -- open all folds when opening a file
 
 -- Set SessionOptions to save session options
 opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"

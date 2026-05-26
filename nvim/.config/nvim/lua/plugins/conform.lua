@@ -7,42 +7,30 @@ return {
 
 		conform.setup({
 			formatters_by_ft = {
-				javascript = { "prettier" },
-				typescript = { "prettier" },
-				javascriptreact = { "prettier" },
-				typescriptreact = { "prettier" },
-				svelte = { "prettier" },
-				solid = { "prettier" },
-				css = { "prettier" },
-				html = { "prettier" },
-				json = { "prettier" },
-				yaml = { "prettier" },
-				markdown = { "prettier" },
-				graphql = { "prettier" },
-				liquid = { "prettier" },
+				javascript = { "prettierd" },
+				typescript = { "prettierd" },
+				javascriptreact = { "prettierd" },
+				typescriptreact = { "prettierd" },
+				svelte = { "prettierd" },
+				solid = { "prettierd" },
+				css = { "prettierd" },
+				html = { "prettierd" },
+				json = { "prettierd" },
+				yaml = { "prettierd" },
+				markdown = { "prettierd" },
+				graphql = { "prettierd" },
+				liquid = { "prettierd" },
 				lua = { "stylua" },
 				python = { "black" },
-				php = { "php-cs-fixer" },
-				go = { "gofumpt", "golines", "goimports-reviser" },
 			},
 			formatters = {
-
 				black = {
 					command = "black",
 					args = { "--line-length", "160", "-" },
 				},
-				["php-cs-fixer"] = {
-					command = "php-cs-fixer",
-					args = {
-						"fix",
-						"--rules=@PSR12", -- Formatting preset. Other presets are available, see the php-cs-fixer docs.
-						"$FILENAME",
-					},
-					stdin = false,
-				},
 			},
 			format_on_save = {
-				lsp_fallback = true,
+				lsp_format = "fallback",
 				async = false,
 				timeout_ms = 1000,
 			},
@@ -55,7 +43,7 @@ return {
 				"<leader>lwf",
 				function()
 					conform.format({
-						lsp_fallback = true,
+						lsp_format = "fallback",
 						async = false,
 						timeout_ms = 1000,
 					})

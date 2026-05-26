@@ -127,5 +127,7 @@ return {
 		vim.lsp.enable("html")
 		vim.lsp.enable("cspell_ls")
 		vim.lsp.enable("jsonls")
+		vim.lsp.enable("tailwindcss")
+		vim.lsp.enable("emmet_ls")
 	end,
 }

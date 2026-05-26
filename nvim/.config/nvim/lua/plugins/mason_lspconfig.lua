@@ -4,7 +4,6 @@ return {
 		ensure_installed = {
 			-- LSP servers
 			"basedpyright", -- Python / Django
-			"ruff", -- Python linter+formatter (also runs as LSP)
 			"vtsls", -- TypeScript / React
 			"cssls", -- CSS
 			"html", -- HTML templates (Django templates too)
