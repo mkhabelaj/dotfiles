@@ -1,13 +1,5 @@
 return {
 	"folke/snacks.nvim",
-	dependencies = {
-		"folke/tokyonight.nvim",
-		"catppuccin/nvim",
-		"rose-pine/neovim",
-		"rebelot/kanagawa.nvim",
-		"sainnhe/gruvbox-material",
-		"EdenEast/nightfox.nvim",
-	},
 	priority = 1000,
 	lazy = false,
 	---@type snacks.Config
@@ -32,9 +24,6 @@ return {
 			notification = {
 				-- wo = { wrap = true } -- Wrap notifications
 			},
-		},
-		zen = {
-			enabled = false,
 		},
 	},
 	keys = {
@@ -175,13 +164,6 @@ return {
 			desc = "Git Log File",
 		},
 		-- Grep
-		{
-			"<leader>sb",
-			function()
-				Snacks.picker.lines()
-			end,
-			desc = "Buffer Lines",
-		},
 		{
 			"<leader>sB",
 			function()
@@ -389,13 +371,6 @@ return {
 				Snacks.scratch.select()
 			end,
 			desc = "Select Scratch Buffer",
-		},
-		{
-			"<leader>n",
-			function()
-				Snacks.notifier.show_history()
-			end,
-			desc = "Notification History",
 		},
 		{
 			"<leader>bd",
