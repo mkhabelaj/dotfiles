@@ -33,8 +33,9 @@ opt.signcolumn = "yes" -- show sign column so that text doesn't shift
 opt.backspace = "indent,eol,start" -- allow backspace on indent, end of line or insert mode start position
 
 -- clipboard
--- On WSL, explicitly set the provider to avoid slow auto-detection (10s hang)
-if vim.fn.has("wsl") == 1 then
+-- On WSL with win32yank installed, set it explicitly to skip the slow 10s auto-detection probe.
+-- Without win32yank, fall back to Neovim's auto-detection (clip.exe / powershell).
+if vim.fn.has("wsl") == 1 and vim.fn.executable("win32yank.exe") == 1 then
 	vim.g.clipboard = {
 		name = "win32yank",
 		copy = {
