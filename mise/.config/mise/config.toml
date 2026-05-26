@@ -1,10 +1,12 @@
 [tools]
+"cargo:tree-sitter-cli" = "latest"
 go = "latest"
 "go:github.com/joshmedeski/sesh/v2" = "latest"
 gum = "latest"
 lazygit = "latest"
 neovim = "latest"
 node = "latest"
+rust = "latest"
 tmux = "latest"
 usage = "latest"
 zoxide = "latest"
