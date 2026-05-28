@@ -6,50 +6,8 @@ return {
 		"hrsh7th/cmp-nvim-lsp",
 	},
 	config = function()
-		local caps = require("cmp_nvim_lsp").default_capabilities()
-
-		vim.lsp.config["lua_ls"] = {
-			capabilities = caps,
-			settings = {
-				Lua = {
-					diagnostics = { globals = { "vim" } },
-					completion = { callSnippet = "Replace" },
-				},
-			},
-		}
-		vim.lsp.config["basedpyright"] = {
-			-- before_init = require("venv-selector").python,
-			capabilities = caps,
-			settings = {
-				python = {
-					analysis = {
-						autoSearchPaths = true,
-						useLibraryCodeForTypes = true,
-						diagnosticMode = "workspace",
-						typeCheckingMode = "off",
-						autoImportCompletions = true,
-					},
-				},
-			},
-		}
-
-		vim.lsp.config("cspell_ls", {
-			cmd = { "cspell-lsp", "--stdio" },
-			root_markers = { ".git", "pyproject.toml", "package.json" },
-			filetypes = {
-				"python",
-				"javascript",
-				"typescript",
-				"javascriptreact",
-				"typescriptreact",
-				"lua",
-				"html",
-				"css",
-				"json",
-				"markdown",
-				"gitcommit",
-			},
-			single_file_support = true,
+		vim.lsp.config("*", {
+			capabilities = require("cmp_nvim_lsp").default_capabilities(),
 		})
 
 		vim.api.nvim_create_autocmd("LspAttach", {
