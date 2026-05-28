@@ -4,4 +4,12 @@
 alacritty/.config/alacritty/themes
 tmux/.config/tmux/plugins/
 
+# Backup files
+*.bak
 
+# Log files
+*.log
+
+# Fish shell - auto-generated files
+fish/.config/fish/fish_variables
+fish/.config/fish/completions/
