@@ -18,8 +18,6 @@ return {
 					{ "<leader>l", buffer = ev.buf, group = "LSP" },
 					{ "<leader>lR", ":LspRestart<CR>", buffer = ev.buf, desc = "Restart LSP" },
 					{ "<leader>ld", buffer = ev.buf, group = "Diagnostics" },
-					{ "<leader>ldj", vim.diagnostic.goto_next, buffer = ev.buf, desc = "Next diagnostic" },
-					{ "<leader>ldk", vim.diagnostic.goto_prev, buffer = ev.buf, desc = "Prev diagnostic" },
 					{ "<leader>ldl", vim.diagnostic.open_float, buffer = ev.buf, desc = "Line diagnostics" },
 					{ "<leader>ll", vim.diagnostic.open_float, buffer = ev.buf, desc = "Line diagnostics" },
 					{ "<leader>lo", "<cmd>Lspsaga outline<CR>", buffer = ev.buf, desc = "Outline" },
