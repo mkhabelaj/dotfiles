@@ -1,4 +1,5 @@
 [tools]
+apollo-rover = "latest"
 "cargo:tree-sitter-cli" = "latest"
 go = "latest"
 "go:github.com/joshmedeski/sesh/v2" = "latest"
@@ -10,4 +11,5 @@ node = "latest"
 rust = "latest"
 tmux = "latest"
 usage = "latest"
+uv = "latest"
 zoxide = "latest"
