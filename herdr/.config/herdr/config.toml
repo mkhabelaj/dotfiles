@@ -23,8 +23,9 @@ split_horizontal = "prefix+minus"
 close_pane = "prefix+x"
 zoom = "prefix+z"   # tmux used `prefix m`; z is herdr's standard
 
-# Pane focus — tmux vim-tmux-navigator used direct Ctrl-h/j/k/l, but herdr has
-# no is_vim passthrough, so these stay prefix-scoped. See note at bottom.
+# Pane focus — prefix+h/j/k/l kept as a plain fallback.
+# Seamless Ctrl-h/j/k/l (nvim splits <-> herdr panes) is wired via the
+# [[keys.command]] dispatch below + nvim's tmux-navigator.lua.
 focus_pane_left = "prefix+h"
 focus_pane_down = "prefix+j"
 focus_pane_up = "prefix+k"
@@ -32,6 +33,30 @@ focus_pane_right = "prefix+l"
 
 # Sidebar toggle (herdr default)
 toggle_sidebar = "prefix+b"
+
+# vim-tmux-navigator-style nav. Each Ctrl chord runs the dispatch script:
+# if the focused pane runs nvim/vim, the key is forwarded into it (nvim moves
+# its split, falling back to `herdr pane focus` only at the edge); otherwise
+# the herdr pane is focused directly.
+[[keys.command]]
+key = "ctrl+h"
+type = "shell"
+command = "~/.config/herdr/herdr-vim-nav.sh left"
+
+[[keys.command]]
+key = "ctrl+j"
+type = "shell"
+command = "~/.config/herdr/herdr-vim-nav.sh down"
+
+[[keys.command]]
+key = "ctrl+k"
+type = "shell"
+command = "~/.config/herdr/herdr-vim-nav.sh up"
+
+[[keys.command]]
+key = "ctrl+l"
+type = "shell"
+command = "~/.config/herdr/herdr-vim-nav.sh right"
 
 [ui]
 # tmux `set -g mouse on`
@@ -42,6 +67,6 @@ mouse_capture = true
 # - vi copy-mode (v/y): use `edit_scrollback` (prefix+e) instead.
 # - sesh popup (prefix K/J): use built-in workspace_picker (prefix+w) and goto (prefix+g).
 #
-# Limitation: nvim's vim-tmux-navigator (Ctrl-h/j/k/l) won't traverse herdr
-# panes — herdr lacks the shell-probe passthrough tmux uses. Revisit
-# `herdr integration` if seamless nvim<->herdr pane nav is wanted.
+# Seamless Ctrl-h/j/k/l nav across nvim splits and herdr panes is handled by
+# the [[keys.command]] dispatch above + herdr-vim-nav.sh + nvim's
+# tmux-navigator.lua. Requires GNU grep (-P) on PATH.
