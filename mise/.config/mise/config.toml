@@ -1,6 +1,7 @@
 [tools]
 apollo-rover = "latest"
 "cargo:tree-sitter-cli" = "latest"
+"github:ogulcancelik/herdr" = "latest"
 go = "latest"
 "go:github.com/joshmedeski/sesh/v2" = "latest"
 gum = "latest"
