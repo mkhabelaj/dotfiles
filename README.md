@@ -12,7 +12,7 @@ curl https://mise.run | sh
 git clone https://github.com/jacksonmkhabela/dotfiles.git ~/dotfiles && cd ~/dotfiles
 
 # 3. Stow configs
-stow nvim tmux alacritty fish mise
+stow nvim tmux herdr alacritty fish mise
 
 # 4. Install dev tools
 mise install
@@ -24,6 +24,7 @@ mise install
 |---------|--------|
 | `nvim` | Neovim |
 | `tmux` | Tmux |
+| `herdr` | Herdr terminal workspace manager |
 | `alacritty` | Alacritty terminal |
 | `fish` | Fish shell |
 | `mise` | mise tool manager |
@@ -62,6 +63,7 @@ Each directory mirrors your home directory structure:
 dotfiles/
 ├── nvim/.config/nvim/       # → ~/.config/nvim/
 ├── tmux/.config/tmux/       # → ~/.config/tmux/
+├── herdr/.config/herdr/     # → ~/.config/herdr/
 ├── alacritty/.config/alacritty/  # → ~/.config/alacritty/
 ├── fish/.config/fish/       # → ~/.config/fish/
 └── mise/.config/mise/       # → ~/.config/mise/

@@ -1,0 +1,47 @@
+# herdr configuration — mirrors ~/.config/tmux/tmux.conf as closely as herdr allows.
+# Docs/defaults: `herdr --default-config`
+
+[theme]
+name = "tokyo-night"
+
+[terminal]
+# Inherit the source pane/workspace directory for new panes (tmux-like).
+new_cwd = "follow"
+
+[keys]
+# Prefix: Ctrl-A (tmux `set -g prefix C-a`)
+prefix = "ctrl+a"
+
+# Reload config — tmux `prefix r`. Frees prefix+r from resize_mode (moved below).
+reload_config = "prefix+r"
+resize_mode = "prefix+shift+r"
+
+# Splits — tmux `|` side-by-side, `-` stacked.
+# herdr can't bind a literal `|`, so vertical split stays on `v`.
+split_vertical = "prefix+v"
+split_horizontal = "prefix+minus"
+close_pane = "prefix+x"
+zoom = "prefix+z"   # tmux used `prefix m`; z is herdr's standard
+
+# Pane focus — tmux vim-tmux-navigator used direct Ctrl-h/j/k/l, but herdr has
+# no is_vim passthrough, so these stay prefix-scoped. See note at bottom.
+focus_pane_left = "prefix+h"
+focus_pane_down = "prefix+j"
+focus_pane_up = "prefix+k"
+focus_pane_right = "prefix+l"
+
+# Sidebar toggle (herdr default)
+toggle_sidebar = "prefix+b"
+
+[ui]
+# tmux `set -g mouse on`
+mouse_capture = true
+
+# No tmux equivalents (herdr handles these itself):
+# - base-index / renumber-windows: tabs are managed automatically.
+# - vi copy-mode (v/y): use `edit_scrollback` (prefix+e) instead.
+# - sesh popup (prefix K/J): use built-in workspace_picker (prefix+w) and goto (prefix+g).
+#
+# Limitation: nvim's vim-tmux-navigator (Ctrl-h/j/k/l) won't traverse herdr
+# panes — herdr lacks the shell-probe passthrough tmux uses. Revisit
+# `herdr integration` if seamless nvim<->herdr pane nav is wanted.
