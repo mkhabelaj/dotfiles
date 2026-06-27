@@ -21,18 +21,33 @@ resize_mode = "prefix+shift+r"
 split_vertical = "prefix+v"
 split_horizontal = "prefix+minus"
 close_pane = "prefix+x"
-zoom = "prefix+z"   # tmux used `prefix m`; z is herdr's standard
+zoom = "prefix+m"   # tmux `prefix m` (resize-pane -Z)
 
-# Pane focus — prefix+h/j/k/l kept as a plain fallback.
-# Seamless Ctrl-h/j/k/l (nvim splits <-> herdr panes) is wired via the
-# [[keys.command]] dispatch below + nvim's tmux-navigator.lua.
-focus_pane_left = "prefix+h"
-focus_pane_down = "prefix+j"
-focus_pane_up = "prefix+k"
-focus_pane_right = "prefix+l"
+# Detach — tmux `prefix d`. herdr default is prefix+q.
+detach = "prefix+d"
 
-# Sidebar toggle (herdr default)
-toggle_sidebar = "prefix+b"
+# Pane focus — prefix+Shift+h/j/k/l. Plain prefix+h/j/k/l left free; primary
+# nav is the seamless Ctrl-h/j/k/l dispatch below + nvim's tmux-navigator.lua.
+focus_pane_left = "prefix+shift+h"
+focus_pane_down = "prefix+shift+j"
+focus_pane_up = "prefix+shift+k"
+focus_pane_right = "prefix+shift+l"
+
+# Toggle previous pane — tmux `prefix ;`
+last_pane = "prefix+semicolon"
+
+# Sidebar toggle (moved off prefix+b to free it for workspace cycle)
+toggle_sidebar = "prefix+shift+b"
+
+# Agent rows
+focus_agent = "prefix+alt+1..9"
+next_agent = "prefix+]"
+previous_agent = "prefix+["
+
+# Workspaces (tmux session-like) — b=back/prev, f=forward/next
+previous_workspace = "prefix+b"
+next_workspace = "prefix+f"
+switch_workspace = "prefix+shift+1..9"
 
 # vim-tmux-navigator-style nav. Each Ctrl chord runs the dispatch script:
 # if the focused pane runs nvim/vim, the key is forwarded into it (nvim moves
