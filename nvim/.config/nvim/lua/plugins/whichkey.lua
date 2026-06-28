@@ -23,6 +23,7 @@ return {
 			{ "<leader>f", group = "Find" },
 			{ "<leader>g", group = "Git" },
 			{ "<leader>gn", group = "Neo Git" },
+			{ "<leader>gp", group = "PR (Octo)" },
 			{ "<leader>l", group = "LSP" },
 			{ "<leader>ld", group = "Diagnostics" },
 			{ "<leader>o", group = "Oil Explorer" },
