@@ -13,3 +13,7 @@ tmux/.config/tmux/plugins/
 # Fish shell - auto-generated files
 fish/.config/fish/fish_variables
 fish/.config/fish/completions/
+
+
+# herdr
+herdr/.config/herdr/session.json
