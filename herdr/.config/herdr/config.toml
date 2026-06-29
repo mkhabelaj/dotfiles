@@ -1,3 +1,4 @@
+onboarding = false
 # herdr configuration — mirrors ~/.config/tmux/tmux.conf as closely as herdr allows.
 # Docs/defaults: `herdr --default-config`
 
@@ -39,10 +40,10 @@ last_pane = "prefix+semicolon"
 # Sidebar toggle (moved off prefix+b to free it for workspace cycle)
 toggle_sidebar = "prefix+shift+b"
 
-# Agent rows
+# Agent rows. prefix+[ / prefix+] left free for copy mode / paste — tmux defaults.
 focus_agent = "prefix+alt+1..9"
-next_agent = "prefix+]"
-previous_agent = "prefix+["
+next_agent = "prefix+)"
+previous_agent = "prefix+("
 
 # Workspaces (tmux session-like) — b=back/prev, f=forward/next
 previous_workspace = "prefix+b"
