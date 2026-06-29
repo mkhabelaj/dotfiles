@@ -12,7 +12,7 @@ curl https://mise.run | sh
 git clone https://github.com/jacksonmkhabela/dotfiles.git ~/dotfiles && cd ~/dotfiles
 
 # 3. Stow configs
-stow nvim tmux herdr alacritty fish mise
+stow nvim tmux herdr alacritty fish mise flo
 
 # 4. Install dev tools
 mise install
@@ -28,6 +28,7 @@ mise install
 | `alacritty` | Alacritty terminal |
 | `fish` | Fish shell |
 | `mise` | mise tool manager |
+| `flo` | flo workflow TUI |
 
 ## What mise Installs
 
@@ -66,5 +67,6 @@ dotfiles/
 ├── herdr/.config/herdr/     # → ~/.config/herdr/
 ├── alacritty/.config/alacritty/  # → ~/.config/alacritty/
 ├── fish/.config/fish/       # → ~/.config/fish/
-└── mise/.config/mise/       # → ~/.config/mise/
+├── mise/.config/mise/       # → ~/.config/mise/
+└── flo/.config/flo/         # → ~/.config/flo/
 ```

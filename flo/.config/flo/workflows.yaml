@@ -1,0 +1,892 @@
+type: step
+options:
+- type: option
+  name: git
+  next:
+    type: step
+    options:
+    - type: option
+      name: status
+      run: git status
+    - type: option
+      name: log (last 20)
+      run: git log --oneline -20
+    - type: option
+      name: diff
+      run: git diff
+    - type: option
+      name: switch branch
+      next:
+        type: step
+        key: branch
+        from_command: "git branch --format='%(if)%(HEAD)%(then)* %(end)%(refname:short)\t\
+          %(refname:short)'"
+        next:
+          type: option
+          name: switch
+          run: git switch {branch}
+    - type: option
+      name: new branch
+      next:
+        type: step
+        input: true
+        key: name
+        placeholder: feature/my-thing
+        next:
+          type: option
+          name: create
+          run: git switch -c {name}
+    - type: option
+      name: delete branch
+      next:
+        type: step
+        key: branch
+        from_command: "git branch --format='%(if)%(HEAD)%(then)%(else)%(refname:short)\t\
+          %(refname:short)%(end)'"
+        next:
+          type: option
+          name: delete
+          run: git branch -D {branch}
+    - type: option
+      name: add
+      next:
+        type: step
+        options:
+        - type: option
+          name: file (pick)
+          next:
+            type: step
+            key: file
+            from_command: git status --porcelain | awk '{status=substr($0,1,2); file=substr($0,4);
+              print status"  "file"\t"file}'
+            next:
+              type: option
+              name: add
+              run: git add {file}
+        - type: option
+          name: all changes
+          run: git add -A
+        - type: option
+          name: patch (interactive)
+          run: git add -p
+        - type: option
+          name: by pattern
+          next:
+            type: step
+            input: true
+            key: pattern
+            placeholder: '*.py'
+            next:
+              type: option
+              name: add
+              run: git add {pattern}
+    - type: option
+      name: commit
+      next:
+        type: step
+        input: true
+        key: message
+        placeholder: what changed and why
+        next:
+          type: option
+          name: commit
+          run: git commit -m "{message}"
+    - type: option
+      name: pull
+      run: git pull
+    - type: option
+      name: push
+      run: git push
+    - type: option
+      name: stash pop
+      next:
+        type: step
+        key: stash
+        from_command: "git stash list --format='%gd: %s\t%gd'"
+        next:
+          type: option
+          name: pop
+          run: git stash pop {stash}
+    - type: option
+      name: cherry-pick from branch
+      next:
+        type: step
+        key: branch
+        from_command: "git branch --format='%(if)%(HEAD)%(then)* %(end)%(refname:short)\t\
+          %(refname:short)'"
+        next:
+          type: step
+          key: commit
+          from_command: "git log {branch} --oneline -20 --format='%h %s\t%h'"
+          next:
+            type: option
+            name: cherry-pick
+            run: git cherry-pick {commit}
+    - type: option
+      name: revert commit
+      next:
+        type: step
+        key: commit
+        from_command: "git log --oneline -20 --format='%h %s\t%h'"
+        next:
+          type: option
+          name: revert
+          run: git revert --no-edit {commit}
+    - type: option
+      name: merge branch
+      next:
+        type: step
+        key: branch
+        from_command: "git branch --format='%(if)%(HEAD)%(then)%(else)%(refname:short)\t\
+          %(refname:short)%(end)'"
+        next:
+          type: option
+          name: merge
+          run: git merge {branch}
+- type: option
+  name: docker
+  next:
+    type: step
+    options:
+    - type: option
+      name: containers
+      next:
+        type: step
+        options:
+        - type: option
+          name: ps (running)
+          run: docker ps
+        - type: option
+          name: ps -a (all)
+          run: docker ps -a
+        - type: option
+          name: stats
+          run: docker stats
+        - type: option
+          name: logs (tail 100)
+          next:
+            type: step
+            key: container
+            from_command: "docker ps --format '{{.Names}}: {{.Image}} ({{.Status}})\t\
+              {{.Names}}'"
+            next:
+              type: option
+              name: show logs
+              run: docker logs --tail 100 {container}
+        - type: option
+          name: logs (follow)
+          next:
+            type: step
+            key: container
+            from_command: "docker ps --format '{{.Names}}: {{.Image}} ({{.Status}})\t\
+              {{.Names}}'"
+            next:
+              type: option
+              name: follow logs
+              run: docker logs -f --tail 100 {container}
+        - type: option
+          name: exec shell
+          next:
+            type: step
+            key: container
+            from_command: "docker ps --format '{{.Names}}: {{.Image}} ({{.Status}})\t\
+              {{.Names}}'"
+            next:
+              type: step
+              options:
+              - type: option
+                name: sh
+                run: docker exec -it {container} sh
+              - type: option
+                name: bash
+                run: docker exec -it {container} bash
+              - type: option
+                name: ash
+                run: docker exec -it {container} ash
+        - type: option
+          name: stop
+          next:
+            type: step
+            key: container
+            from_command: "docker ps --format '{{.Names}}: {{.Image}} ({{.Status}})\t\
+              {{.Names}}'"
+            next:
+              type: option
+              name: stop
+              run: docker stop {container}
+        - type: option
+          name: restart
+          next:
+            type: step
+            key: container
+            from_command: "docker ps -a --format '{{.Names}}: {{.Image}} ({{.Status}})\t\
+              {{.Names}}'"
+            next:
+              type: option
+              name: restart
+              run: docker restart {container}
+        - type: option
+          name: rm
+          next:
+            type: step
+            key: container
+            from_command: "docker ps -a --format '{{.Names}}: {{.Image}} ({{.Status}})\t\
+              {{.Names}}'"
+            next:
+              type: option
+              name: remove
+              run: docker rm {container}
+        - type: option
+          name: inspect
+          next:
+            type: step
+            key: container
+            from_command: "docker ps -a --format '{{.Names}}: {{.Image}} ({{.Status}})\t\
+              {{.Names}}'"
+            next:
+              type: option
+              name: inspect
+              run: docker inspect {container}
+        - type: option
+          name: port mappings
+          next:
+            type: step
+            key: container
+            from_command: "docker ps --format '{{.Names}}: {{.Image}} ({{.Status}})\t\
+              {{.Names}}'"
+            next:
+              type: option
+              name: show ports
+              run: docker port {container}
+        - type: option
+          name: env vars
+          next:
+            type: step
+            key: container
+            from_command: "docker ps -a --format '{{.Names}}: {{.Image}} ({{.Status}})\t\
+              {{.Names}}'"
+            next:
+              type: option
+              name: show env vars
+              run: docker inspect --format '{{range .Config.Env}}{{println .}}{{end}}'
+                {container}
+    - type: option
+      name: images
+      next:
+        type: step
+        options:
+        - type: option
+          name: list
+          run: docker images
+        - type: option
+          name: pull
+          next:
+            type: step
+            input: true
+            key: image_ref
+            placeholder: e.g. nginx:latest
+            next:
+              type: option
+              name: pull
+              run: docker pull {image_ref}
+        - type: option
+          name: build
+          next:
+            type: step
+            input: true
+            key: build_dir
+            default: .
+            placeholder: path to directory with Dockerfile
+            next:
+              type: option
+              name: build
+              run: docker build {build_dir}
+        - type: option
+          name: rm
+          next:
+            type: step
+            key: image
+            from_command: "docker images --format '{{.Repository}}:{{.Tag}} ({{.Size}})\t\
+              {{.Repository}}:{{.Tag}}'"
+            next:
+              type: option
+              name: remove image
+              run: docker rmi {image}
+        - type: option
+          name: history
+          next:
+            type: step
+            key: image
+            from_command: "docker images --format '{{.Repository}}:{{.Tag}} ({{.Size}})\t\
+              {{.Repository}}:{{.Tag}}'"
+            next:
+              type: option
+              name: show history
+              run: docker image history {image}
+    - type: option
+      name: compose
+      next:
+        type: step
+        options:
+        - type: option
+          name: up -d
+          next:
+            type: step
+            input: true
+            key: project_dir
+            default: .
+            placeholder: path to docker-compose.yml dir
+            next:
+              type: option
+              name: up -d
+              run: docker compose up -d
+              cwd: '{project_dir}'
+        - type: option
+          name: down
+          next:
+            type: step
+            input: true
+            key: project_dir
+            default: .
+            placeholder: path to docker-compose.yml dir
+            next:
+              type: option
+              name: down
+              run: docker compose down
+              cwd: '{project_dir}'
+        - type: option
+          name: down -v (remove volumes)
+          next:
+            type: step
+            input: true
+            key: project_dir
+            default: .
+            placeholder: path to docker-compose.yml dir
+            next:
+              type: option
+              name: down -v
+              run: docker compose down -v
+              cwd: '{project_dir}'
+        - type: option
+          name: ps (all services)
+          next:
+            type: step
+            input: true
+            key: project_dir
+            default: .
+            placeholder: path to docker-compose.yml dir
+            next:
+              type: option
+              name: ps
+              run: docker compose ps
+              cwd: '{project_dir}'
+        - type: option
+          name: build
+          next:
+            type: step
+            input: true
+            key: project_dir
+            default: .
+            placeholder: path to docker-compose.yml dir
+            next:
+              type: option
+              name: build
+              run: docker compose build
+              cwd: '{project_dir}'
+        - type: option
+          name: logs (tail, all services)
+          next:
+            type: step
+            input: true
+            key: project_dir
+            default: .
+            placeholder: path to docker-compose.yml dir
+            next:
+              type: option
+              name: logs
+              run: docker compose logs --tail 100
+              cwd: '{project_dir}'
+        - type: option
+          name: pull (all images)
+          next:
+            type: step
+            input: true
+            key: project_dir
+            default: .
+            placeholder: path to docker-compose.yml dir
+            next:
+              type: option
+              name: pull
+              run: docker compose pull
+              cwd: '{project_dir}'
+        - type: option
+          name: action on service
+          next:
+            type: step
+            input: true
+            key: project_dir
+            default: .
+            placeholder: path to docker-compose.yml dir
+            next:
+              type: step
+              key: service
+              from_command: cd {project_dir} && docker compose ps --services
+              next:
+                type: step
+                options:
+                - type: option
+                  name: logs (tail)
+                  run: docker compose logs --tail 100 {service}
+                  cwd: '{project_dir}'
+                - type: option
+                  name: logs (follow)
+                  run: docker compose logs -f --tail 100 {service}
+                  cwd: '{project_dir}'
+                - type: option
+                  name: restart
+                  run: docker compose restart {service}
+                  cwd: '{project_dir}'
+                - type: option
+                  name: stop
+                  run: docker compose stop {service}
+                  cwd: '{project_dir}'
+                - type: option
+                  name: up -d
+                  run: docker compose up -d {service}
+                  cwd: '{project_dir}'
+    - type: option
+      name: volumes
+      next:
+        type: step
+        options:
+        - type: option
+          name: list
+          run: docker volume ls
+        - type: option
+          name: inspect
+          next:
+            type: step
+            key: volume
+            from_command: "docker volume ls --format '{{.Name}}\t{{.Name}}'"
+            next:
+              type: option
+              name: inspect
+              run: docker volume inspect {volume}
+        - type: option
+          name: rm
+          next:
+            type: step
+            key: volume
+            from_command: "docker volume ls --format '{{.Name}}\t{{.Name}}'"
+            next:
+              type: option
+              name: remove volume
+              run: docker volume rm {volume}
+    - type: option
+      name: networks
+      next:
+        type: step
+        options:
+        - type: option
+          name: list
+          run: docker network ls
+        - type: option
+          name: inspect
+          next:
+            type: step
+            key: network
+            from_command: "docker network ls --format '{{.Name}} ({{.Driver}})\t{{.Name}}'"
+            next:
+              type: option
+              name: inspect
+              run: docker network inspect {network}
+    - type: option
+      name: system
+      next:
+        type: step
+        options:
+        - type: option
+          name: df (disk usage)
+          run: docker system df
+        - type: option
+          name: info
+          run: docker info
+        - type: option
+          name: version
+          run: docker version
+        - type: option
+          name: login
+          next:
+            type: step
+            input: true
+            key: registry
+            default: docker.io
+            placeholder: e.g. docker.io or ghcr.io
+            next:
+              type: option
+              name: login
+              run: docker login {registry}
+        - type: option
+          name: logout
+          run: docker logout
+        - type: option
+          name: prune (by kind)
+          next:
+            type: step
+            options:
+            - type: option
+              name: images
+              run: docker image prune -f
+            - type: option
+              name: containers
+              run: docker container prune -f
+            - type: option
+              name: networks
+              run: docker network prune -f
+            - type: option
+              name: volumes
+              run: docker volume prune -f
+            - type: option
+              name: system -af (everything)
+              run: docker system prune -af
+- type: option
+  name: kubectl
+  next:
+    type: step
+    options:
+    - type: option
+      name: context
+      next:
+        type: step
+        options:
+        - type: option
+          name: current
+          run: kubectl config current-context
+        - type: option
+          name: list all
+          run: kubectl config get-contexts
+        - type: option
+          name: switch
+          next:
+            type: step
+            key: context
+            from_command: kubectl config get-contexts -o name
+            next:
+              type: option
+              name: switch
+              run: kubectl config use-context {context}
+    - type: option
+      name: pods
+      next:
+        type: step
+        options:
+        - type: option
+          name: list
+          next:
+            type: step
+            key: ns
+            from_command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+            next:
+              type: option
+              name: list pods
+              run: kubectl get pods -n {ns}
+        - type: option
+          name: describe
+          next:
+            type: step
+            key: ns
+            from_command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+            next:
+              type: step
+              key: pod
+              from_command: kubectl get pods -n {ns} --no-headers -o custom-columns='NAME:.metadata.name,STATUS:.status.phase'
+                | awk '{print $1" ("$2")\t"$1}'
+              next:
+                type: option
+                name: describe
+                run: kubectl describe pod -n {ns} {pod}
+        - type: option
+          name: logs (tail 100)
+          next:
+            type: step
+            key: ns
+            from_command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+            next:
+              type: step
+              key: pod
+              from_command: kubectl get pods -n {ns} --no-headers -o custom-columns='NAME:.metadata.name,STATUS:.status.phase'
+                | awk '{print $1" ("$2")\t"$1}'
+              next:
+                type: option
+                name: show logs
+                run: kubectl logs --tail 100 -n {ns} {pod}
+        - type: option
+          name: logs (follow)
+          next:
+            type: step
+            key: ns
+            from_command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+            next:
+              type: step
+              key: pod
+              from_command: kubectl get pods -n {ns} --no-headers -o custom-columns='NAME:.metadata.name,STATUS:.status.phase'
+                | awk '{print $1" ("$2")\t"$1}'
+              next:
+                type: option
+                name: follow logs
+                run: kubectl logs -f --tail 100 -n {ns} {pod}
+        - type: option
+          name: exec shell
+          next:
+            type: step
+            key: ns
+            from_command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+            next:
+              type: step
+              key: pod
+              from_command: kubectl get pods -n {ns} --no-headers -o custom-columns='NAME:.metadata.name,STATUS:.status.phase'
+                | awk '{print $1" ("$2")\t"$1}'
+              next:
+                type: step
+                options:
+                - type: option
+                  name: sh
+                  run: kubectl exec -it -n {ns} {pod} -- sh
+                - type: option
+                  name: bash
+                  run: kubectl exec -it -n {ns} {pod} -- bash
+                - type: option
+                  name: ash
+                  run: kubectl exec -it -n {ns} {pod} -- ash
+                - type: option
+                  name: zsh
+                  run: kubectl exec -it -n {ns} {pod} -- zsh
+        - type: option
+          name: env vars
+          next:
+            type: step
+            key: ns
+            from_command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+            next:
+              type: step
+              key: pod
+              from_command: kubectl get pods -n {ns} --no-headers -o custom-columns='NAME:.metadata.name,STATUS:.status.phase'
+                | awk '{print $1" ("$2")\t"$1}'
+              next:
+                type: option
+                name: show env vars
+                run: kubectl exec -n {ns} {pod} -- env
+        - type: option
+          name: port forward
+          next:
+            type: step
+            key: ns
+            from_command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+            next:
+              type: step
+              key: pod
+              from_command: kubectl get pods -n {ns} --no-headers -o custom-columns='NAME:.metadata.name,STATUS:.status.phase'
+                | awk '{print $1" ("$2")\t"$1}'
+              next:
+                type: step
+                input: true
+                key: ports
+                placeholder: 8080:8080
+                next:
+                  type: option
+                  name: forward
+                  run: kubectl port-forward -n {ns} {pod} {ports}
+        - type: option
+          name: delete
+          next:
+            type: step
+            key: ns
+            from_command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+            next:
+              type: step
+              key: pod
+              from_command: kubectl get pods -n {ns} --no-headers -o custom-columns='NAME:.metadata.name,STATUS:.status.phase'
+                | awk '{print $1" ("$2")\t"$1}'
+              next:
+                type: option
+                name: delete
+                run: kubectl delete pod -n {ns} {pod}
+    - type: option
+      name: deployments
+      next:
+        type: step
+        options:
+        - type: option
+          name: list
+          next:
+            type: step
+            key: ns
+            from_command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+            next:
+              type: option
+              name: list deployments
+              run: kubectl get deployments -n {ns}
+        - type: option
+          name: describe
+          next:
+            type: step
+            key: ns
+            from_command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+            next:
+              type: step
+              key: deployment
+              from_command: kubectl get deployments -n {ns} --no-headers | awk '{print
+                $1" ("$2" ready)\t"$1}'
+              next:
+                type: option
+                name: describe
+                run: kubectl describe deployment -n {ns} {deployment}
+        - type: option
+          name: scale
+          next:
+            type: step
+            key: ns
+            from_command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+            next:
+              type: step
+              key: deployment
+              from_command: kubectl get deployments -n {ns} --no-headers | awk '{print
+                $1" ("$2" ready)\t"$1}'
+              next:
+                type: step
+                input: true
+                key: replicas
+                placeholder: '2'
+                next:
+                  type: option
+                  name: scale
+                  run: kubectl scale deployment -n {ns} {deployment} --replicas={replicas}
+        - type: option
+          name: rollout status
+          next:
+            type: step
+            key: ns
+            from_command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+            next:
+              type: step
+              key: deployment
+              from_command: kubectl get deployments -n {ns} --no-headers | awk '{print
+                $1" ("$2" ready)\t"$1}'
+              next:
+                type: option
+                name: status
+                run: kubectl rollout status deployment -n {ns} {deployment}
+        - type: option
+          name: rollout history
+          next:
+            type: step
+            key: ns
+            from_command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+            next:
+              type: step
+              key: deployment
+              from_command: kubectl get deployments -n {ns} --no-headers | awk '{print
+                $1" ("$2" ready)\t"$1}'
+              next:
+                type: option
+                name: history
+                run: kubectl rollout history deployment -n {ns} {deployment}
+        - type: option
+          name: rollout undo
+          next:
+            type: step
+            key: ns
+            from_command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+            next:
+              type: step
+              key: deployment
+              from_command: kubectl get deployments -n {ns} --no-headers | awk '{print
+                $1" ("$2" ready)\t"$1}'
+              next:
+                type: option
+                name: undo
+                run: kubectl rollout undo deployment -n {ns} {deployment}
+    - type: option
+      name: services
+      next:
+        type: step
+        options:
+        - type: option
+          name: list
+          next:
+            type: step
+            key: ns
+            from_command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+            next:
+              type: option
+              name: list services
+              run: kubectl get services -n {ns}
+        - type: option
+          name: describe
+          next:
+            type: step
+            key: ns
+            from_command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+            next:
+              type: step
+              key: service
+              from_command: kubectl get services -n {ns} --no-headers | awk '{print
+                $1" ("$2")\t"$1}'
+              next:
+                type: option
+                name: describe
+                run: kubectl describe service -n {ns} {service}
+    - type: option
+      name: events
+      next:
+        type: step
+        key: ns
+        from_command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+        next:
+          type: option
+          name: show events
+          run: kubectl get events -n {ns} --sort-by=.lastTimestamp
+    - type: option
+      name: nodes
+      next:
+        type: step
+        options:
+        - type: option
+          name: list
+          run: kubectl get nodes -o wide
+        - type: option
+          name: top
+          run: kubectl top nodes
+        - type: option
+          name: describe
+          next:
+            type: step
+            key: node
+            from_command: kubectl get nodes --no-headers | awk '{print $1" ("$2")\t"$1}'
+            next:
+              type: option
+              name: describe
+              run: kubectl describe node {node}
+- type: option
+  name: npm (cwd)
+  next:
+    type: step
+    options:
+    - type: option
+      name: scripts
+      next:
+        type: step
+        options:
+        - type: option
+          name: 'run '
+          next:
+            type: step
+            key: script
+            from_command: ' jq -r ''.scripts | keys[]'' package.json'
+            next:
+              type: option
+              name: run
+              run: npm run {script}
+    - type: option
+      name: list scripts
+      run: jq -r '.scripts | to_entries[] | "\(.key) = \(.value)"' package.json
