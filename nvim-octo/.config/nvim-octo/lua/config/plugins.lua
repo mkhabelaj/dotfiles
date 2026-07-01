@@ -125,7 +125,9 @@ wk.setup({
 })
 
 wk.add({
-	{ "<leader>q", "<cmd>q<cr>", desc = "Quit window" },
+	-- Quit on <leader>Q, not <leader>q: octo binds <leader>qa (approve PR) in PR
+	-- buffers, so keeping q free avoids the prefix clash / timeout delay.
+	{ "<leader>Q", "<cmd>q<cr>", desc = "Quit window" },
 	{ "<leader>t", group = "Theme" },
 	{ "<leader>tt", "<cmd>Themify<cr>", desc = "Toggle theme" },
 	{ "<leader>r", group = "Review" },
