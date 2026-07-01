@@ -23,6 +23,9 @@ abbr -a gps git push
 
 abbr -a md mkdir -p
 
-# Standalone PR-review nvim instance (nvim-octo)
-abbr -a nvo 'env NVIM_APPNAME=nvim-octo nvim'
+# Standalone PR-review nvim instance (nvim-octo).
+# No args -> basic config; args are forwarded to nvim (files, +cmd, etc).
+function nvo --description 'PR-review nvim (nvim-octo appname)'
+    env NVIM_APPNAME=nvim-octo nvim $argv
+end
 
