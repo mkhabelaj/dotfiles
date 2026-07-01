@@ -1,6 +1,7 @@
 [tools]
 apollo-rover = "latest"
 "cargo:tree-sitter-cli" = "latest"
+"cargo:harper-ls" = "latest"
 gh = "latest"
 "github:agavra/tuicr" = "latest"
 "github:ogulcancelik/herdr" = "latest"

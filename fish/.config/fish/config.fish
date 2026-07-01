@@ -21,3 +21,8 @@ abbr -a gst git status
 abbr -a gpl git pull
 abbr -a gps git push
 
+abbr -a md mkdir -p
+
+# Standalone PR-review nvim instance (nvim-octo)
+abbr -a nvo 'env NVIM_APPNAME=nvim-octo nvim'
+
