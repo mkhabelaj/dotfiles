@@ -9,6 +9,8 @@ vim.pack.add({
 	{ src = "https://github.com/folke/snacks.nvim" },
 	{ src = "https://github.com/lmantw/themify.nvim" },
 	{ src = "https://github.com/christoomey/vim-tmux-navigator" },
+	{ src = "https://github.com/MunifTanjim/nui.nvim" },
+	{ src = "https://github.com/folke/noice.nvim" },
 	{ src = "https://github.com/pwntester/octo.nvim" },
 })
 
@@ -32,6 +34,13 @@ if themify_api.get_current() == vim.NIL then
 end
 
 require("snacks").setup({})
+
+-- Floating, centered command line + search (matches main config).
+require("noice").setup({
+	cmdline = { enabled = true, view = "cmdline_popup" },
+	notify = { enabled = false },
+	lsp = { progress = { enabled = false } },
+})
 
 -- Ctrl-h/j/k/l pane navigation across nvim splits + tmux + herdr.
 --   inside tmux  -> vim-tmux-navigator (uses $TMUX)
@@ -75,6 +84,7 @@ wk.setup({
 })
 
 wk.add({
+	{ "<leader>q", "<cmd>q<cr>", desc = "Quit window" },
 	{ "<leader>t", group = "Theme" },
 	{ "<leader>tt", "<cmd>Themify<cr>", desc = "Toggle theme" },
 	{ "<leader>r", group = "Review" },
