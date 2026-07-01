@@ -1,6 +1,88 @@
 type: step
 options:
 - type: option
+  name: review
+  next:
+    type: step
+    description: Repo (current pinned on top)
+    key: repo
+    from_command: 'gh repo view --json nameWithOwner --jq ''"★ "+.nameWithOwner+" (current)\t"+.nameWithOwner'' 2>/dev/null; gh repo list --limit 200 --json nameWithOwner --jq ''.[]|.nameWithOwner+"\t"+.nameWithOwner'''
+    next:
+      type: step
+      input: true
+      key: limit
+      default: '30'
+      placeholder: max PRs to list
+      validate: '\d+'
+      next:
+        type: step
+        description: Filter
+        options:
+        - type: option
+          name: review requested (@me)
+          next:
+            type: step
+            key: pr
+            from_command: 'gh pr list --repo {repo} --search ''review-requested:@me'' --limit {limit} --json number,title --jq ''.[]|"#\(.number) \(.title)\t\(.number)"'''
+            next:
+              type: step
+              description: Open with
+              options:
+              - type: option
+                name: nvim-octo
+                run: env NVIM_APPNAME=nvim-octo nvim -c "Octo pr edit {pr} {repo}"
+              - type: option
+                name: tuicr
+                run: tuicr pr {repo}#{pr}
+        - type: option
+          name: my PRs
+          next:
+            type: step
+            key: pr
+            from_command: 'gh pr list --repo {repo} --author @me --limit {limit} --json number,title --jq ''.[]|"#\(.number) \(.title)\t\(.number)"'''
+            next:
+              type: step
+              description: Open with
+              options:
+              - type: option
+                name: nvim-octo
+                run: env NVIM_APPNAME=nvim-octo nvim -c "Octo pr edit {pr} {repo}"
+              - type: option
+                name: tuicr
+                run: tuicr pr {repo}#{pr}
+        - type: option
+          name: mentioned (@me)
+          next:
+            type: step
+            key: pr
+            from_command: 'gh pr list --repo {repo} --search ''mentions:@me'' --limit {limit} --json number,title --jq ''.[]|"#\(.number) \(.title)\t\(.number)"'''
+            next:
+              type: step
+              description: Open with
+              options:
+              - type: option
+                name: nvim-octo
+                run: env NVIM_APPNAME=nvim-octo nvim -c "Octo pr edit {pr} {repo}"
+              - type: option
+                name: tuicr
+                run: tuicr pr {repo}#{pr}
+        - type: option
+          name: all open
+          next:
+            type: step
+            key: pr
+            from_command: 'gh pr list --repo {repo} --limit {limit} --json number,title --jq ''.[]|"#\(.number) \(.title)\t\(.number)"'''
+            next:
+              type: step
+              description: Open with
+              options:
+              - type: option
+                name: nvim-octo
+                run: env NVIM_APPNAME=nvim-octo nvim -c "Octo pr edit {pr} {repo}"
+              - type: option
+                name: tuicr
+                run: tuicr pr {repo}#{pr}
+- type: option
   name: git
   next:
     type: step
