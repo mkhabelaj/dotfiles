@@ -33,7 +33,48 @@ if themify_api.get_current() == vim.NIL then
 	themify_api.set_current("folke/tokyonight.nvim", "tokyonight")
 end
 
-require("snacks").setup({})
+require("snacks").setup({
+	dashboard = {
+		enabled = true,
+		preset = {
+			header = table.concat({
+				"    ___  ___    ___         _               ",
+				"   / _ \\/ _ \\  / _ \\___ ___(_)__ _    __    ",
+				"  / ___/ , _/ / , _/ -_) V / / -_) |/|/ /   ",
+				" /_/  /_/|_| /_/|_|\\__/\\_/_/\\__/|__,__/    ",
+				"",
+				"        octo.nvim · gh pull requests         ",
+			}, "\n"),
+			keys = {
+				{ icon = " ", key = "l", desc = "PR list", action = ":Octo pr list" },
+				{ icon = " ", key = "s", desc = "PR search", action = ":Octo pr search" },
+				{ icon = " ", key = "r", desc = "Resume review", action = ":Octo review resume" },
+				{ icon = " ", key = "c", desc = "PR checkout", action = ":Octo pr checkout" },
+				{
+					icon = " ",
+					key = "e",
+					desc = "Open PR by number",
+					action = function()
+						vim.ui.input({ prompt = "PR number: " }, function(n)
+							if n and n ~= "" then
+								vim.cmd("Octo pr edit " .. n)
+							end
+						end)
+					end,
+				},
+				{ icon = " ", key = "a", desc = "Octo actions (all)", action = ":Octo actions" },
+				{ icon = " ", key = "H", desc = "Health check", action = ":checkhealth octo" },
+				{ icon = " ", key = "t", desc = "Theme", action = ":Themify" },
+				{ icon = " ", key = "q", desc = "Quit", action = ":qa" },
+			},
+		},
+		-- No "startup" section: it needs lazy.stats, which doesn't exist under vim.pack.
+		sections = {
+			{ section = "header" },
+			{ section = "keys", gap = 1, padding = 1 },
+		},
+	},
+})
 
 -- Floating, centered command line + search (matches main config).
 require("noice").setup({
@@ -96,7 +137,17 @@ wk.add({
 	{ "<leader>c", "<cmd>Octo pr checkout<cr>", desc = "PR checkout (branch locally)" },
 	{ "<leader>a", "<cmd>Octo actions<cr>", desc = "Octo actions (all commands)" },
 	{ "<leader>R", "<cmd>Octo pr reload<cr>", desc = "PR reload" },
-	{ "<leader>e", "<cmd>Octo pr edit<cr>", desc = "PR edit (by number)" },
+	{
+		"<leader>e",
+		function()
+			vim.ui.input({ prompt = "PR number: " }, function(n)
+				if n and n ~= "" then
+					vim.cmd("Octo pr edit " .. n)
+				end
+			end)
+		end,
+		desc = "PR edit (by number)",
+	},
 	-- Review flow
 	{ "<leader>rs", "<cmd>Octo review start<cr>", desc = "Review start" },
 	{ "<leader>rr", "<cmd>Octo review resume<cr>", desc = "Review resume" },
