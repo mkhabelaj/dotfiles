@@ -3,8 +3,9 @@ onboarding = false
 # Docs/defaults: `herdr --default-config`
 
 [theme]
-name = "tokyo-night"
+name = "catppuccin"
 
+auto_switch = false
 [terminal]
 # Inherit the source pane/workspace directory for new panes (tmux-like).
 new_cwd = "follow"
