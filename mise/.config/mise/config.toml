@@ -18,4 +18,4 @@ usage = "latest"
 uv = "latest"
 yazi = "latest"
 zoxide = "latest"
-"github:mkhabelaj/flo-releases" = { version = "latest", bin = "flo" }
+"github:mkhabelaj/flo-releases" = { version = "0.1.0b2", bin = "flo" }
