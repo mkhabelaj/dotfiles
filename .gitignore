@@ -17,3 +17,4 @@ fish/.config/fish/completions/
 
 # herdr
 herdr/.config/herdr/session.json
+herdr/.config/herdr/sessions/
