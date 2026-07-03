@@ -8,6 +8,12 @@ return {
 	},
 	opts = {
 		picker = "snacks",
+		mappings = {
+			submit_win = {
+				-- default <C-a> is swallowed by herdr's prefix (ctrl+a)
+				approve_review = { lhs = "<C-y>", desc = "approve review" },
+			},
+		},
 	},
 	-- PR-review-focused launchers under <leader>gp (Git -> PR)
 	keys = {

@@ -159,4 +159,12 @@ wk.add({
 
 -- Last: octo.setup shells out to `gh` and errors if it's missing. Keeping it at
 -- the end means everything above still loads on a box without gh.
-require("octo").setup({ picker = "snacks" })
+require("octo").setup({
+	picker = "snacks",
+	mappings = {
+		submit_win = {
+			-- default <C-a> is swallowed by herdr's prefix (ctrl+a)
+			approve_review = { lhs = "<C-y>", desc = "approve review" },
+		},
+	},
+})
