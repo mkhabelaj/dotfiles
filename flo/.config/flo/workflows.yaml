@@ -972,3 +972,113 @@ options:
     - type: option
       name: list scripts
       run: jq -r '.scripts | to_entries[] | "\(.key) = \(.value)"' package.json
+- type: option
+  name: herdr
+  next:
+    type: step
+    options:
+    - type: option
+      name: new session
+      next:
+        type: step
+        input: true
+        key: name
+        placeholder: session name
+        next:
+          type: option
+          name: create
+          run: herdr --session {name}
+    - type: option
+      name: sessions
+      next:
+        type: step
+        description: Session
+        key: session
+        from_command: 'herdr session list --json | jq -r ''.sessions[] | "\(.name)  (\(if
+          .running then "running" else "stopped" end))\t\(.name)"'''
+        next:
+          type: step
+          options:
+          - type: option
+            name: attach
+            run: herdr session attach {session}
+          - type: option
+            name: workspaces
+            next:
+              type: step
+              options:
+              - type: option
+                name: new workspace
+                next:
+                  type: step
+                  input: true
+                  key: label
+                  placeholder: workspace label
+                  next:
+                    type: step
+                    options:
+                    - type: option
+                      name: here (current dir)
+                      run: herdr --session {session} workspace create --label "{label}"
+                        --cwd "$PWD" --focus
+                    - type: option
+                      name: search
+                      next:
+                        type: step
+                        input: true
+                        key: search_path
+                        default: '~'
+                        placeholder: search path (e.g. ~ or ~/dev)
+                        next:
+                          type: step
+                          input: true
+                          key: depth
+                          default: '1'
+                          validate: '\d+'
+                          placeholder: max depth
+                          next:
+                            type: step
+                            description: Directory
+                            key: dir
+                            from_command: "find \"$(eval echo {search_path})\" -maxdepth\
+                              \ {depth} -mindepth 1 -type d -printf '%P\t%p\n' 2>/dev/null\
+                              \ | sort"
+                            next:
+                              type: option
+                              name: create
+                              run: herdr --session {session} workspace create --label
+                                "{label}" --cwd {dir} --focus
+              - type: option
+                name: open
+                next:
+                  type: step
+                  description: Workspace
+                  key: ws
+                  from_command: 'herdr --session {session} workspace list | jq -r ''.result.workspaces[]
+                    | "[\(.number)] \(.label)  — \(.agent_status)\t\(.workspace_id)"'''
+                  next:
+                    type: step
+                    options:
+                    - type: option
+                      name: jump (focus)
+                      run: herdr --session {session} workspace focus {ws}
+                    - type: option
+                      name: rename
+                      next:
+                        type: step
+                        input: true
+                        key: label
+                        placeholder: new workspace label
+                        next:
+                          type: option
+                          name: rename
+                          run: herdr --session {session} workspace rename {ws} "{label}"
+                    - type: option
+                      name: delete
+                      run: herdr --session {session} workspace close {ws}
+          - type: option
+            name: stop
+            run: herdr session stop {session}
+          - type: option
+            name: delete
+            run: herdr session delete {session}
