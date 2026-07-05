@@ -12,7 +12,7 @@ curl https://mise.run | sh
 git clone https://github.com/jacksonmkhabela/dotfiles.git ~/dotfiles && cd ~/dotfiles
 
 # 3. Stow configs
-stow nvim nvim-octo tmux herdr alacritty fish mise flo
+stow nvim nvim-octo nvim-notes tmux herdr alacritty fish mise flo
 
 # 4. Install dev tools
 mise install
@@ -24,6 +24,7 @@ mise install
 |---------|--------|
 | `nvim` | Neovim |
 | `nvim-octo` | Neovim PR-review instance (launch with `nvo`) |
+| `nvim-notes` | Neovim writing / Obsidian-vault-aware notes instance (launch with `nvn`) |
 | `tmux` | Tmux |
 | `herdr` | Herdr terminal workspace manager |
 | `alacritty` | Alacritty terminal |
@@ -40,7 +41,7 @@ Defined in `mise/.config/mise/config.toml`:
 | **Languages** | node, go, rust |
 | **Editor** | neovim |
 | **Terminal** | tmux |
-| **CLI Tools** | zoxide, lazygit, gum, sesh |
+| **CLI Tools** | zoxide, lazygit, gum, sesh, ripgrep |
 | **Dev Tools** | tree-sitter-cli, usage, harper-ls |
 
 ## PR Review (`nvim-octo`)
@@ -62,6 +63,29 @@ Requires `gh` (authenticated). First launch clones plugins via `vim.pack`; run
 
 **In a review** (localleader = `,`): `,ca` comment · `,sa` suggestion ·
 `,vs` submit · `,rt` resolve · `]q`/`[q` next/prev file · `]h`/`[h` next/prev hunk.
+
+## Notes / Writing (`nvim-notes`)
+
+A standalone Neovim config optimized for long-form writing, with
+[obsidian.nvim](https://github.com/obsidian-nvim/obsidian.nvim) for
+wiki-links, daily notes, backlinks, and note search, isolated from `nvim` so
+it can stay lean and prose-tuned. Launched via `NVIM_APPNAME=nvim-notes`.
+
+```bash
+nvn            # opens with the notes workspace; forwards any nvim args otherwise
+```
+
+The Obsidian workspace defaults to a placeholder path (`~/vaults`) — edit
+`WORKSPACE_PATH` in `lua/config/plugins.lua` to point at your real vault.
+Requires `ripgrep` (for search/completion). First launch clones plugins via
+`vim.pack` (**must be run interactively** — the install confirmation prompt
+can't be answered headlessly); run `:Themify install` once for colorschemes.
+Grammar-checks prose with `harper-ls` (installed by mise).
+
+**Notes** (leader = `Space`): `nn` new note · `nt` today's daily note ·
+`nf` find/switch note · `ns` search notes · `nb` backlinks · `nl` follow
+link · `nT` insert template. `zz`/`zZ` zen mode. `us`/`uw`/`uc` toggle
+spell/wrap/word-count.
 
 ## Stow Usage
 
@@ -85,6 +109,7 @@ Each directory mirrors your home directory structure:
 dotfiles/
 ├── nvim/.config/nvim/       # → ~/.config/nvim/
 ├── nvim-octo/.config/nvim-octo/  # → ~/.config/nvim-octo/
+├── nvim-notes/.config/nvim-notes/  # → ~/.config/nvim-notes/
 ├── tmux/.config/tmux/       # → ~/.config/tmux/
 ├── herdr/.config/herdr/     # → ~/.config/herdr/
 ├── alacritty/.config/alacritty/  # → ~/.config/alacritty/

@@ -29,3 +29,9 @@ function nvo --description 'PR-review nvim (nvim-octo appname)'
     env NVIM_APPNAME=nvim-octo nvim $argv
 end
 
+# Standalone writing/notes nvim instance (nvim-notes).
+# No args -> basic config; args are forwarded to nvim (files, +cmd, etc).
+function nvn --description 'Writing/notes nvim (nvim-notes appname)'
+    env NVIM_APPNAME=nvim-notes nvim $argv
+end
+
