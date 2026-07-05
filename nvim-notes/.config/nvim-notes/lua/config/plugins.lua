@@ -21,23 +21,18 @@ require("render-markdown").setup({
 })
 
 -- Obsidian.nvim ---------------------------------------------------------
--- Real vault, git-tracked separately at ~/vaults (see its own README for
--- the note-taking philosophy). Not part of this dotfiles repo on purpose.
-local WORKSPACE_PATH = vim.fn.expand("~/vaults")
-
--- obsidian.nvim silently drops a workspace whose path doesn't exist at
--- setup() time (logs a warning and skips it — no startup error, but every
--- :Obsidian command then fails with "no active workspace", with no clue
--- why). Guard against that if the vault ever isn't present (e.g. this
--- config stowed somewhere the vault repo hasn't been cloned).
-if vim.fn.isdirectory(WORKSPACE_PATH) == 0 then
-	vim.fn.mkdir(WORKSPACE_PATH, "p")
-end
-
+-- Two separate git repos, each with its own README on the philosophy:
+-- personal (~/vaults) and work (~/vaults-work) — deliberately never
+-- cloned onto the same machine as each other's context. obsidian.nvim
+-- silently skips (with a log warning, no error) any workspace whose path
+-- doesn't exist, so whichever repo isn't cloned on a given machine just
+-- doesn't show up — no placeholder mkdir needed for either anymore, both
+-- are real content.
 require("obsidian").setup({
 	legacy_commands = false, -- use `:Obsidian <subcommand>`, not `:ObsidianNew` etc.
 	workspaces = {
-		{ name = "notes", path = WORKSPACE_PATH },
+		{ name = "personal", path = vim.fn.expand("~/vaults") },
+		{ name = "work", path = vim.fn.expand("~/vaults-work") },
 	},
 	-- Flat notes/ pool: every :Obsidian new lands there, not next to
 	-- whatever file happens to be open (the default "current_dir" behavior).
@@ -133,6 +128,7 @@ require("snacks").setup({
 				{ icon = " ", key = "f", desc = "Find/switch note", action = ":Obsidian quick_switch" },
 				{ icon = " ", key = "s", desc = "Search notes", action = ":Obsidian search" },
 				{ icon = " ", key = "z", desc = "Zen mode", action = function() Snacks.zen() end },
+				{ icon = " ", key = "w", desc = "Switch vault (personal/work)", action = ":Obsidian workspace" },
 				{ icon = " ", key = "T", desc = "Theme", action = ":Themify" },
 				{ icon = " ", key = "q", desc = "Quit", action = ":qa" },
 			},
@@ -206,4 +202,5 @@ wk.add({
 	{ "<leader>nb", "<cmd>Obsidian backlinks<cr>", desc = "Backlinks" },
 	{ "<leader>nl", "<cmd>Obsidian follow_link<cr>", desc = "Follow link under cursor" },
 	{ "<leader>nT", "<cmd>Obsidian template<cr>", desc = "Insert template" },
+	{ "<leader>nw", "<cmd>Obsidian workspace<cr>", desc = "Switch vault (personal/work)" },
 })
