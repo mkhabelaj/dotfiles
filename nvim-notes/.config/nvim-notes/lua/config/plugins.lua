@@ -203,4 +203,20 @@ wk.add({
 	{ "<leader>nl", "<cmd>Obsidian follow_link<cr>", desc = "Follow link under cursor" },
 	{ "<leader>nT", "<cmd>Obsidian template<cr>", desc = "Insert template" },
 	{ "<leader>nw", "<cmd>Obsidian workspace<cr>", desc = "Switch vault (personal/work)" },
+	{ "<leader>nc", "<cmd>Obsidian toggle_checkbox<cr>", desc = "Toggle checkbox", mode = { "n", "x" } },
+	{ "<leader>np", "<cmd>Obsidian paste_img<cr>", desc = "Paste image from clipboard" },
+	{ "<leader>nr", "<cmd>Obsidian rename<cr>", desc = "Rename note (updates references)" },
+	{ "<leader>n#", "<cmd>Obsidian tags<cr>", desc = "Browse notes by tag" },
+	{ "<leader>no", "<cmd>Obsidian open<cr>", desc = "Open in Obsidian app" },
+	{ "<leader>nv", "<cmd>Obsidian toc<cr>", desc = "Table of contents" },
+	-- Range commands: pressing `:` from visual mode auto-prepends '<,'>, which
+	-- is exactly the range these expect — no custom wrapper needed.
+	{ "<leader>nk", ":Obsidian link<cr>", desc = "Link selection to an existing note", mode = "v" },
+	{ "<leader>nK", ":Obsidian link_new<cr>", desc = "Link selection to a new note", mode = "v" },
+	{ "<leader>nx", ":Obsidian extract_note<cr>", desc = "Extract selection into a new note", mode = "v" },
+	-- Global ]d/[d/]D/[D are already Neovim's built-in diagnostic-nav
+	-- defaults (confirmed via nvim_get_keymap) — namespaced under <leader>n
+	-- instead so daily-note nav doesn't clobber them.
+	{ "<leader>n]", "<cmd>Obsidian tomorrow<cr>", desc = "Tomorrow's daily note" },
+	{ "<leader>n[", "<cmd>Obsidian yesterday<cr>", desc = "Yesterday's daily note" },
 })
