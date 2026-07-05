@@ -14,8 +14,28 @@ end
 -- (started by the plugin itself) to drive [[ / # / [^ completion — this
 -- generic LspAttach hook is what makes that popup fire automatically
 -- instead of requiring manual <C-x><C-o>. Also benefits harper_ls above.
+--
+-- Buffer-local so these only exist where an LSP client is actually
+-- attached (markdown/text/gitcommit, via harper_ls or obsidian's own
+-- in-process LSP) — <leader>ca is how you act on a harper-ls suggestion
+-- (word choice, style, grammar): it lists that line's fixes and applies
+-- the one you pick.
 vim.api.nvim_create_autocmd("LspAttach", {
 	callback = function(args)
 		vim.lsp.completion.enable(true, args.data.client_id, args.buf, { autotrigger = true })
+
+		local opts = { buffer = args.buf }
+		vim.keymap.set(
+			"n",
+			"<leader>ca",
+			vim.lsp.buf.code_action,
+			vim.tbl_extend("force", opts, { desc = "Code action (apply harper-ls suggestion)" })
+		)
+		vim.keymap.set(
+			"n",
+			"<leader>cd",
+			vim.diagnostic.open_float,
+			vim.tbl_extend("force", opts, { desc = "Show diagnostic (harper-ls suggestion detail)" })
+		)
 	end,
 })

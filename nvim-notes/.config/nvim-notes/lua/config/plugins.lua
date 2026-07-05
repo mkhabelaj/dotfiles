@@ -193,6 +193,10 @@ wk.add({
 	{ "<leader>tt", "<cmd>Themify<cr>", desc = "Toggle theme" },
 	{ "<leader>z", group = "Zen" },
 	{ "<leader>u", group = "UI/Toggle" },
+	-- <leader>ca/<leader>cd are buffer-local, set via LspAttach in
+	-- core/lsp.lua (only exist where an LSP client is attached) — just the
+	-- group label lives here for which-key discoverability.
+	{ "<leader>c", group = "Code/LSP" },
 	{ "<leader>n", group = "Notes" },
 	{ "<leader>nn", new_note, desc = "New note" },
 	{ "<leader>nN", new_note_from_template, desc = "New note from template" },
