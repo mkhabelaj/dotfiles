@@ -76,6 +76,41 @@ require("obsidian").setup({
 	},
 })
 
+-- :Obsidian new's own bare-argument prompt ("Enter id or path (optional):")
+-- is obsidian's generic wording and silently falls back to a timestamp
+-- filename if left blank. Wrapping it with the same "Note title:" prompt
+-- used below keeps both note-creation paths consistent, and simply aborts
+-- (like new_note_from_template) instead of ever creating an untitled note.
+-- Defined here (before snacks.setup) so the dashboard keys below can use
+-- the same functions as the <leader>n* keymaps, not raw :Obsidian commands.
+local function new_note()
+	vim.ui.input({ prompt = "Note title: " }, function(title)
+		if not title or title == "" then
+			return
+		end
+		require("obsidian.actions").new(title, function(note)
+			note:open({ sync = true })
+		end)
+	end)
+end
+
+-- :Obsidian template only inserts a template into the CURRENT buffer — it
+-- never creates a note, so there's no path from "pick a template" to a
+-- properly date_topic-named new file. new_from_template(title, nil, cb)
+-- shows the template picker and creates the note with that title, going
+-- through the same generate_id/note_id_func pipeline as :Obsidian new, so
+-- naming stays consistent automatically.
+local function new_note_from_template()
+	vim.ui.input({ prompt = "Note title: " }, function(title)
+		if not title or title == "" then
+			return
+		end
+		require("obsidian.actions").new_from_template(title, nil, function(note)
+			note:open({ sync = true })
+		end)
+	end)
+end
+
 require("snacks").setup({
 	picker = { enabled = true },
 	notifier = { enabled = true, timeout = 3000 },
@@ -84,15 +119,16 @@ require("snacks").setup({
 		enabled = true,
 		preset = {
 			header = table.concat({
-				"    ___  ___    ___         _               ",
-				"   / _ \\/ _ \\  / _ \\___ ___(_)__ _    __    ",
-				"  / ___/ , _/ / , _/ -_) V / / -_) |/|/ /   ",
-				" /_/  /_/|_| /_/|_|\\__/\\_/_/\\__/|__,__/    ",
+				" _  _  ___ _____ ___ ___ ",
+				"| \\| |/ _ \\_   _| __/ __|",
+				"| .` | (_) || | | _|\\__ \\",
+				"|_|\\_|\\___/ |_| |___|___/",
 				"",
-				"          nvim-notes · writing & vault         ",
+				"      nvim-notes · writing & vault      ",
 			}, "\n"),
 			keys = {
-				{ icon = " ", key = "n", desc = "New note", action = ":Obsidian new" },
+				{ icon = " ", key = "n", desc = "New note", action = new_note },
+				{ icon = " ", key = "N", desc = "New note from template", action = new_note_from_template },
 				{ icon = " ", key = "t", desc = "Today's daily note", action = ":Obsidian today" },
 				{ icon = " ", key = "f", desc = "Find/switch note", action = ":Obsidian quick_switch" },
 				{ icon = " ", key = "s", desc = "Search notes", action = ":Obsidian search" },
@@ -147,39 +183,6 @@ if themify_api.get_current() == vim.NIL then
 		end)
 		themify_api.Manager.install() -- clones all not_installed; applies default on finish
 	end
-end
-
--- :Obsidian new's own bare-argument prompt ("Enter id or path (optional):")
--- is obsidian's generic wording and silently falls back to a timestamp
--- filename if left blank. Wrapping it with the same "Note title:" prompt
--- used below keeps both note-creation paths consistent, and simply aborts
--- (like new_note_from_template) instead of ever creating an untitled note.
-local function new_note()
-	vim.ui.input({ prompt = "Note title: " }, function(title)
-		if not title or title == "" then
-			return
-		end
-		require("obsidian.actions").new(title, function(note)
-			note:open({ sync = true })
-		end)
-	end)
-end
-
--- :Obsidian template only inserts a template into the CURRENT buffer — it
--- never creates a note, so there's no path from "pick a template" to a
--- properly date_topic-named new file. new_from_template(title, nil, cb)
--- shows the template picker and creates the note with that title, going
--- through the same generate_id/note_id_func pipeline as :Obsidian new, so
--- naming stays consistent automatically.
-local function new_note_from_template()
-	vim.ui.input({ prompt = "Note title: " }, function(title)
-		if not title or title == "" then
-			return
-		end
-		require("obsidian.actions").new_from_template(title, nil, function(note)
-			note:open({ sync = true })
-		end)
-	end)
 end
 
 local wk = require("which-key")
