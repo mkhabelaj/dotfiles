@@ -1,0 +1,21 @@
+# Full remap test — copy to ~/.config/flo/keys.toml
+# Every remappable id moved to a new key; all defaults become inert.
+
+# ── app-wide (priority: work even inside text fields) ──
+#settings = "ctrl+s"
+# history = "f3"
+# rankings = "f4"
+#workflow = "ctrl+w"    # the classic, back again
+#filter = "/"
+#notes = "ctrl+n"
+# adhoc = "ctrl+x"
+# palette = ";"     # Textual command palette (was ctrl+p)
+
+# ── workflow / rerun / ad-hoc / settings / jump-palette screens ──
+#back = "left"
+#cancel = "q"
+#back_alt = { key = "H", show = false }   # shift+h
+#reload = "f5"
+#jump = "s"
+#root = "home"
+#adhoc_alt = { key = ".", show = false }

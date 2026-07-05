@@ -1,73 +1,73 @@
 # Personal Dotfiles
 
-Personal dotfiles with [mise](https://mise.jdx.dev/) for cross-platform development setup. One config file installs all development tools across any platform (Arch, Ubuntu, WSL, macOS).
+Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/) and [mise](https://mise.jdx.dev/).
 
 ## Quick Start
 
 ```bash
-# 1. Install mise (works on Linux, macOS, WSL)
+# 1. Install mise
 curl https://mise.run | sh
 
 # 2. Clone & setup
 git clone https://github.com/jacksonmkhabela/dotfiles.git ~/dotfiles && cd ~/dotfiles
-stow mise
 
-# 3. Install all dev tools
+# 3. Stow configs
+stow nvim nvim-octo tmux herdr alacritty fish mise flo
+
+# 4. Install dev tools
 mise install
 ```
 
-This gives you: neovim, tmux, node, go, python, rust, fzf, ripgrep, fd, lazygit, eza, zoxide, yazi, sesh, gum, bat, tldr, tree-sitter-cli, and claude-code.
+## Stow Packages
+
+| Package | Config |
+|---------|--------|
+| `nvim` | Neovim |
+| `nvim-octo` | Neovim PR-review instance (launch with `nvo`) |
+| `tmux` | Tmux |
+| `herdr` | Herdr terminal workspace manager |
+| `alacritty` | Alacritty terminal |
+| `fish` | Fish shell |
+| `mise` | mise tool manager |
+| `flo` | flo workflow TUI |
 
 ## What mise Installs
 
-All tools are defined in `mise/.config/config.toml`:
+Defined in `mise/.config/mise/config.toml`:
 
 | Category | Tools |
 |----------|-------|
-| **Languages** | node, rust, go, python |
+| **Languages** | node, go, rust |
 | **Editor** | neovim |
 | **Terminal** | tmux |
-| **CLI Tools** | eza, zoxide, fzf, ripgrep, fd, lazygit, bat, tldr |
-| **Dev Tools** | sesh, gum, yazi, tree-sitter-cli, claude-code |
+| **CLI Tools** | zoxide, lazygit, gum, sesh |
+| **Dev Tools** | tree-sitter-cli, usage, harper-ls |
 
-## Application Configs
+## PR Review (`nvim-octo`)
 
-Stow packages for application configurations:
-
-```bash
-# Core configs
-stow nvim       # Neovim config
-stow tmux       # Tmux config
-stow zsh        # Zsh shell config
-
-# Terminals
-stow alacritty  # Alacritty terminal
-stow ghostty    # Ghostty terminal (alternative)
-
-# Tools
-stow sesh       # Session manager config
-stow posting    # HTTP client config
-```
-
-## OS-Specific Configs
-
-### Arch Linux / Hyprland
-
-Desktop environment configs for Hyprland:
+A standalone Neovim config dedicated to reviewing GitHub PRs with
+[octo.nvim](https://github.com/pwntester/octo.nvim), isolated from `nvim` so its
+keymaps can be flat. Launched via `NVIM_APPNAME=nvim-octo`.
 
 ```bash
-stow hypr       # Hyprland window manager + hyprlock
-stow waybar     # Status bar
-stow wofi       # App launcher
+nvo            # dashboard (no args); forwards any nvim args otherwise
 ```
+
+Requires `gh` (authenticated). First launch clones plugins via `vim.pack`; run
+`:Themify install` once for colorschemes. Grammar-checks review prose with
+`harper-ls` (installed by mise).
+
+**Launchers** (leader = `Space`): `l` PR list · `s` search · `c` checkout ·
+`d` diff · `a` all actions · `r{s,r,c,x}` review start/resume/submit/discard.
+
+**In a review** (localleader = `,`): `,ca` comment · `,sa` suggestion ·
+`,vs` submit · `,rt` resolve · `]q`/`[q` next/prev file · `]h`/`[h` next/prev hunk.
 
 ## Stow Usage
 
-[GNU Stow](https://www.gnu.org/software/stow/) manages symlinks from this repo to your home directory.
-
 ```bash
-# Install packages
-stow nvim tmux alacritty
+# Install a package
+stow nvim
 
 # Remove a package
 stow -D nvim
@@ -77,23 +77,18 @@ stow -R nvim
 
 # Dry run (preview changes)
 stow -n nvim
-
-# Install stow if needed
-# Arch: sudo pacman -S stow
-# Ubuntu: sudo apt install stow
-# macOS: brew install stow
 ```
 
 Each directory mirrors your home directory structure:
+
 ```
 dotfiles/
-├── nvim/
-│   └── .config/
-│       └── nvim/          # → ~/.config/nvim/
-├── tmux/
-│   └── .config/
-│       └── tmux/          # → ~/.config/tmux/
-└── mise/
-    └── .config/
-        └── config.toml    # → ~/.config/config.toml
+├── nvim/.config/nvim/       # → ~/.config/nvim/
+├── nvim-octo/.config/nvim-octo/  # → ~/.config/nvim-octo/
+├── tmux/.config/tmux/       # → ~/.config/tmux/
+├── herdr/.config/herdr/     # → ~/.config/herdr/
+├── alacritty/.config/alacritty/  # → ~/.config/alacritty/
+├── fish/.config/fish/       # → ~/.config/fish/
+├── mise/.config/mise/       # → ~/.config/mise/
+└── flo/.config/flo/         # → ~/.config/flo/
 ```

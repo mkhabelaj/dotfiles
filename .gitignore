@@ -2,4 +2,22 @@
 .DS_Store
 # ignore themes folder alacritty/.config/alacritty/themes 
 alacritty/.config/alacritty/themes
+tmux/.config/tmux/plugins/
 
+# Backup files
+*.bak
+
+# Log files
+*.log
+
+# Fish shell - auto-generated files
+fish/.config/fish/fish_variables
+fish/.config/fish/completions/
+
+
+# herdr
+herdr/.config/herdr/session.json
+herdr/.config/herdr/sessions/
+
+# fish
+fish/.config/fish/conf.d/fish_frozen_key_bindings.fish

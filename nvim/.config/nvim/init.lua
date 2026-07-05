@@ -1,3 +1,3 @@
-require("jcodify.core")
-require("jcodify.lazy")
-require("jcodify.utility")
+require('config.core')
+require('config.lazy')
+
