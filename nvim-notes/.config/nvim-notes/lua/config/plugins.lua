@@ -68,7 +68,33 @@ require("snacks").setup({
 	picker = { enabled = true },
 	notifier = { enabled = true, timeout = 3000 },
 	input = { enabled = true },
-	dashboard = { enabled = true },
+	dashboard = {
+		enabled = true,
+		preset = {
+			header = table.concat({
+				"    ___  ___    ___         _               ",
+				"   / _ \\/ _ \\  / _ \\___ ___(_)__ _    __    ",
+				"  / ___/ , _/ / , _/ -_) V / / -_) |/|/ /   ",
+				" /_/  /_/|_| /_/|_|\\__/\\_/_/\\__/|__,__/    ",
+				"",
+				"          nvim-notes · writing & vault         ",
+			}, "\n"),
+			keys = {
+				{ icon = " ", key = "n", desc = "New note", action = ":Obsidian new" },
+				{ icon = " ", key = "t", desc = "Today's daily note", action = ":Obsidian today" },
+				{ icon = " ", key = "f", desc = "Find/switch note", action = ":Obsidian quick_switch" },
+				{ icon = " ", key = "s", desc = "Search notes", action = ":Obsidian search" },
+				{ icon = " ", key = "z", desc = "Zen mode", action = function() Snacks.zen() end },
+				{ icon = " ", key = "T", desc = "Theme", action = ":Themify" },
+				{ icon = " ", key = "q", desc = "Quit", action = ":qa" },
+			},
+		},
+		-- No "startup" section: it needs lazy.stats, which doesn't exist under vim.pack.
+		sections = {
+			{ section = "header" },
+			{ section = "keys", gap = 1, padding = 1 },
+		},
+	},
 	zen = {
 		toggles = { dim = true, spell = false, wrap = true }, -- keep wrap on; that's the point here
 		win = { style = "zen" },
