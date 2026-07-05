@@ -27,10 +27,26 @@ themify.setup({
 })
 -- Apply a default only when nothing is picked yet; a :Themify choice persists
 -- in themify/state.json and takes over on next launch.
--- get_current/set_current live in themify.api, not the setup module.
+-- themify doesn't auto-install colorschemes: on a fresh box the default isn't
+-- cloned yet, so install it (and the rest) then apply the default once it lands.
+-- get_current/set_current/Manager/Event live in themify.api, not the setup module.
 local themify_api = require("themify.api")
 if themify_api.get_current() == vim.NIL then
-	themify_api.set_current("folke/tokyonight.nvim", "tokyonight")
+	local DEFAULT_ID, DEFAULT_THEME = "folke/tokyonight.nvim", "tokyonight"
+	if themify_api.Manager.get(DEFAULT_ID).status == "installed" then
+		themify_api.set_current(DEFAULT_ID, DEFAULT_THEME)
+	else
+		-- install completion fires in a fast event context (libuv callback);
+		-- defer so load_theme's option reads are legal.
+		themify_api.Event.listen("colorscheme-installed", function(id)
+			if id == DEFAULT_ID then
+				vim.schedule(function()
+					themify_api.set_current(DEFAULT_ID, DEFAULT_THEME)
+				end)
+			end
+		end)
+		themify_api.Manager.install() -- clones all not_installed; applies default on finish
+	end
 end
 
 require("snacks").setup({
