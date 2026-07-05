@@ -149,6 +149,23 @@ if themify_api.get_current() == vim.NIL then
 	end
 end
 
+-- :Obsidian template only inserts a template into the CURRENT buffer — it
+-- never creates a note, so there's no path from "pick a template" to a
+-- properly date_topic-named new file. new_from_template(title, nil, cb)
+-- shows the template picker and creates the note with that title, going
+-- through the same generate_id/note_id_func pipeline as :Obsidian new, so
+-- naming stays consistent automatically.
+local function new_note_from_template()
+	vim.ui.input({ prompt = "Note title: " }, function(title)
+		if not title or title == "" then
+			return
+		end
+		require("obsidian.actions").new_from_template(title, nil, function(note)
+			note:open({ sync = true })
+		end)
+	end)
+end
+
 local wk = require("which-key")
 wk.setup({
 	preset = "modern",
@@ -163,6 +180,7 @@ wk.add({
 	{ "<leader>u", group = "UI/Toggle" },
 	{ "<leader>n", group = "Notes" },
 	{ "<leader>nn", "<cmd>Obsidian new<cr>", desc = "New note" },
+	{ "<leader>nN", new_note_from_template, desc = "New note from template" },
 	{ "<leader>nt", "<cmd>Obsidian today<cr>", desc = "Today's daily note" },
 	{ "<leader>nf", "<cmd>Obsidian quick_switch<cr>", desc = "Find/switch note" },
 	{ "<leader>ns", "<cmd>Obsidian search<cr>", desc = "Search notes" },
