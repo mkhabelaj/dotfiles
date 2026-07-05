@@ -149,6 +149,22 @@ if themify_api.get_current() == vim.NIL then
 	end
 end
 
+-- :Obsidian new's own bare-argument prompt ("Enter id or path (optional):")
+-- is obsidian's generic wording and silently falls back to a timestamp
+-- filename if left blank. Wrapping it with the same "Note title:" prompt
+-- used below keeps both note-creation paths consistent, and simply aborts
+-- (like new_note_from_template) instead of ever creating an untitled note.
+local function new_note()
+	vim.ui.input({ prompt = "Note title: " }, function(title)
+		if not title or title == "" then
+			return
+		end
+		require("obsidian.actions").new(title, function(note)
+			note:open({ sync = true })
+		end)
+	end)
+end
+
 -- :Obsidian template only inserts a template into the CURRENT buffer — it
 -- never creates a note, so there's no path from "pick a template" to a
 -- properly date_topic-named new file. new_from_template(title, nil, cb)
@@ -179,7 +195,7 @@ wk.add({
 	{ "<leader>z", group = "Zen" },
 	{ "<leader>u", group = "UI/Toggle" },
 	{ "<leader>n", group = "Notes" },
-	{ "<leader>nn", "<cmd>Obsidian new<cr>", desc = "New note" },
+	{ "<leader>nn", new_note, desc = "New note" },
 	{ "<leader>nN", new_note_from_template, desc = "New note from template" },
 	{ "<leader>nt", "<cmd>Obsidian today<cr>", desc = "Today's daily note" },
 	{ "<leader>nf", "<cmd>Obsidian quick_switch<cr>", desc = "Find/switch note" },
