@@ -67,25 +67,48 @@ Requires `gh` (authenticated). First launch clones plugins via `vim.pack`; run
 ## Notes / Writing (`nvim-notes`)
 
 A standalone Neovim config optimized for long-form writing, with
-[obsidian.nvim](https://github.com/obsidian-nvim/obsidian.nvim) for
-wiki-links, daily notes, backlinks, and note search, isolated from `nvim` so
-it can stay lean and prose-tuned. Launched via `NVIM_APPNAME=nvim-notes`.
+[obsidian.nvim](https://github.com/obsidian-nvim/obsidian.nvim) (the
+actively-maintained `obsidian-nvim` fork) for wiki-links, daily notes,
+backlinks, and note search, isolated from `nvim` so it can stay lean and
+prose-tuned. Launched via `NVIM_APPNAME=nvim-notes`.
 
 ```bash
 nvn            # opens with the notes workspace; forwards any nvim args otherwise
 ```
 
-The Obsidian workspace defaults to a placeholder path (`~/vaults`) — edit
-`WORKSPACE_PATH` in `lua/config/plugins.lua` to point at your real vault.
+Notes live in two separate, git-tracked vault repos — not part of this
+dotfiles repo on purpose (personal notes shouldn't end up on a work
+machine that also uses these dotfiles):
+
+- **personal** → [`mkhabelaj/vault`](https://github.com/mkhabelaj/vault), cloned at `~/vaults`
+- **work** → [`mkhabelaj/work-vault`](https://github.com/mkhabelaj/work-vault), cloned at `~/vaults-work`
+
+Each is a flat `notes/` pool (organize via backlinks/tags/MOC notes, not
+topic folders) + a `daily/` log + `templates/`, with its own README
+documenting the philosophy in full. `<leader>nw` switches which vault is
+active; a vault not cloned on a given machine is just skipped, no error.
+
 Requires `ripgrep` (for search/completion). First launch clones plugins via
 `vim.pack` (**must be run interactively** — the install confirmation prompt
 can't be answered headlessly); run `:Themify install` once for colorschemes.
 Grammar-checks prose with `harper-ls` (installed by mise).
 
-**Notes** (leader = `Space`): `nn` new note · `nt` today's daily note ·
-`nf` find/switch note · `ns` search notes · `nb` backlinks · `nl` follow
-link · `nT` insert template. `zz`/`zZ` zen mode. `us`/`uw`/`uc` toggle
-spell/wrap/word-count.
+**Notes** (leader = `Space`): `nn`/`nN` new note / from template · `nt`
+today's daily note · `n]`/`n[` tomorrow's/yesterday's daily note · `nf`
+find/switch note · `ns` search notes · `n#` browse by tag · `nb` backlinks
+· `nl` follow link · `nT` insert template into current note · `nw` switch
+vault (personal/work) · `no` open in the Obsidian app · `nv` table of
+contents · `nr` rename note (updates references) · `np` paste image from
+clipboard · `nc` toggle checkbox (normal + visual).
+
+**Visual mode**: `nk` link selection to an existing note (the "create a
+backlink" flow) · `nK` link selection to a new note · `nx` extract
+selection into its own new note.
+
+**Code/LSP** (`harper-ls` grammar/spell checking): `ca` code action (apply
+a suggestion) · `cd` show diagnostic detail.
+
+**Other**: `zz`/`zZ` zen mode · `us`/`uw`/`uc` toggle spell/wrap/word-count.
 
 ## Stow Usage
 
