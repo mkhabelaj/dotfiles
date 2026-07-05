@@ -21,22 +21,17 @@ require("render-markdown").setup({
 })
 
 -- Obsidian.nvim ---------------------------------------------------------
--- PLACEHOLDER vault path — NOT a real vault. Change WORKSPACE_PATH once
--- you've picked/created your actual notes vault; nothing else below needs
--- editing.
+-- Real vault, git-tracked separately at ~/vaults (see its own README for
+-- the note-taking philosophy). Not part of this dotfiles repo on purpose.
 local WORKSPACE_PATH = vim.fn.expand("~/vaults")
 
 -- obsidian.nvim silently drops a workspace whose path doesn't exist at
 -- setup() time (logs a warning and skips it — no startup error, but every
 -- :Obsidian command then fails with "no active workspace", with no clue
--- why). Since this is just a placeholder directory (not the real vault),
--- pre-create it and the daily/templates subfolders so the workspace
--- actually registers on first boot.
-for _, sub in ipairs({ "", "daily", "templates" }) do
-	local dir = WORKSPACE_PATH .. (sub ~= "" and ("/" .. sub) or "")
-	if vim.fn.isdirectory(dir) == 0 then
-		vim.fn.mkdir(dir, "p")
-	end
+-- why). Guard against that if the vault ever isn't present (e.g. this
+-- config stowed somewhere the vault repo hasn't been cloned).
+if vim.fn.isdirectory(WORKSPACE_PATH) == 0 then
+	vim.fn.mkdir(WORKSPACE_PATH, "p")
 end
 
 require("obsidian").setup({
@@ -44,6 +39,21 @@ require("obsidian").setup({
 	workspaces = {
 		{ name = "notes", path = WORKSPACE_PATH },
 	},
+	-- Flat notes/ pool: every :Obsidian new lands there, not next to
+	-- whatever file happens to be open (the default "current_dir" behavior).
+	notes_subdir = "notes",
+	new_notes_location = "notes_subdir",
+	-- YYYY-MM-DD_slug filenames, generated from the title — see the vault's
+	-- own README for the philosophy this supports (flat pool + backlinks +
+	-- MOCs instead of topic folders).
+	note_id_func = function(title)
+		local date = os.date("%Y-%m-%d")
+		if title and title ~= "" then
+			local slug = title:gsub("%s+", "-"):gsub("[^%w%-]", ""):lower()
+			return date .. "_" .. slug
+		end
+		return date .. "_" .. tostring(os.time())
+	end,
 	completion = {
 		-- Completion is driven by obsidian.nvim's own in-process LSP (no
 		-- nvim-cmp/blink.cmp needed) — native popups enabled generically
@@ -52,9 +62,11 @@ require("obsidian").setup({
 	},
 	daily_notes = {
 		folder = "daily", -- resolved relative to the workspace path
+		template = "daily.md",
 	},
 	templates = {
 		folder = "templates",
+		date_format = "%Y-%m-%d",
 	},
 	picker = {
 		name = "snacks.picker", -- provided by folke/snacks.nvim, set up below
