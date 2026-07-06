@@ -31,8 +31,8 @@ require("render-markdown").setup({
 require("obsidian").setup({
 	legacy_commands = false, -- use `:Obsidian <subcommand>`, not `:ObsidianNew` etc.
 	workspaces = {
-		{ name = "personal", path = vim.fn.expand("~/vaults") },
-		{ name = "work", path = vim.fn.expand("~/vaults-work") },
+		{ name = "personal", path = vim.fn.expand("~/vault") },
+		{ name = "work", path = vim.fn.expand("~/work-vault") },
 	},
 	-- Flat notes/ pool: every :Obsidian new lands there, not next to
 	-- whatever file happens to be open (the default "current_dir" behavior).
@@ -127,7 +127,14 @@ require("snacks").setup({
 				{ icon = " ", key = "t", desc = "Today's daily note", action = ":Obsidian today" },
 				{ icon = " ", key = "f", desc = "Find/switch note", action = ":Obsidian quick_switch" },
 				{ icon = " ", key = "s", desc = "Search notes", action = ":Obsidian search" },
-				{ icon = " ", key = "z", desc = "Zen mode", action = function() Snacks.zen() end },
+				{
+					icon = " ",
+					key = "z",
+					desc = "Zen mode",
+					action = function()
+						Snacks.zen()
+					end,
+				},
 				{ icon = " ", key = "w", desc = "Switch vault (personal/work)", action = ":Obsidian workspace" },
 				{ icon = " ", key = "T", desc = "Theme", action = ":Themify" },
 				{ icon = " ", key = "q", desc = "Quit", action = ":qa" },
