@@ -18,6 +18,36 @@ require("nvim-treesitter").install({ "markdown", "markdown_inline", "yaml" })
 
 require("mini.icons").setup()
 
+-- Current obsidian workspace name (personal/work). Global `Obsidian` is set by
+-- obsidian.setup below; read via a function so statusline/dashboard stay live
+-- and update when the workspace is switched. Guarded for pre-setup/non-note.
+local function ws_name()
+	return (Obsidian and Obsidian.workspace and Obsidian.workspace.name) or ""
+end
+
+-- Statusline (mini.statusline ships with mini.nvim — no extra plugin) with a
+-- workspace section so it's always clear which vault you're writing in.
+local MS = require("mini.statusline")
+MS.setup({
+	use_icons = true,
+	content = {
+		active = function()
+			local mode, mode_hl = MS.section_mode({ trunc_width = 120 })
+			local filename = MS.section_filename({ trunc_width = 140 })
+			local location = MS.section_location({ trunc_width = 75 })
+			local ws = ws_name()
+			return MS.combine_groups({
+				{ hl = mode_hl, strings = { mode } },
+				"%<",
+				{ hl = "MiniStatuslineFilename", strings = { filename } },
+				"%=",
+				{ hl = "MiniStatuslineFileinfo", strings = { ws ~= "" and (" " .. ws) or nil } },
+				{ hl = mode_hl, strings = { location } },
+			})
+		end,
+	},
+})
+
 -- Markdown snippets for note-taking. mini.snippets ships with mini.nvim (no
 -- extra plugin); gen_loader.from_lang() loads snippets/<ft>.lua per buffer,
 -- so snippets/markdown.lua only activates in markdown. blink.cmp (below) is
@@ -208,6 +238,16 @@ require("snacks").setup({
 		-- No "startup" section: it needs lazy.stats, which doesn't exist under vim.pack.
 		sections = {
 			{ section = "header" },
+			-- A function section is re-resolved on each render, so the workspace
+			-- stays live. (`text` itself isn't function-resolved by snacks.)
+			function()
+				local ws = ws_name() ~= "" and ws_name() or "unknown"
+				return {
+					text = { { " Workspace: " .. ws, hl = "SnacksDashboardSpecial" } },
+					align = "center",
+					padding = 1,
+				}
+			end,
 			{ section = "keys", gap = 1, padding = 1 },
 		},
 	},
