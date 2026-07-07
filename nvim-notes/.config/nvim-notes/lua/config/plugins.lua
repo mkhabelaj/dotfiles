@@ -9,11 +9,68 @@ vim.pack.add({
 	{ src = "https://github.com/folke/which-key.nvim" },
 	{ src = "https://github.com/folke/snacks.nvim" },
 	{ src = "https://github.com/lmantw/themify.nvim" },
+	-- Completion engine. Pinned for reproducibility; lua fuzzy impl below
+	-- means no prebuilt binary/cargo build is needed under vim.pack.
+	{ src = "https://github.com/Saghen/blink.cmp", version = "v1.10.2" },
 })
 
 require("nvim-treesitter").install({ "markdown", "markdown_inline", "yaml" })
 
 require("mini.icons").setup()
+
+-- Markdown snippets for note-taking. mini.snippets ships with mini.nvim (no
+-- extra plugin); gen_loader.from_lang() loads snippets/<ft>.lua per buffer,
+-- so snippets/markdown.lua only activates in markdown. blink.cmp (below) is
+-- the sole completion UI and surfaces these via its mini_snippets preset, so
+-- mini's own expand/jump mappings are disabled here to avoid a second flow.
+local snippets = require("mini.snippets")
+snippets.setup({
+	snippets = { snippets.gen_loader.from_lang() },
+	mappings = { expand = "", jump_next = "", jump_prev = "", stop = "" },
+	-- Hide the empty-tabstop virtual markers (default '•'/'∎') — read as
+	-- undeletable junk; blink drives jumping so they're not needed.
+	expand = {
+		insert = function(snippet, _)
+			return snippets.default_insert(snippet, { empty_tabstop = "", empty_tabstop_final = "" })
+		end,
+	},
+})
+
+-- Single seamless completion menu: obsidian-ls (backlinks [[, #tags, [^footnotes])
+-- + harper-ls (grammar) via the lsp source, our markdown snippets via the
+-- mini_snippets preset, plus buffer/path. Lua fuzzy impl = no native binary.
+require("blink.cmp").setup({
+	keymap = {
+		preset = "none",
+		["<C-k>"] = { "select_prev", "fallback" },
+		["<C-j>"] = { "select_next", "fallback" },
+		["<Up>"] = { "select_prev", "fallback" },
+		["<Down>"] = { "select_next", "fallback" },
+		["<C-b>"] = { "scroll_documentation_up", "fallback" },
+		["<C-f>"] = { "scroll_documentation_down", "fallback" },
+		["<C-Space>"] = { "show", "fallback" },
+		["<C-e>"] = { "hide" },
+		["<CR>"] = { "accept", "fallback" },
+		["<Tab>"] = { "snippet_forward", "fallback" },
+		["<S-Tab>"] = { "snippet_backward", "fallback" },
+	},
+	snippets = { preset = "mini_snippets" },
+	sources = {
+		default = { "lsp", "snippets", "path", "buffer" },
+		-- Buffer words are the weakest signal here — rank them below LSP/
+		-- snippets/path so they only surface after the meaningful sources.
+		providers = {
+			buffer = { score_offset = -50 },
+		},
+	},
+	fuzzy = { implementation = "lua" },
+	completion = {
+		documentation = { auto_show = true, auto_show_delay_ms = 200 },
+		-- No preselect: an autotriggered popup must never let <CR> silently
+		-- accept an obsidian item (e.g. create a new note) — see obsidian docs.
+		list = { selection = { preselect = false } },
+	},
+})
 
 require("render-markdown").setup({
 	preset = "obsidian", -- mimic Obsidian's own markdown UI (headers/checkboxes/wikilinks)
@@ -68,6 +125,14 @@ require("obsidian").setup({
 	},
 	ui = {
 		enable = false, -- render-markdown.nvim (preset="obsidian" above) owns all rendering
+	},
+	-- obsidian remaps normal-mode <CR> to a smart action (follow link / toggle
+	-- checkbox / fold). With create_new=true (default) that action inserts a
+	-- checkbox on ANY non-checkbox line — including empty ones — so plain <CR>
+	-- spawned "- [ ]". create_new=false keeps toggle-on-existing but makes <CR>
+	-- a normal newline elsewhere.
+	checkbox = {
+		create_new = false,
 	},
 })
 

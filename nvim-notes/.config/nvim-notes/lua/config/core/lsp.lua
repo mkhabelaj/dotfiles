@@ -10,10 +10,10 @@ if vim.fn.executable("harper-ls") == 1 then
 	vim.lsp.enable("harper_ls")
 end
 
--- Native LSP completion popups. obsidian.nvim runs its own in-process LSP
--- (started by the plugin itself) to drive [[ / # / [^ completion — this
--- generic LspAttach hook is what makes that popup fire automatically
--- instead of requiring manual <C-x><C-o>. Also benefits harper_ls above.
+-- LSP-attached keymaps. Completion itself is driven by blink.cmp (see
+-- plugins.lua), which sources obsidian's in-process LSP ([[ / # / [^) and
+-- harper-ls through its `lsp` source — so no vim.lsp.completion.enable here
+-- (that would double-fire alongside blink's popup).
 --
 -- Buffer-local so these only exist where an LSP client is actually
 -- attached (markdown/text/gitcommit, via harper_ls or obsidian's own
@@ -22,8 +22,6 @@ end
 -- the one you pick.
 vim.api.nvim_create_autocmd("LspAttach", {
 	callback = function(args)
-		vim.lsp.completion.enable(true, args.data.client_id, args.buf, { autotrigger = true })
-
 		local opts = { buffer = args.buf }
 		vim.keymap.set(
 			"n",
