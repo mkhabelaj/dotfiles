@@ -10,8 +10,8 @@ keymap.set("i", "jj", "<ESC>", { desc = "Exit insert mode with jj" })
 -- mapping nvim waits timeoutlen before dispatching, making jumplist feel slow.
 keymap.set("n", "<Tab>", "<C-i>", { desc = "Jump forward in jumplist" })
 
--- Save / quit
-keymap.set("n", "<leader>w", "<cmd>w<cr>", { desc = "Save file" })
+-- Quit (save is <leader>ww under the Workspace group in plugins.lua wk.add,
+-- matching main nvim; <leader>w stays a group prefix).
 keymap.set("n", "<leader>q", "<cmd>q<cr>", { desc = "Quit window" })
 
 -- Window navigation. Plain wincmd — this config stays lean with no

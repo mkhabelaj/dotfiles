@@ -23,17 +23,18 @@ end
 vim.api.nvim_create_autocmd("LspAttach", {
 	callback = function(args)
 		local opts = { buffer = args.buf }
+		-- <leader>la / <leader>ldl mirror main nvim's LSP scheme.
 		vim.keymap.set(
 			"n",
-			"<leader>ca",
+			"<leader>la",
 			vim.lsp.buf.code_action,
 			vim.tbl_extend("force", opts, { desc = "Code action (apply harper-ls suggestion)" })
 		)
 		vim.keymap.set(
 			"n",
-			"<leader>cd",
+			"<leader>ldl",
 			vim.diagnostic.open_float,
-			vim.tbl_extend("force", opts, { desc = "Show diagnostic (harper-ls suggestion detail)" })
+			vim.tbl_extend("force", opts, { desc = "Line diagnostics (harper-ls suggestion detail)" })
 		)
 	end,
 })

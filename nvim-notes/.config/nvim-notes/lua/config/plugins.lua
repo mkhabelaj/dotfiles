@@ -261,14 +261,46 @@ wk.setup({
 })
 
 wk.add({
+	-- Group labels mirror main nvim (nvim/.config/nvim/lua/plugins/whichkey.lua)
+	-- so muscle memory carries over; notes-specific groups (Notes, Zen) added.
 	{ "<leader>t", group = "Theme" },
 	{ "<leader>tt", "<cmd>Themify<cr>", desc = "Toggle theme" },
 	{ "<leader>z", group = "Zen" },
 	{ "<leader>u", group = "UI/Toggle" },
-	-- <leader>ca/<leader>cd are buffer-local, set via LspAttach in
+	{ "<leader>f", group = "Find" },
+	{ "<leader>v", group = "Window" },
+	{ "<leader>w", group = "Workspace" },
+	-- <leader>la/<leader>ldl are buffer-local, set via LspAttach in
 	-- core/lsp.lua (only exist where an LSP client is attached) — just the
-	-- group label lives here for which-key discoverability.
-	{ "<leader>c", group = "Code/LSP" },
+	-- group labels live here for which-key discoverability.
+	{ "<leader>c", group = "Code" },
+	{ "<leader>l", group = "LSP" },
+	{ "<leader>ld", group = "Diagnostics" },
+
+	-- General utilities (mirror main nvim).
+	{ "<leader>\\", "<cmd>nohl<CR>", desc = "Clear highlights" },
+	{ "<leader>ve", "<C-w>=", desc = "Equalize splits" },
+	{ "<leader>vh", "<C-w>s", desc = "Split horizontally" },
+	{ "<leader>vv", "<C-w>v", desc = "Split vertically" },
+	{ "<leader>vx", "<cmd>close<CR>", desc = "Close split" },
+	{ "<leader>ww", "<cmd>w!<CR>", desc = "Save file" },
+	{ "<leader>wW", "<cmd>noa w!<CR>", desc = "Save without autocmd" },
+	{ "<leader>wQ", "<cmd>qa<CR>", desc = "Quit all windows" },
+
+	-- Muscle-memory find/grep on main's keys, routed to vault-aware obsidian
+	-- actions (replacement, not a parallel picker set). Named commands still
+	-- live under <leader>n* below.
+	{ "<leader>/", "<cmd>Obsidian search<cr>", desc = "Grep notes" },
+	{ "<leader><Space>", "<cmd>Obsidian quick_switch<cr>", desc = "Find note" },
+	{ "<leader>ff", "<cmd>Obsidian quick_switch<cr>", desc = "Find note" },
+	{
+		"<leader>,",
+		function()
+			Snacks.picker.buffers()
+		end,
+		desc = "Buffers",
+	},
+
 	{ "<leader>n", group = "Notes" },
 	{ "<leader>nn", new_note, desc = "New note" },
 	{ "<leader>nN", new_note_from_template, desc = "New note from template" },
