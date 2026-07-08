@@ -1018,6 +1018,59 @@ options:
       name: list scripts
       run: jq -r '.scripts | to_entries[] | "\(.key) = \(.value)"' package.json
 - type: option
+  name: vd (VisiData)
+  next:
+    type: step
+    description: Source
+    options:
+    - type: option
+      name: here (cwd)
+      next:
+        type: step
+        input: true
+        key: depth
+        default: '1'
+        validate: '\d+'
+        placeholder: max depth
+        next:
+          type: step
+          description: File
+          key: file
+          from_command: find . -maxdepth {depth} -mindepth 1 -type f \( -iname '*.csv'
+            -o -iname '*.tsv' -o -iname '*.json' -o -iname '*.parquet' -o -iname '*.xlsx'
+            \) 2>/dev/null | awk -F/ '{print $NF"\t"$0}' | sort
+          next:
+            type: option
+            name: open
+            run: vd {file}
+    - type: option
+      name: path (search)
+      next:
+        type: step
+        input: true
+        key: search_path
+        default: '~'
+        placeholder: search path (e.g. ~ or ~/data)
+        next:
+          type: step
+          input: true
+          key: depth
+          default: '2'
+          validate: '\d+'
+          placeholder: max depth
+          next:
+            type: step
+            description: File
+            key: file
+            from_command: find "$(eval echo {search_path})" -maxdepth {depth} -mindepth
+              1 -type f \( -iname '*.csv' -o -iname '*.tsv' -o -iname '*.json' -o -iname
+              '*.parquet' -o -iname '*.xlsx' \) 2>/dev/null | awk -F/ '{print $NF"\t"$0}'
+              | sort
+            next:
+              type: option
+              name: open
+              run: vd {file}
+- type: option
   name: herdr
   next:
     type: step
