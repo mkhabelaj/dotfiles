@@ -1,0 +1,28 @@
+# ~/.visidatarc — Tokyo Night (Storm) theme. Keybindings = vd defaults.
+# Requires a truecolor terminal (Alacritty = yes).
+
+# ---- Tokyo Night Storm palette ----
+bg      = '#24283b'
+curline = '#3b4261'   # fg_gutter — visible current-row band (was #292e42, too subtle)
+sel     = '#2e3c64'
+fg      = '#c0caf5'
+comment = '#565f89'
+blue    = '#7aa2f7'
+cyan    = '#7dcfff'
+green   = '#9ece6a'
+magenta = '#bb9af7'
+red     = '#f7768e'
+yellow  = '#e0af68'
+
+options.color_default      = f'{fg} on {bg}'
+options.color_default_hdr  = f'bold {blue} on {bg}'   # column headers
+options.color_current_row  = f'bold {fg} on {curline}'
+options.color_key_col      = f'bold {cyan}'            # key columns
+options.color_selected_row = f'{green} on {sel}'
+options.color_edit_cell    = f'{bg} on {yellow}'       # cell edit mode
+options.color_status       = f'{bg} on {blue}'
+options.color_error        = f'bold {red}'
+options.color_warning      = yellow
+options.color_note_row     = magenta
+options.color_keystrokes   = f'bold {magenta}'
+options.color_column_sep   = f'{comment} on {bg}'

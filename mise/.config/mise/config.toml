@@ -21,3 +21,4 @@ yazi = "latest"
 zoxide = "latest"
 "github:mkhabelaj/flo-releases" = { version = "latest", bin = "flo" }
 jq = "latest"
+"pipx:visidata" = "latest"

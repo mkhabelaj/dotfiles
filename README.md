@@ -12,7 +12,7 @@ curl https://mise.run | sh
 git clone https://github.com/jacksonmkhabela/dotfiles.git ~/dotfiles && cd ~/dotfiles
 
 # 3. Stow configs
-stow nvim nvim-octo nvim-notes tmux herdr alacritty fish mise flo
+stow nvim nvim-octo nvim-notes tmux herdr alacritty fish mise flo visidata
 
 # 4. Install dev tools
 mise install
@@ -31,6 +31,7 @@ mise install
 | `fish` | Fish shell |
 | `mise` | mise tool manager |
 | `flo` | flo workflow TUI |
+| `visidata` | VisiData CSV/TSV TUI (Tokyo Night Storm theme) |
 
 ## What mise Installs
 
