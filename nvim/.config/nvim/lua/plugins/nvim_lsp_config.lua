@@ -76,14 +76,8 @@ return {
 			end,
 		})
 
-		vim.lsp.enable("lua_ls")
-		vim.lsp.enable("basedpyright")
-		vim.lsp.enable("vtsls")
-		vim.lsp.enable("cssls")
-		vim.lsp.enable("html")
+		-- mason-lspconfig (automatic_enable) handles its ensure_installed servers;
+		-- cspell_ls is a custom server (lsp/cspell_ls.lua) installed via mason-tool-installer.
 		vim.lsp.enable("cspell_ls")
-		vim.lsp.enable("jsonls")
-		vim.lsp.enable("tailwindcss")
-		vim.lsp.enable("emmet_ls")
 	end,
 }

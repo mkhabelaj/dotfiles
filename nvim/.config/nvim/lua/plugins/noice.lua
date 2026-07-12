@@ -3,12 +3,7 @@ return {
 	"folke/noice.nvim",
 	event = "VeryLazy",
 	dependencies = {
-		-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
 		"MunifTanjim/nui.nvim",
-		-- OPTIONAL:
-		--   `nvim-notify` is only needed, if you want to use the notification view.
-		--   If not available, we use `mini` as the fallback
-		"rcarriga/nvim-notify",
 	},
 	config = function()
 		require("noice").setup({
@@ -21,20 +16,10 @@ return {
 				opts = { skip = true },
 			},
 			notify = { enabled = false },
-		presets = { lsp_doc_border = true },
+			presets = { lsp_doc_border = true },
 
 			lsp = {
-				progress = {
-					enabled = false,
-					-- Lsp Progress is formatted using the builtins for lsp_progress. See config.format.builtin
-					-- See the section on formatting for more details on how to customize.
-					--- @type NoiceFormat|string
-					format = "lsp_progress",
-					--- @type NoiceFormat|string
-					format_done = "lsp_progress_done",
-					throttle = 1000 / 30, -- frequency to update lsp progress message
-					view = "mini",
-				},
+				progress = { enabled = false },
 				override = {
 					-- override the default lsp markdown formatter with Noice
 					["vim.lsp.util.convert_input_to_markdown_lines"] = false,

@@ -1,5 +1,3 @@
-vim.cmd("let g:netrw_liststyle = 3")
-
 local opt = vim.opt -- for conciseness
 
 -- line numbers
@@ -67,12 +65,6 @@ opt.ttimeoutlen = 50
 opt.spelllang = "en_ca"
 -- enable spell check
 opt.spell = true
-
--- folding (treesitter-based)
--- opt.foldmethod = "expr"
--- opt.foldexpr = "nvim_treesitter#foldexpr()"
--- opt.foldlevel = 99 -- start with all folds open
--- opt.foldlevelstart = 99 -- open all folds when opening a file
 
 -- Set SessionOptions to save session options
 opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"

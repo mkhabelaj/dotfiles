@@ -3,7 +3,7 @@ return {
 	dependencies = {
 		"nvim-treesitter/nvim-treesitter",
 	},
-	event = { "BufReadPre", "BufNewFile" },
+	cmd = "Lspsaga",
 	config = function()
 		require("lspsaga").setup({
 			ui = {

@@ -42,6 +42,6 @@ return {
 		{ "<c-j>", nav("down", "j", "TmuxNavigateDown"), desc = "Nav down (nvim/tmux/herdr)" },
 		{ "<c-k>", nav("up", "k", "TmuxNavigateUp"), desc = "Nav up (nvim/tmux/herdr)" },
 		{ "<c-l>", nav("right", "l", "TmuxNavigateRight"), desc = "Nav right (nvim/tmux/herdr)" },
-		{ "<c-\\>", "<cmd><C-U>TmuxNavigatePrevious<cr>" },
+		{ "<c-\\>", "<cmd>TmuxNavigatePrevious<cr>" },
 	},
 }

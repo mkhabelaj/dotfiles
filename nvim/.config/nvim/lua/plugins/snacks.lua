@@ -8,8 +8,25 @@ return {
 		image = { enabled = false },
 		dashboard = { enabled = true },
 		indent = { enabled = false },
-		input = { enabled = true },
-		picker = { enabled = true },
+		input = {
+			enabled = true,
+			-- <M-Esc>: fast Esc-Esc arrives coalesced as Alt-Esc on WSL terminals
+			win = {
+				keys = {
+					["<M-Esc>"] = { "cancel", mode = { "n", "i" } },
+				},
+			},
+		},
+		picker = {
+			enabled = true,
+			win = {
+				input = {
+					keys = {
+						["<M-Esc>"] = { "close", mode = { "n", "i" } },
+					},
+				},
+			},
+		},
 		notifier = {
 			enabled = true,
 			timeout = 3000,
@@ -19,11 +36,6 @@ return {
 		scroll = { enabled = false },
 		statuscolumn = { enabled = true },
 		words = { enabled = true },
-		styles = {
-			notification = {
-				-- wo = { wrap = true } -- Wrap notifications
-			},
-		},
 	},
 	keys = {
 		-- Top Pickers & Explorer
@@ -343,13 +355,6 @@ return {
 			desc = "LSP Workspace Symbols",
 		},
 		-- Other
-		-- {
-		-- 	"<leader>Z",
-		-- 	function()
-		-- 		Snacks.zen.zoom()
-		-- 	end,
-		-- 	desc = "Toggle Zoom",
-		-- },
 		{
 			"<leader>.",
 			function()

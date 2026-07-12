@@ -1,7 +1,7 @@
 return {
 	"mason-org/mason-lspconfig.nvim",
 	opts = {
-		automatic_enable = false,
+		automatic_enable = true,
 		ensure_installed = {
 			-- LSP servers
 			"basedpyright", -- Python / Django
@@ -12,12 +12,6 @@ return {
 			"emmet_ls", -- HTML/JSX tag expansion
 			"lua_ls",
 			"jsonls",
-			-- Linters (via mason + nvim-lint)
-			-- "eslint_d", -- React/TS linting daemon
-			-- Formatters (via mason + conform.nvim)
-			-- "prettierd", -- JS/TS/JSX/TSX/CSS/HTML formatting daemon
-			-- "black",
-			-- "stylua",
 		},
 	},
 	dependencies = {
