@@ -8,6 +8,11 @@ return {
 				-- Python / Django
 				"python",
 
+				-- Go
+				"go",
+				"gomod",
+				"gosum",
+
 				-- JavaScript / React
 				"javascript",
 				"typescript",

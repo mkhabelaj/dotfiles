@@ -12,6 +12,7 @@ return {
 			"emmet_ls", -- HTML/JSX tag expansion
 			"lua_ls",
 			"jsonls",
+			"gopls", -- Go
 		},
 	},
 	dependencies = {

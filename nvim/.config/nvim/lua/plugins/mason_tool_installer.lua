@@ -10,6 +10,9 @@ return {
 			"stylua",
 			"stylelint",
 			"cspell_ls",
+			-- Go
+			"gofumpt",
+			"goimports",
 		},
 	},
 	dependencies = {

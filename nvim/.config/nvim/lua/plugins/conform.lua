@@ -22,6 +22,7 @@ return {
 				liquid = { "prettierd" },
 				lua = { "stylua" },
 				python = { "black" },
+				go = { "goimports", "gofumpt" },
 			},
 			formatters = {
 				black = {
