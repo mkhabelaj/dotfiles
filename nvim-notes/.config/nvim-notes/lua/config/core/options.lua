@@ -20,10 +20,9 @@ opt.linebreak = true
 opt.breakindent = true
 opt.showbreak = "↳ " -- visual marker for a wrapped continuation line
 
--- "typewriter" scrolling: keep the cursor line vertically centered so your
--- eyes stay put while text scrolls around it. Dial back to e.g. 8 if this
--- feels disorienting when jumping between distant lines.
-opt.scrolloff = 999
+-- keep a margin around the cursor without fighting zt/zz/zb (999 typewriter
+-- centering overrode them on every cursor event)
+opt.scrolloff = 8
 
 -- markdown-only concealing (wiki links, emphasis markers, etc. via
 -- render-markdown.nvim / treesitter) — scoped by filetype, not global, so
