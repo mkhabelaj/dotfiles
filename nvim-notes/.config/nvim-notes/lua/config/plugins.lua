@@ -12,6 +12,10 @@ vim.pack.add({
 	-- Completion engine. Pinned for reproducibility; lua fuzzy impl below
 	-- means no prebuilt binary/cargo build is needed under vim.pack.
 	{ src = "https://github.com/Saghen/blink.cmp", version = "v1.10.2" },
+	-- noice floats the `:` cmdline (nui is its UI dep). Only the cmdline view is
+	-- used; messages/popupmenu stay native to keep this writing config light.
+	{ src = "https://github.com/MunifTanjim/nui.nvim" },
+	{ src = "https://github.com/folke/noice.nvim" },
 })
 
 require("nvim-treesitter").install({ "markdown", "markdown_inline", "yaml" })
@@ -86,11 +90,14 @@ require("blink.cmp").setup({
 	},
 	snippets = { preset = "mini_snippets" },
 	sources = {
-		default = { "lsp", "snippets", "path", "buffer" },
+		default = { "lsp", "snippets", "path", "buffer", "notes" },
 		-- Buffer words are the weakest signal here — rank them below LSP/
 		-- snippets/path so they only surface after the meaningful sources.
 		providers = {
 			buffer = { score_offset = -50 },
+			-- Contextual note completions (callout types after `> [!`, date
+			-- expansions after `/today`...) — see lua/notes.lua.
+			notes = { module = "notes", name = "Notes", score_offset = 10 },
 		},
 	},
 	fuzzy = { implementation = "lua" },
@@ -100,6 +107,16 @@ require("blink.cmp").setup({
 		-- accept an obsidian item (e.g. create a new note) — see obsidian docs.
 		list = { selection = { preselect = false } },
 	},
+})
+
+-- Float the `:` cmdline only; leave messages/popupmenu/notify native so this
+-- stays a thin UI tweak rather than a full noice takeover.
+require("noice").setup({
+	cmdline = { enabled = true, view = "cmdline_popup" },
+	messages = { enabled = false },
+	popupmenu = { enabled = false },
+	lsp = { progress = { enabled = false } },
+	notify = { enabled = false },
 })
 
 require("render-markdown").setup({
@@ -339,6 +356,23 @@ wk.add({
 			Snacks.picker.buffers()
 		end,
 		desc = "Buffers",
+	},
+
+	{ "<leader>s", group = "Search" },
+	{
+		"<leader>sb",
+		function()
+			Snacks.picker.lines()
+		end,
+		desc = "Search buffer lines",
+	},
+	{
+		"<leader>st",
+		function()
+			local root = (Obsidian and Obsidian.workspace and tostring(Obsidian.workspace.path)) or vim.uv.cwd()
+			Snacks.picker.grep({ search = "- \\[ \\]", live = false, dirs = { root } })
+		end,
+		desc = "Open todos (vault)",
 	},
 
 	{ "<leader>n", group = "Notes" },

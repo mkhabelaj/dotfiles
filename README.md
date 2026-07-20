@@ -81,8 +81,8 @@ Notes live in two separate, git-tracked vault repos — not part of this
 dotfiles repo on purpose (personal notes shouldn't end up on a work
 machine that also uses these dotfiles):
 
-- **personal** → [`mkhabelaj/vault`](https://github.com/mkhabelaj/vault), cloned at `~/vaults`
-- **work** → [`mkhabelaj/work-vault`](https://github.com/mkhabelaj/work-vault), cloned at `~/vaults-work`
+- **personal** → [`mkhabelaj/vault`](https://github.com/mkhabelaj/vault), cloned at `~/vault`
+- **work** → [`mkhabelaj/work-vault`](https://github.com/mkhabelaj/work-vault), cloned at `~/work-vault`
 
 Each is a flat `notes/` pool (organize via backlinks/tags/MOC notes, not
 topic folders) + a `daily/` log + `templates/`, with its own README
@@ -106,10 +106,20 @@ clipboard · `nc` toggle checkbox (normal + visual).
 backlink" flow) · `nK` link selection to a new note · `nx` extract
 selection into its own new note.
 
+**Search**: `sb` fuzzy-search the current buffer's lines · `st` open todos —
+a picker of every unchecked `- [ ]` across the active vault.
+
 **Code/LSP** (`harper-ls` grammar/spell checking): `ca` code action (apply
 a suggestion) · `cd` show diagnostic detail.
 
-**Other**: `zz`/`zZ` zen mode · `us`/`uw`/`uc` toggle spell/wrap/word-count.
+**Completions** (blink.cmp): wiki-links `[[`, `#tags`, and `[^footnotes` come
+from obsidian-ls; a small contextual source adds callout types after `> [!`
+(→ `> [!note]`) and date expansions (`/today`/`/tomorrow`/`/yesterday`/`/now`
+→ the resolved date). Markdown snippets (`mermaid`, `math`, `fm`, `hr`,
+`cfold`, `table`, `code`, `task`, …) live in `snippets/markdown.lua`.
+
+**Other**: `zz`/`zZ` zen mode · `us`/`uw`/`uc` toggle spell/wrap/word-count ·
+floating `:` cmdline (noice).
 
 ## Stow Usage
 
