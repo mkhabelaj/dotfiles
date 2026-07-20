@@ -107,7 +107,8 @@ backlink" flow) · `nK` link selection to a new note · `nx` extract
 selection into its own new note.
 
 **Search**: `sb` fuzzy-search the current buffer's lines · `st` open todos —
-a picker of every unchecked `- [ ]` across the active vault.
+a picker of every unchecked `- [ ]` with real content across the active vault
+(bare `- [ ]` template scaffold lines are excluded).
 
 **Code/LSP** (`harper-ls` grammar/spell checking): `ca` code action (apply
 a suggestion) · `cd` show diagnostic detail.

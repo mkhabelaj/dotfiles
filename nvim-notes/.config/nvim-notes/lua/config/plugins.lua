@@ -218,6 +218,14 @@ local function new_note_from_template()
 	end)
 end
 
+-- Picker of non-empty todos across the active vault. `- [ ]` followed by real
+-- content (word/digit/symbol); bare template scaffold lines are excluded.
+-- Shared by the dashboard key and <leader>st.
+local function open_todos()
+	local root = (Obsidian and Obsidian.workspace and tostring(Obsidian.workspace.path)) or vim.uv.cwd()
+	Snacks.picker.grep({ search = "- \\[ \\]\\s*\\S", live = false, dirs = { root } })
+end
+
 require("snacks").setup({
 	picker = { enabled = true },
 	notifier = { enabled = true, timeout = 3000 },
@@ -239,6 +247,7 @@ require("snacks").setup({
 				{ icon = " ", key = "t", desc = "Today's daily note", action = ":Obsidian today" },
 				{ icon = " ", key = "f", desc = "Find/switch note", action = ":Obsidian quick_switch" },
 				{ icon = " ", key = "s", desc = "Search notes", action = ":Obsidian search" },
+				{ icon = " ", key = "d", desc = "Open todos", action = open_todos },
 				{
 					icon = " ",
 					key = "z",
@@ -368,10 +377,7 @@ wk.add({
 	},
 	{
 		"<leader>st",
-		function()
-			local root = (Obsidian and Obsidian.workspace and tostring(Obsidian.workspace.path)) or vim.uv.cwd()
-			Snacks.picker.grep({ search = "- \\[ \\]", live = false, dirs = { root } })
-		end,
+		open_todos,
 		desc = "Open todos (vault)",
 	},
 
