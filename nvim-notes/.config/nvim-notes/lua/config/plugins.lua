@@ -283,6 +283,20 @@ require("snacks").setup({
 	},
 })
 
+-- The dashboard's "Workspace:" line only re-resolves on a dashboard render,
+-- which switching vaults doesn't trigger — so it stayed stuck on the startup
+-- value (personal). Redraw it when obsidian fires its workspace-set event.
+-- (obsidian currently emits the misspelled "ObsidianWorkpspaceSet"; the correct
+-- spelling is matched too so a future fix won't silently break this.)
+vim.api.nvim_create_autocmd("User", {
+	pattern = { "ObsidianWorkpspaceSet", "ObsidianWorkspaceSet" },
+	callback = function()
+		pcall(function()
+			Snacks.dashboard.update()
+		end)
+	end,
+})
+
 vim.keymap.set("n", "<leader>zz", function()
 	Snacks.zen()
 end, { desc = "Zen mode" })
