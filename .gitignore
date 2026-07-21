@@ -18,6 +18,7 @@ fish/.config/fish/completions/
 # herdr
 herdr/.config/herdr/session.json
 herdr/.config/herdr/sessions/
+herdr/.config/herdr/release-notes.json
 
 # fish
 fish/.config/fish/conf.d/fish_frozen_key_bindings.fish

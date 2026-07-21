@@ -3,7 +3,7 @@ onboarding = false
 # Docs/defaults: `herdr --default-config`
 
 [theme]
-name = "catppuccin"
+name = "one-dark"
 
 auto_switch = false
 [terminal]
@@ -30,10 +30,10 @@ detach = "prefix+d"
 
 # Pane focus — prefix+Shift+h/j/k/l. Plain prefix+h/j/k/l left free; primary
 # nav is the seamless Ctrl-h/j/k/l dispatch below + nvim's tmux-navigator.lua.
-focus_pane_left = "prefix+shift+h"
-focus_pane_down = "prefix+shift+j"
-focus_pane_up = "prefix+shift+k"
-focus_pane_right = "prefix+shift+l"
+# focus_pane_left = "prefix+shift+h"
+# focus_pane_down = "prefix+shift+j"
+# focus_pane_up = "prefix+shift+k"
+# focus_pane_right = "prefix+shift+l"
 
 # Toggle previous pane — tmux `prefix ;`
 last_pane = "prefix+semicolon"
