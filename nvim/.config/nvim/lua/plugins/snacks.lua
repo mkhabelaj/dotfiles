@@ -19,13 +19,10 @@ return {
 		},
 		picker = {
 			enabled = true,
-			win = {
-				input = {
-					keys = {
-						["<M-Esc>"] = { "close", mode = { "n", "i" } },
-					},
-				},
-			},
+			-- No <M-Esc> override: on WSL a fast Esc-Esc coalesces into <M-Esc>,
+			-- so mapping it to close hijacked the double-tap and never let you
+			-- reach normal mode. Default Esc is fine: i->normal, normal->cancel.
+			-- Close from insert with <C-c>.
 		},
 		notifier = {
 			enabled = true,
