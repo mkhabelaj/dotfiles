@@ -1,5 +1,5 @@
 # ~/.visidatarc — Tokyo Night (Storm) theme. Keybindings = vd defaults.
-# Requires a truecolor terminal (Alacritty = yes).
+# Requires a truecolor terminal (Ghostty = yes).
 
 # ---- Tokyo Night Storm palette ----
 bg      = '#24283b'

@@ -12,7 +12,7 @@ curl https://mise.run | sh
 git clone https://github.com/jacksonmkhabela/dotfiles.git ~/dotfiles && cd ~/dotfiles
 
 # 3. Stow configs
-stow nvim nvim-octo nvim-notes tmux herdr alacritty fish mise flo visidata
+stow nvim nvim-octo nvim-notes tmux herdr ghostty fish mise flo visidata
 
 # 4. Install dev tools
 mise install
@@ -27,7 +27,7 @@ mise install
 | `nvim-notes` | Neovim writing / Obsidian-vault-aware notes instance (launch with `nvn`) |
 | `tmux` | Tmux |
 | `herdr` | Herdr terminal workspace manager |
-| `alacritty` | Alacritty terminal |
+| `ghostty` | Ghostty terminal (GPU, inline images) |
 | `fish` | Fish shell |
 | `mise` | mise tool manager |
 | `flo` | flo workflow TUI |
