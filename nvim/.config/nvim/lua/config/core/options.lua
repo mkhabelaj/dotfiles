@@ -68,3 +68,12 @@ opt.spell = true
 
 -- Set SessionOptions to save session options
 opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+
+-- cursor shape/blink per mode (needs a terminal that supports DECSCUSR, e.g. ghostty)
+-- insert: thin 25% vertical bar that blinks; normal/visual: steady block.
+-- ponytail: single guicursor line covers it; add more modes only if you miss them.
+opt.guicursor = table.concat({
+	"n-v-c-sm:block",
+	"i-ci-ve:ver25-blinkwait300-blinkon200-blinkoff150",
+	"r-cr-o:hor20",
+}, ",")

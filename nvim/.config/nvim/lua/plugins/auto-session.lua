@@ -19,5 +19,8 @@ return {
 	},
 	opts = {
 		suppressed_dirs = { "~/", "~/Projects", "~/Downloads", "/" },
+		-- Don't auto-load on startup: land on the dashboard and pick
+		-- "Restore Session" vs a fresh start. Saving on exit stays on.
+		auto_restore = false,
 	},
 }
