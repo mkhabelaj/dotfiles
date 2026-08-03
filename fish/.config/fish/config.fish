@@ -40,7 +40,5 @@ if type -q fzf
     fzf --fish | source
     # Use terminal's ANSI palette so fzf tracks the active theme (Nord here)
     set -gx FZF_DEFAULT_OPTS '--color=16'
-    # CTRL-R: show only the command, hide the timestamp column (alt-t toggles it back)
-    set -gx FZF_CTRL_R_OPTS '--with-nth=3.. --nth=3..'
 end
 
