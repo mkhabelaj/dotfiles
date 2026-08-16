@@ -1,0 +1,1264 @@
+name: Root
+options:
+- name: review
+  next:
+    name: Repo
+    capture:
+      command: "gh repo view --json nameWithOwner --jq '\"\u2605 \"+.nameWithOwner+\" (current)\\t\"+.nameWithOwner' 2>/dev/null; gh repo list --limit 200 --json nameWithOwner --jq '.[]|.nameWithOwner+\"\\t\"+.nameWithOwner'"
+      key: repo
+    next:
+      name: Limit
+      capture:
+        input: true
+        key: limit
+        placeholder: max PRs to list
+        default: '30'
+        validate: \d+
+      next:
+        name: Limit
+        description: Filter
+        options:
+        - name: review requested (@me)
+          next:
+            name: Pr
+            capture:
+              command: gh pr list --repo {repo} --search 'review-requested:@me' --limit {limit} --json number,title --jq '.[]|"#\(.number) \(.title)\t\(.number)"'
+              key: pr
+            next:
+              name: Pr
+              description: Open with
+              options:
+              - name: nvim-octo
+                description: gh PR — open in Neovim Octo editor
+                run: env NVIM_APPNAME=nvim-octo nvim -c "Octo pr edit {pr} {repo}"
+              - name: tuicr
+                description: gh PR — open in tuicr TUI
+                run: tuicr pr {repo}#{pr}
+        - name: my PRs
+          next:
+            name: Pr
+            capture:
+              command: gh pr list --repo {repo} --author @me --limit {limit} --json number,title --jq '.[]|"#\(.number) \(.title)\t\(.number)"'
+              key: pr
+            next:
+              name: Pr
+              description: Open with
+              options:
+              - name: nvim-octo
+                description: gh PR — open in Neovim Octo editor
+                run: env NVIM_APPNAME=nvim-octo nvim -c "Octo pr edit {pr} {repo}"
+              - name: tuicr
+                description: gh PR — open in tuicr TUI
+                run: tuicr pr {repo}#{pr}
+        - name: mentioned (@me)
+          next:
+            name: Pr
+            capture:
+              command: gh pr list --repo {repo} --search 'mentions:@me' --limit {limit} --json number,title --jq '.[]|"#\(.number) \(.title)\t\(.number)"'
+              key: pr
+            next:
+              name: Pr
+              description: Open with
+              options:
+              - name: nvim-octo
+                description: gh PR — open in Neovim Octo editor
+                run: env NVIM_APPNAME=nvim-octo nvim -c "Octo pr edit {pr} {repo}"
+              - name: tuicr
+                description: gh PR — open in tuicr TUI
+                run: tuicr pr {repo}#{pr}
+        - name: all open
+          next:
+            name: Pr
+            capture:
+              command: gh pr list --repo {repo} --limit {limit} --json number,title --jq '.[]|"#\(.number) \(.title)\t\(.number)"'
+              key: pr
+            next:
+              name: Pr
+              description: Open with
+              options:
+              - name: nvim-octo
+                description: gh PR — open in Neovim Octo editor
+                run: env NVIM_APPNAME=nvim-octo nvim -c "Octo pr edit {pr} {repo}"
+              - name: tuicr
+                description: gh PR — open in tuicr TUI
+                run: tuicr pr {repo}#{pr}
+- name: gh
+  next:
+    name: gh
+    options:
+    - name: clone repo
+      next:
+        name: Repo
+        capture:
+          command: gh repo list --limit 200 --json nameWithOwner,visibility --jq '.[]|.nameWithOwner+" ("+.visibility+")"+"\t"+.nameWithOwner'
+          key: repo
+        next:
+          name: Repo
+          description: Clone into
+          options:
+          - name: here (current dir)
+            description: gh clone repo into current directory
+            run: gh repo clone {repo}
+          - name: search for a directory
+            next:
+              name: Search_path
+              capture:
+                input: true
+                key: search_path
+                placeholder: search path (e.g. ~ or ~/projects)
+                default: ~/projects
+              next:
+                name: Depth
+                capture:
+                  input: true
+                  key: depth
+                  placeholder: max depth
+                  default: '1'
+                  validate: \d+
+                next:
+                  name: Dir
+                  capture:
+                    command: find "$(eval echo {search_path})" -maxdepth {depth} -mindepth 1 -type d 2>/dev/null | awk -F/ '{print $NF"\t"$0}' | sort
+                    key: dir
+                  next:
+                    name: Dir
+                    options:
+                    - name: clone
+                      description: gh clone repo into chosen directory
+                      run: 'cd {dir}
+
+                        gh repo clone {repo}'
+- name: git
+  next:
+    name: git
+    options:
+    - name: status
+      description: git status — working tree state
+      run: git status
+    - name: log (last 20)
+      description: git log — last 20 commits oneline
+      run: git log --oneline -20
+    - name: diff
+      description: git diff — unstaged changes
+      run: git diff
+    - name: switch branch
+      next:
+        name: Branch
+        capture:
+          command: "git branch --format='%(if)%(HEAD)%(then)* %(end)%(refname:short)\t%(refname:short)'"
+          key: branch
+        next:
+          name: Branch
+          options:
+          - name: switch
+            description: git switch to selected branch
+            run: git switch {branch}
+    - name: new branch
+      next:
+        name: Name
+        capture:
+          input: true
+          key: name
+          placeholder: feature/my-thing
+        next:
+          name: Name
+          options:
+          - name: create
+            description: git create and switch to new branch
+            run: git switch -c {name}
+    - name: delete branch
+      next:
+        name: Branch
+        capture:
+          command: "git branch --format='%(if)%(HEAD)%(then)%(else)%(refname:short)\t%(refname:short)%(end)'"
+          key: branch
+        next:
+          name: Branch
+          options:
+          - name: delete
+            description: git branch force-delete (-D)
+            run: git branch -D {branch}
+    - name: add
+      next:
+        name: add
+        options:
+        - name: file (pick)
+          next:
+            name: File
+            capture:
+              command: git status --porcelain | awk '{status=substr($0,1,2); file=substr($0,4); print status"  "file"\t"file}'
+              key: file
+            next:
+              name: File
+              options:
+              - name: add
+                description: git add selected file
+                run: git add {file}
+        - name: all changes
+          description: git add all changes (-A)
+          run: git add -A
+        - name: patch (interactive)
+          description: git add patch interactively (-p)
+          run: git add -p
+        - name: by pattern
+          next:
+            name: Pattern
+            capture:
+              input: true
+              key: pattern
+              placeholder: '*.py'
+            next:
+              name: Pattern
+              options:
+              - name: add
+                description: git add files by glob pattern
+                run: git add {pattern}
+    - name: commit
+      next:
+        name: Message
+        capture:
+          input: true
+          key: message
+          placeholder: what changed and why
+        next:
+          name: Message
+          options:
+          - name: commit
+            description: git commit staged with message
+            run: git commit -m "{message}"
+    - name: pull
+      description: git pull from remote
+      run: git pull
+    - name: push
+      description: git push to remote
+      run: git push
+    - name: stash pop
+      next:
+        name: Stash
+        capture:
+          command: "git stash list --format='%gd: %s\t%gd'"
+          key: stash
+        next:
+          name: Stash
+          options:
+          - name: pop
+            description: git stash pop selected
+            run: git stash pop {stash}
+    - name: cherry-pick from branch
+      next:
+        name: Branch
+        capture:
+          command: "git branch --format='%(if)%(HEAD)%(then)* %(end)%(refname:short)\t%(refname:short)'"
+          key: branch
+        next:
+          name: Commit
+          capture:
+            command: "git log {branch} --oneline -20 --format='%h %s\t%h'"
+            key: commit
+          next:
+            name: Commit
+            options:
+            - name: cherry-pick
+              description: git cherry-pick selected commit
+              run: git cherry-pick {commit}
+    - name: revert commit
+      next:
+        name: Commit
+        capture:
+          command: "git log --oneline -20 --format='%h %s\t%h'"
+          key: commit
+        next:
+          name: Commit
+          options:
+          - name: revert
+            description: git revert selected commit
+            run: git revert --no-edit {commit}
+    - name: merge branch
+      next:
+        name: Branch
+        capture:
+          command: "git branch --format='%(if)%(HEAD)%(then)%(else)%(refname:short)\t%(refname:short)%(end)'"
+          key: branch
+        next:
+          name: Branch
+          options:
+          - name: merge
+            description: git merge selected branch
+            run: git merge {branch}
+- name: docker
+  next:
+    name: docker
+    options:
+    - name: containers
+      next:
+        name: containers
+        options:
+        - name: ps (running)
+          description: docker ps — running containers
+          run: docker ps
+        - name: ps -a (all)
+          description: docker ps -a — all containers
+          run: docker ps -a
+        - name: stats
+          description: docker stats — live resource usage
+          run: docker stats
+        - name: logs (tail 100)
+          next:
+            name: Container
+            capture:
+              command: "docker ps --format '{{.Names}}: {{.Image}} ({{.Status}})\t{{.Names}}'"
+              key: container
+            next:
+              name: Container
+              options:
+              - name: show logs
+                description: docker logs — tail 100 lines
+                run: docker logs --tail 100 {container}
+        - name: logs (follow)
+          next:
+            name: Container
+            capture:
+              command: "docker ps --format '{{.Names}}: {{.Image}} ({{.Status}})\t{{.Names}}'"
+              key: container
+            next:
+              name: Container
+              options:
+              - name: follow logs
+                description: docker logs -f — follow container
+                run: docker logs -f --tail 100 {container}
+        - name: exec shell
+          next:
+            name: Container
+            capture:
+              command: "docker ps --format '{{.Names}}: {{.Image}} ({{.Status}})\t{{.Names}}'"
+              key: container
+            next:
+              name: Container
+              options:
+              - name: sh
+                description: docker exec sh shell in container
+                run: docker exec -it {container} sh
+              - name: bash
+                description: docker exec bash shell in container
+                run: docker exec -it {container} bash
+              - name: ash
+                description: docker exec ash shell in container
+                run: docker exec -it {container} ash
+        - name: stop
+          next:
+            name: Container
+            capture:
+              command: "docker ps --format '{{.Names}}: {{.Image}} ({{.Status}})\t{{.Names}}'"
+              key: container
+            next:
+              name: Container
+              options:
+              - name: stop
+                description: docker stop container
+                run: docker stop {container}
+        - name: restart
+          next:
+            name: Container
+            capture:
+              command: "docker ps -a --format '{{.Names}}: {{.Image}} ({{.Status}})\t{{.Names}}'"
+              key: container
+            next:
+              name: Container
+              options:
+              - name: restart
+                description: docker restart container
+                run: docker restart {container}
+        - name: rm
+          next:
+            name: Container
+            capture:
+              command: "docker ps -a --format '{{.Names}}: {{.Image}} ({{.Status}})\t{{.Names}}'"
+              key: container
+            next:
+              name: Container
+              options:
+              - name: remove
+                description: docker rm remove container
+                run: docker rm {container}
+        - name: inspect
+          next:
+            name: Container
+            capture:
+              command: "docker ps -a --format '{{.Names}}: {{.Image}} ({{.Status}})\t{{.Names}}'"
+              key: container
+            next:
+              name: Container
+              options:
+              - name: inspect
+                description: docker inspect container
+                run: docker inspect {container}
+        - name: port mappings
+          next:
+            name: Container
+            capture:
+              command: "docker ps --format '{{.Names}}: {{.Image}} ({{.Status}})\t{{.Names}}'"
+              key: container
+            next:
+              name: Container
+              options:
+              - name: show ports
+                description: docker port — container port mappings
+                run: docker port {container}
+        - name: env vars
+          next:
+            name: Container
+            capture:
+              command: "docker ps -a --format '{{.Names}}: {{.Image}} ({{.Status}})\t{{.Names}}'"
+              key: container
+            next:
+              name: Container
+              options:
+              - name: show env vars
+                description: docker inspect container env vars
+                run: docker inspect --format '{{range .Config.Env}}{{println .}}{{end}}' {container}
+    - name: images
+      next:
+        name: images
+        options:
+        - name: list
+          description: docker images — list local images
+          run: docker images
+        - name: pull
+          next:
+            name: Image_ref
+            capture:
+              input: true
+              key: image_ref
+              placeholder: e.g. nginx:latest
+            next:
+              name: Image_ref
+              options:
+              - name: pull
+                description: docker pull image by reference
+                run: docker pull {image_ref}
+        - name: build
+          next:
+            name: Build_dir
+            capture:
+              input: true
+              key: build_dir
+              placeholder: path to directory with Dockerfile
+              default: .
+            next:
+              name: Build_dir
+              options:
+              - name: build
+                description: docker build image from directory
+                run: docker build {build_dir}
+        - name: rm
+          next:
+            name: Image
+            capture:
+              command: "docker images --format '{{.Repository}}:{{.Tag}} ({{.Size}})\t{{.Repository}}:{{.Tag}}'"
+              key: image
+            next:
+              name: Image
+              options:
+              - name: remove image
+                description: docker rmi remove image
+                run: docker rmi {image}
+        - name: history
+          next:
+            name: Image
+            capture:
+              command: "docker images --format '{{.Repository}}:{{.Tag}} ({{.Size}})\t{{.Repository}}:{{.Tag}}'"
+              key: image
+            next:
+              name: Image
+              options:
+              - name: show history
+                description: docker image history — layers
+                run: docker image history {image}
+    - name: compose
+      next:
+        name: compose
+        options:
+        - name: up -d
+          next:
+            name: Project_dir
+            capture:
+              input: true
+              key: project_dir
+              placeholder: path to docker-compose.yml dir
+              default: .
+            next:
+              name: Project_dir
+              options:
+              - name: up -d
+                description: docker compose up -d all services
+                run: 'cd {project_dir}
+
+                  docker compose up -d'
+        - name: down
+          next:
+            name: Project_dir
+            capture:
+              input: true
+              key: project_dir
+              placeholder: path to docker-compose.yml dir
+              default: .
+            next:
+              name: Project_dir
+              options:
+              - name: down
+                description: docker compose down all services
+                run: 'cd {project_dir}
+
+                  docker compose down'
+        - name: down -v (remove volumes)
+          next:
+            name: Project_dir
+            capture:
+              input: true
+              key: project_dir
+              placeholder: path to docker-compose.yml dir
+              default: .
+            next:
+              name: Project_dir
+              options:
+              - name: down -v
+                description: docker compose down -v remove volumes
+                run: 'cd {project_dir}
+
+                  docker compose down -v'
+        - name: ps (all services)
+          next:
+            name: Project_dir
+            capture:
+              input: true
+              key: project_dir
+              placeholder: path to docker-compose.yml dir
+              default: .
+            next:
+              name: Project_dir
+              options:
+              - name: ps
+                description: docker compose ps list services
+                run: 'cd {project_dir}
+
+                  docker compose ps'
+        - name: build
+          next:
+            name: Project_dir
+            capture:
+              input: true
+              key: project_dir
+              placeholder: path to docker-compose.yml dir
+              default: .
+            next:
+              name: Project_dir
+              options:
+              - name: build
+                description: docker compose build services
+                run: 'cd {project_dir}
+
+                  docker compose build'
+        - name: logs (tail, all services)
+          next:
+            name: Project_dir
+            capture:
+              input: true
+              key: project_dir
+              placeholder: path to docker-compose.yml dir
+              default: .
+            next:
+              name: Project_dir
+              options:
+              - name: logs
+                description: docker compose logs tail all services
+                run: 'cd {project_dir}
+
+                  docker compose logs --tail 100'
+        - name: pull (all images)
+          next:
+            name: Project_dir
+            capture:
+              input: true
+              key: project_dir
+              placeholder: path to docker-compose.yml dir
+              default: .
+            next:
+              name: Project_dir
+              options:
+              - name: pull
+                description: docker compose pull all images
+                run: 'cd {project_dir}
+
+                  docker compose pull'
+        - name: action on service
+          next:
+            name: Project_dir
+            capture:
+              input: true
+              key: project_dir
+              placeholder: path to docker-compose.yml dir
+              default: .
+            next:
+              name: Service
+              capture:
+                command: cd {project_dir} && docker compose ps --services
+                key: service
+              next:
+                name: Service
+                options:
+                - name: logs (tail)
+                  description: docker compose logs tail one service
+                  run: 'cd {project_dir}
+
+                    docker compose logs --tail 100 {service}'
+                - name: logs (follow)
+                  description: docker compose logs -f follow one service
+                  run: 'cd {project_dir}
+
+                    docker compose logs -f --tail 100 {service}'
+                - name: restart
+                  description: docker compose restart one service
+                  run: 'cd {project_dir}
+
+                    docker compose restart {service}'
+                - name: stop
+                  description: docker compose stop one service
+                  run: 'cd {project_dir}
+
+                    docker compose stop {service}'
+                - name: up -d
+                  description: docker compose up -d one service
+                  run: 'cd {project_dir}
+
+                    docker compose up -d {service}'
+    - name: volumes
+      next:
+        name: volumes
+        options:
+        - name: list
+          description: docker volume ls — list volumes
+          run: docker volume ls
+        - name: inspect
+          next:
+            name: Volume
+            capture:
+              command: "docker volume ls --format '{{.Name}}\t{{.Name}}'"
+              key: volume
+            next:
+              name: Volume
+              options:
+              - name: inspect
+                description: docker volume inspect selected
+                run: docker volume inspect {volume}
+        - name: rm
+          next:
+            name: Volume
+            capture:
+              command: "docker volume ls --format '{{.Name}}\t{{.Name}}'"
+              key: volume
+            next:
+              name: Volume
+              options:
+              - name: remove volume
+                description: docker volume rm remove selected
+                run: docker volume rm {volume}
+    - name: networks
+      next:
+        name: networks
+        options:
+        - name: list
+          description: docker network ls — list networks
+          run: docker network ls
+        - name: inspect
+          next:
+            name: Network
+            capture:
+              command: "docker network ls --format '{{.Name}} ({{.Driver}})\t{{.Name}}'"
+              key: network
+            next:
+              name: Network
+              options:
+              - name: inspect
+                description: docker network inspect selected
+                run: docker network inspect {network}
+    - name: system
+      next:
+        name: system
+        options:
+        - name: df (disk usage)
+          description: docker system df — disk usage
+          run: docker system df
+        - name: info
+          description: docker info — system details
+          run: docker info
+        - name: version
+          description: docker version
+          run: docker version
+        - name: login
+          next:
+            name: Registry
+            capture:
+              input: true
+              key: registry
+              placeholder: e.g. docker.io or ghcr.io
+              default: docker.io
+            next:
+              name: Registry
+              options:
+              - name: login
+                description: docker login to registry
+                run: docker login {registry}
+        - name: logout
+          description: docker logout of registry
+          run: docker logout
+        - name: prune (by kind)
+          next:
+            name: prune (by kind)
+            options:
+            - name: images
+              description: docker image prune unused
+              run: docker image prune -f
+            - name: containers
+              description: docker container prune stopped
+              run: docker container prune -f
+            - name: networks
+              description: docker network prune unused
+              run: docker network prune -f
+            - name: volumes
+              description: docker volume prune unused
+              run: docker volume prune -f
+            - name: system -af (everything)
+              description: docker system prune -af everything
+              run: docker system prune -af
+- name: kubectl
+  next:
+    name: kubectl
+    options:
+    - name: context
+      next:
+        name: context
+        options:
+        - name: current
+          description: kubectl current context
+          run: kubectl config current-context
+        - name: list all
+          description: kubectl list all contexts
+          run: kubectl config get-contexts
+        - name: switch
+          next:
+            name: Context
+            capture:
+              command: kubectl config get-contexts -o name
+              key: context
+            next:
+              name: Context
+              options:
+              - name: switch
+                description: kubectl switch context (use-context)
+                run: kubectl config use-context {context}
+    - name: pods
+      next:
+        name: pods
+        options:
+        - name: list
+          next:
+            name: Ns
+            capture:
+              command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+              key: ns
+            next:
+              name: Ns
+              options:
+              - name: list pods
+                description: kubectl get pods in namespace
+                run: kubectl get pods -n {ns}
+        - name: describe
+          next:
+            name: Ns
+            capture:
+              command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+              key: ns
+            next:
+              name: Pod
+              capture:
+                command: kubectl get pods -n {ns} --no-headers -o custom-columns='NAME:.metadata.name,STATUS:.status.phase' | awk '{print $1" ("$2")\t"$1}'
+                key: pod
+              next:
+                name: Pod
+                options:
+                - name: describe
+                  description: kubectl describe pod
+                  run: kubectl describe pod -n {ns} {pod}
+        - name: logs (tail 100)
+          next:
+            name: Ns
+            capture:
+              command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+              key: ns
+            next:
+              name: Pod
+              capture:
+                command: kubectl get pods -n {ns} --no-headers -o custom-columns='NAME:.metadata.name,STATUS:.status.phase' | awk '{print $1" ("$2")\t"$1}'
+                key: pod
+              next:
+                name: Pod
+                options:
+                - name: show logs
+                  description: kubectl logs pod tail 100
+                  run: kubectl logs --tail 100 -n {ns} {pod}
+        - name: logs (follow)
+          next:
+            name: Ns
+            capture:
+              command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+              key: ns
+            next:
+              name: Pod
+              capture:
+                command: kubectl get pods -n {ns} --no-headers -o custom-columns='NAME:.metadata.name,STATUS:.status.phase' | awk '{print $1" ("$2")\t"$1}'
+                key: pod
+              next:
+                name: Pod
+                options:
+                - name: follow logs
+                  description: kubectl logs -f pod follow
+                  run: kubectl logs -f --tail 100 -n {ns} {pod}
+        - name: exec shell
+          next:
+            name: Ns
+            capture:
+              command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+              key: ns
+            next:
+              name: Pod
+              capture:
+                command: kubectl get pods -n {ns} --no-headers -o custom-columns='NAME:.metadata.name,STATUS:.status.phase' | awk '{print $1" ("$2")\t"$1}'
+                key: pod
+              next:
+                name: Pod
+                options:
+                - name: sh
+                  description: kubectl exec sh shell in pod
+                  run: kubectl exec -it -n {ns} {pod} -- sh
+                - name: bash
+                  description: kubectl exec bash shell in pod
+                  run: kubectl exec -it -n {ns} {pod} -- bash
+                - name: ash
+                  description: kubectl exec ash shell in pod
+                  run: kubectl exec -it -n {ns} {pod} -- ash
+                - name: zsh
+                  description: kubectl exec zsh shell in pod
+                  run: kubectl exec -it -n {ns} {pod} -- zsh
+        - name: env vars
+          next:
+            name: Ns
+            capture:
+              command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+              key: ns
+            next:
+              name: Pod
+              capture:
+                command: kubectl get pods -n {ns} --no-headers -o custom-columns='NAME:.metadata.name,STATUS:.status.phase' | awk '{print $1" ("$2")\t"$1}'
+                key: pod
+              next:
+                name: Pod
+                options:
+                - name: show env vars
+                  description: kubectl exec pod print env vars
+                  run: kubectl exec -n {ns} {pod} -- env
+        - name: port forward
+          next:
+            name: Ns
+            capture:
+              command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+              key: ns
+            next:
+              name: Pod
+              capture:
+                command: kubectl get pods -n {ns} --no-headers -o custom-columns='NAME:.metadata.name,STATUS:.status.phase' | awk '{print $1" ("$2")\t"$1}'
+                key: pod
+              next:
+                name: Ports
+                capture:
+                  input: true
+                  key: ports
+                  placeholder: 8080:8080
+                next:
+                  name: Ports
+                  options:
+                  - name: forward
+                    description: kubectl port-forward to pod
+                    run: kubectl port-forward -n {ns} {pod} {ports}
+        - name: delete
+          next:
+            name: Ns
+            capture:
+              command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+              key: ns
+            next:
+              name: Pod
+              capture:
+                command: kubectl get pods -n {ns} --no-headers -o custom-columns='NAME:.metadata.name,STATUS:.status.phase' | awk '{print $1" ("$2")\t"$1}'
+                key: pod
+              next:
+                name: Pod
+                options:
+                - name: delete
+                  description: kubectl delete pod
+                  run: kubectl delete pod -n {ns} {pod}
+    - name: deployments
+      next:
+        name: deployments
+        options:
+        - name: list
+          next:
+            name: Ns
+            capture:
+              command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+              key: ns
+            next:
+              name: Ns
+              options:
+              - name: list deployments
+                description: kubectl get deployments in namespace
+                run: kubectl get deployments -n {ns}
+        - name: describe
+          next:
+            name: Ns
+            capture:
+              command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+              key: ns
+            next:
+              name: Deployment
+              capture:
+                command: kubectl get deployments -n {ns} --no-headers | awk '{print $1" ("$2" ready)\t"$1}'
+                key: deployment
+              next:
+                name: Deployment
+                options:
+                - name: describe
+                  description: kubectl describe deployment
+                  run: kubectl describe deployment -n {ns} {deployment}
+        - name: scale
+          next:
+            name: Ns
+            capture:
+              command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+              key: ns
+            next:
+              name: Deployment
+              capture:
+                command: kubectl get deployments -n {ns} --no-headers | awk '{print $1" ("$2" ready)\t"$1}'
+                key: deployment
+              next:
+                name: Replicas
+                capture:
+                  input: true
+                  key: replicas
+                  placeholder: '2'
+                next:
+                  name: Replicas
+                  options:
+                  - name: scale
+                    description: kubectl scale deployment replicas
+                    run: kubectl scale deployment -n {ns} {deployment} --replicas={replicas}
+        - name: rollout status
+          next:
+            name: Ns
+            capture:
+              command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+              key: ns
+            next:
+              name: Deployment
+              capture:
+                command: kubectl get deployments -n {ns} --no-headers | awk '{print $1" ("$2" ready)\t"$1}'
+                key: deployment
+              next:
+                name: Deployment
+                options:
+                - name: status
+                  description: kubectl rollout status deployment
+                  run: kubectl rollout status deployment -n {ns} {deployment}
+        - name: rollout history
+          next:
+            name: Ns
+            capture:
+              command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+              key: ns
+            next:
+              name: Deployment
+              capture:
+                command: kubectl get deployments -n {ns} --no-headers | awk '{print $1" ("$2" ready)\t"$1}'
+                key: deployment
+              next:
+                name: Deployment
+                options:
+                - name: history
+                  description: kubectl rollout history deployment
+                  run: kubectl rollout history deployment -n {ns} {deployment}
+        - name: rollout undo
+          next:
+            name: Ns
+            capture:
+              command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+              key: ns
+            next:
+              name: Deployment
+              capture:
+                command: kubectl get deployments -n {ns} --no-headers | awk '{print $1" ("$2" ready)\t"$1}'
+                key: deployment
+              next:
+                name: Deployment
+                options:
+                - name: undo
+                  description: kubectl rollout undo deployment
+                  run: kubectl rollout undo deployment -n {ns} {deployment}
+    - name: services
+      next:
+        name: services
+        options:
+        - name: list
+          next:
+            name: Ns
+            capture:
+              command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+              key: ns
+            next:
+              name: Ns
+              options:
+              - name: list services
+                description: kubectl get services in namespace
+                run: kubectl get services -n {ns}
+        - name: describe
+          next:
+            name: Ns
+            capture:
+              command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+              key: ns
+            next:
+              name: Service
+              capture:
+                command: kubectl get services -n {ns} --no-headers | awk '{print $1" ("$2")\t"$1}'
+                key: service
+              next:
+                name: Service
+                options:
+                - name: describe
+                  description: kubectl describe service
+                  run: kubectl describe service -n {ns} {service}
+    - name: events
+      next:
+        name: Ns
+        capture:
+          command: kubectl get ns --no-headers | awk '{print $1"  ("$2")\t"$1}'
+          key: ns
+        next:
+          name: Ns
+          options:
+          - name: show events
+            description: kubectl get events by time
+            run: kubectl get events -n {ns} --sort-by=.lastTimestamp
+    - name: nodes
+      next:
+        name: nodes
+        options:
+        - name: list
+          description: kubectl get nodes (wide)
+          run: kubectl get nodes -o wide
+        - name: top
+          description: kubectl top nodes resource usage
+          run: kubectl top nodes
+        - name: describe
+          next:
+            name: Node
+            capture:
+              command: kubectl get nodes --no-headers | awk '{print $1" ("$2")\t"$1}'
+              key: node
+            next:
+              name: Node
+              options:
+              - name: describe
+                description: kubectl describe node
+                run: kubectl describe node {node}
+- name: npm (cwd)
+  next:
+    name: npm (cwd)
+    options:
+    - name: scripts
+      next:
+        name: scripts
+        options:
+        - name: 'run '
+          next:
+            name: Script
+            capture:
+              command: ' jq -r ''.scripts | keys[]'' package.json'
+              key: script
+            next:
+              name: Script
+              options:
+              - name: run
+                description: npm run selected script
+                run: npm run {script}
+    - name: list scripts
+      description: npm list package.json scripts (jq)
+      run: jq -r '.scripts | to_entries[] | "\(.key) = \(.value)"' package.json
+- name: vd (VisiData)
+  next:
+    name: vd (VisiData)
+    description: Source
+    options:
+    - name: here (cwd)
+      next:
+        name: Depth
+        capture:
+          input: true
+          key: depth
+          placeholder: max depth
+          default: '1'
+          validate: \d+
+        next:
+          name: File
+          capture:
+            command: find . -maxdepth {depth} -mindepth 1 -type f \( -iname '*.csv' -o -iname '*.tsv' -o -iname '*.json' -o -iname '*.parquet' -o -iname '*.xlsx' \) 2>/dev/null | awk -F/ '{print $NF"\t"$0}' | sort
+            key: file
+          next:
+            name: File
+            options:
+            - name: open
+              description: vd open data file from current dir
+              run: vd {file}
+    - name: path (search)
+      next:
+        name: Search_path
+        capture:
+          input: true
+          key: search_path
+          placeholder: search path (e.g. ~ or ~/data)
+          default: '~'
+        next:
+          name: Depth
+          capture:
+            input: true
+            key: depth
+            placeholder: max depth
+            default: '2'
+            validate: \d+
+          next:
+            name: File
+            capture:
+              command: find "$(eval echo {search_path})" -maxdepth {depth} -mindepth 1 -type f \( -iname '*.csv' -o -iname '*.tsv' -o -iname '*.json' -o -iname '*.parquet' -o -iname '*.xlsx' \) 2>/dev/null | awk -F/ '{print $NF"\t"$0}' | sort
+              key: file
+            next:
+              name: File
+              options:
+              - name: open
+                description: vd open data file from search path
+                run: vd {file}
+- name: herdr
+  next:
+    name: herdr
+    options:
+    - name: new session
+      next:
+        name: Name
+        capture:
+          input: true
+          key: name
+          placeholder: session name
+        next:
+          name: Name
+          options:
+          - name: create
+            description: herdr create new session
+            run: herdr --session {name}
+    - name: sessions
+      next:
+        name: Session
+        capture:
+          command: herdr session list --json | jq -r '.sessions[] | "\(.name)  (\(if .running then "running" else "stopped" end))\t\(.name)"'
+          key: session
+        next:
+          name: Session
+          options:
+          - name: attach
+            description: herdr attach to session
+            run: herdr session attach {session}
+          - name: workspaces
+            next:
+              name: workspaces
+              options:
+              - name: new workspace
+                next:
+                  name: Label
+                  capture:
+                    input: true
+                    key: label
+                    placeholder: workspace label
+                  next:
+                    name: Label
+                    options:
+                    - name: here (current dir)
+                      description: herdr new workspace in current dir
+                      run: herdr --session {session} workspace create --label "{label}" --cwd "$PWD" --focus
+                    - name: search
+                      next:
+                        name: Search_path
+                        capture:
+                          input: true
+                          key: search_path
+                          placeholder: search path (e.g. ~ or ~/dev)
+                          default: '~'
+                        next:
+                          name: Depth
+                          capture:
+                            input: true
+                            key: depth
+                            placeholder: max depth
+                            default: '1'
+                            validate: \d+
+                          next:
+                            name: Dir
+                            capture:
+                              command: find "$(eval echo {search_path})" -maxdepth {depth} -mindepth 1 -type d 2>/dev/null | awk -F/ '{print $NF"\t"$0}' | sort
+                              key: dir
+                            next:
+                              name: Dir
+                              options:
+                              - name: create
+                                description: herdr new workspace in chosen dir
+                                run: herdr --session {session} workspace create --label "{label}" --cwd {dir} --focus
+              - name: open
+                next:
+                  name: Ws
+                  capture:
+                    command: "herdr --session {session} workspace list | jq -r '.result.workspaces[] | \"[\\(.number)] \\(.label)  \u2014 \\(.agent_status)\\t\\(.workspace_id)\"'"
+                    key: ws
+                  next:
+                    name: Ws
+                    options:
+                    - name: jump (focus)
+                      description: herdr focus workspace (jump)
+                      run: herdr --session {session} workspace focus {ws}
+                    - name: rename
+                      next:
+                        name: Label
+                        capture:
+                          input: true
+                          key: label
+                          placeholder: new workspace label
+                        next:
+                          name: Label
+                          options:
+                          - name: rename
+                            description: herdr rename workspace
+                            run: herdr --session {session} workspace rename {ws} "{label}"
+                    - name: delete
+                      description: herdr close workspace
+                      run: herdr --session {session} workspace close {ws}
+          - name: stop
+            description: herdr stop session
+            run: herdr session stop {session}
+          - name: delete
+            description: herdr delete session
+            run: herdr session delete {session}
