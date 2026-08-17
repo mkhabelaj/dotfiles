@@ -226,6 +226,60 @@ local function open_todos()
 	Snacks.picker.grep({ search = "- \\[ \\]\\s*\\S", live = false, dirs = { root } })
 end
 
+local function vault_root()
+	return (Obsidian and Obsidian.workspace and tostring(Obsidian.workspace.path)) or vim.uv.cwd()
+end
+
+-- Inbox capture (second-brain style): a quick, un-triaged thought becomes its
+-- own dated note in inbox/ — NOT the flat notes/ pool and NOT one big
+-- inbox.md. inbox/ is explicitly the staging area you sort into notes/ later
+-- (browse it with <leader>si). Title is optional: blank = a timestamp slug so
+-- a jot is frictionless. Filename matches the vault's YYYY-MM-DD_slug rule.
+local function new_inbox_note()
+	local dir = vault_root() .. "/inbox"
+	vim.fn.mkdir(dir, "p")
+	vim.ui.input({ prompt = "Inbox note title (optional): " }, function(title)
+		local date = os.date("%Y-%m-%d")
+		local slug
+		if title and title ~= "" then
+			slug = title:gsub("%s+", "-"):gsub("[^%w%-]", ""):lower()
+		else
+			slug = os.date("%H%M%S")
+		end
+		local path = dir .. "/" .. date .. "_" .. slug .. ".md"
+		local is_new = vim.fn.filereadable(path) == 0
+		vim.cmd.edit(vim.fn.fnameescape(path))
+		if is_new then
+			local heading = (title and title ~= "") and title or ("Inbox " .. os.date("%Y-%m-%d %H:%M"))
+			vim.api.nvim_buf_set_lines(0, 0, -1, false, {
+				"---",
+				"created: " .. date,
+				"tags: [inbox]",
+				"---",
+				"",
+				"# " .. heading,
+				"",
+				"",
+			})
+		end
+		vim.cmd("normal! G")
+		vim.cmd("startinsert!")
+	end)
+end
+
+-- Browse the inbox for triage: just the files under inbox/, newest sorting
+-- done by hand into notes/.
+local function browse_inbox()
+	Snacks.picker.files({ dirs = { vault_root() .. "/inbox" } })
+end
+
+-- Vault-wide header search. `:Obsidian toc` (<leader>sv) only lists the
+-- current file's headers; this greps `^#+ ` across every note so any heading
+-- anywhere is jumpable.
+local function search_headers()
+	Snacks.picker.grep({ search = "^#+\\s", live = false, dirs = { vault_root() } })
+end
+
 require("snacks").setup({
 	picker = { enabled = true },
 	notifier = { enabled = true, timeout = 3000 },
@@ -244,6 +298,7 @@ require("snacks").setup({
 			keys = {
 				{ icon = " ", key = "n", desc = "New note", action = new_note },
 				{ icon = " ", key = "N", desc = "New note from template", action = new_note_from_template },
+				{ icon = " ", key = "i", desc = "Inbox capture", action = new_inbox_note },
 				{ icon = " ", key = "t", desc = "Today's daily note", action = ":Obsidian today" },
 				{ icon = " ", key = "f", desc = "Find/switch note", action = ":Obsidian quick_switch" },
 				{ icon = " ", key = "s", desc = "Search notes", action = ":Obsidian search" },
@@ -381,7 +436,17 @@ wk.add({
 		desc = "Buffers",
 	},
 
+	-- Search hub: every way to find something in the vault lives under
+	-- <leader>s so one prefix surfaces them all (note *creation/editing*
+	-- stays under <leader>n).
 	{ "<leader>s", group = "Search" },
+	{ "<leader>ss", "<cmd>Obsidian search<cr>", desc = "Search notes (full text)" },
+	{ "<leader>sf", "<cmd>Obsidian quick_switch<cr>", desc = "Find note (filename)" },
+	{ "<leader>sg", "<cmd>Obsidian tags<cr>", desc = "Search by tag" },
+	{ "<leader>sh", search_headers, desc = "Search headers (vault-wide)" },
+	{ "<leader>sv", "<cmd>Obsidian toc<cr>", desc = "Headers in current note (TOC)" },
+	{ "<leader>sk", "<cmd>Obsidian backlinks<cr>", desc = "Backlinks to current note" },
+	{ "<leader>si", browse_inbox, desc = "Browse inbox (triage)" },
 	{
 		"<leader>sb",
 		function()
@@ -395,22 +460,20 @@ wk.add({
 		desc = "Open todos (vault)",
 	},
 
+	-- Note lifecycle: create / edit / link / navigate. All *search* actions
+	-- moved to the <leader>s hub above.
 	{ "<leader>n", group = "Notes" },
 	{ "<leader>nn", new_note, desc = "New note" },
 	{ "<leader>nN", new_note_from_template, desc = "New note from template" },
+	{ "<leader>ni", new_inbox_note, desc = "Inbox capture (dated note in inbox/)" },
 	{ "<leader>nt", "<cmd>Obsidian today<cr>", desc = "Today's daily note" },
-	{ "<leader>nf", "<cmd>Obsidian quick_switch<cr>", desc = "Find/switch note" },
-	{ "<leader>ns", "<cmd>Obsidian search<cr>", desc = "Search notes" },
-	{ "<leader>nb", "<cmd>Obsidian backlinks<cr>", desc = "Backlinks" },
 	{ "<leader>nl", "<cmd>Obsidian follow_link<cr>", desc = "Follow link under cursor" },
 	{ "<leader>nT", "<cmd>Obsidian template<cr>", desc = "Insert template" },
 	{ "<leader>nw", "<cmd>Obsidian workspace<cr>", desc = "Switch vault (personal/work)" },
 	{ "<leader>nc", "<cmd>Obsidian toggle_checkbox<cr>", desc = "Toggle checkbox", mode = { "n", "x" } },
 	{ "<leader>np", "<cmd>Obsidian paste_img<cr>", desc = "Paste image from clipboard" },
 	{ "<leader>nr", "<cmd>Obsidian rename<cr>", desc = "Rename note (updates references)" },
-	{ "<leader>n#", "<cmd>Obsidian tags<cr>", desc = "Browse notes by tag" },
 	{ "<leader>no", "<cmd>Obsidian open<cr>", desc = "Open in Obsidian app" },
-	{ "<leader>nv", "<cmd>Obsidian toc<cr>", desc = "Table of contents" },
 	-- Range commands: pressing `:` from visual mode auto-prepends '<,'>, which
 	-- is exactly the range these expect — no custom wrapper needed.
 	{ "<leader>nk", ":Obsidian link<cr>", desc = "Link selection to an existing note", mode = "v" },
