@@ -16,5 +16,19 @@ return {
 			end,
 			desc = "Git Diff(gitsigns)",
 		},
+		{
+			"]h",
+			function()
+				require("gitsigns").nav_hunk("next")
+			end,
+			desc = "Next git hunk (gitsigns)",
+		},
+		{
+			"[h",
+			function()
+				require("gitsigns").nav_hunk("prev")
+			end,
+			desc = "Prev git hunk (gitsigns)",
+		},
 	},
 }
