@@ -1,0 +1,27 @@
+editor = "nvim"
+
+[colors] 
+accent        = "#7aa2f7"  # blue — focus/selection base
+muted         = "#565f89"  # comment — idle chrome base
+
+selection     = "#7dcfff"  # cyan — highlighted row
+chevron       = "#7aa2f7"  # blue — submenu arrow
+logo          = "#bb9af7"  # purple — header logo
+emphasis      = "#bb9af7"  # purple — dialog command name
+dialog_border = "#7aa2f7"  # blue — active modal frame
+filter_match  = "#e0af68"  # yellow — search highlight
+tab_active    = "#7aa2f7"  # blue — active tab
+
+border        = "#414868"  # dark gray — idle box borders
+tab_inactive  = "#565f89"  # comment — inactive tabs
+dimmed        = "#565f89"  # comment — dimmed rows
+
+[keys]
+tools         = "1"
+history       = "2"
+
+[icons]
+history       = ""    # give the wordy ones glyphs
+notes         = "≣"
+run           = ""
+filter        = ""
