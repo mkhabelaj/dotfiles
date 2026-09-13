@@ -14,6 +14,10 @@ new_cwd = "follow"
 # Prefix: Ctrl-A (tmux `set -g prefix C-a`)
 prefix = "ctrl+a"
 
+# Move raw-key image paste (herdr --remote only) off ctrl+v so nvim keeps
+# visual-block mode. ctrl+v -> nvim; ctrl+alt+v -> herdr image paste.
+remote_image_paste = "ctrl+alt+v"
+
 # Reload config — tmux `prefix r`. Frees prefix+r from resize_mode (moved below).
 reload_config = "prefix+r"
 resize_mode = "prefix+shift+r"
