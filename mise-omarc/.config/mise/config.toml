@@ -3,6 +3,8 @@
 # below rather than removed, so it's clear mise intentionally skips them.
 # "cargo:tree-sitter-cli" = "latest" # system package
 "cargo:harper-ls" = "latest"
+claude = "latest"
+codex = "latest"
 gh = "latest"
 "github:agavra/tuicr" = "latest"
 # "github:ogulcancelik/herdr" = "latest" # system package
@@ -11,7 +13,7 @@ go = "latest"
 # gum = "latest" # system package
 # lazygit = "latest" # system package
 # neovim = "latest" # system package
-node = "latest"
+node = "26.8.2"
 "pipx:black" = "25.1.0"
 # ripgrep = "latest" # system package
 rust = "latest"
@@ -25,3 +27,8 @@ yazi = "latest"
 "pipx:visidata" = "latest"
 # fzf = "latest" # system package
 "github:mkhabelaj/hub" = "0.4.1"
+
+# Omarchy sets this globally so `mise up` never prunes the install dir a
+# running AI-tool wrapper is executing from.
+[settings.upgrade]
+auto_prune = false

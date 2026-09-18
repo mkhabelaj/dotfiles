@@ -12,6 +12,9 @@ curl https://mise.run | sh
 git clone https://github.com/jacksonmkhabela/dotfiles.git ~/dotfiles && cd ~/dotfiles
 
 # 3. Stow configs
+# Use `mise` on a work machine (no AI tools), or `mise-omarc` on a personal
+# omarchy machine (merges with the AI tools omarchy installs globally).
+# Stow only one of the two -- they both target ~/.config/mise/config.toml.
 stow nvim nvim-octo nvim-notes tmux herdr ghostty fish mise flo visidata
 
 # 4. Install dev tools
@@ -29,21 +32,26 @@ mise install
 | `herdr` | Herdr terminal workspace manager |
 | `ghostty` | Ghostty terminal (GPU, inline images) |
 | `fish` | Fish shell |
-| `mise` | mise tool manager |
+| `mise` | mise tool manager (work machines, no AI tools) |
+| `mise-omarc` | mise tool manager (personal omarchy machines, merges omarchy's AI tools) |
 | `flo` | flo workflow TUI |
 | `visidata` | VisiData CSV/TSV TUI (Tokyo Night Storm theme) |
 
 ## What mise Installs
 
-Defined in `mise/.config/mise/config.toml`:
+Defined in `mise/.config/mise/config.toml` (work) and
+`mise-omarc/.config/mise/config.toml` (personal). Tools already provided by
+the system (pacman/omarchy) -- `neovim`, `tmux`, `herdr`, `lazygit`, `gum`,
+`ripgrep`, `zoxide`, `jq`, `fzf`, `usage`, `tree-sitter-cli` -- are commented
+out in both files rather than removed, so mise doesn't reinstall them.
+`mise-omarc` additionally tracks `claude` and `codex`, which omarchy installs
+globally via its own AI-tool wrappers.
 
 | Category | Tools |
 |----------|-------|
 | **Languages** | node, go, rust |
-| **Editor** | neovim |
-| **Terminal** | tmux |
-| **CLI Tools** | zoxide, lazygit, gum, sesh, ripgrep |
-| **Dev Tools** | tree-sitter-cli, usage, harper-ls |
+| **Dev Tools** | harper-ls |
+| **AI (personal only)** | claude, codex |
 
 ## PR Review (`nvim-octo`)
 
@@ -149,6 +157,7 @@ dotfiles/
 ├── herdr/.config/herdr/     # → ~/.config/herdr/
 ├── alacritty/.config/alacritty/  # → ~/.config/alacritty/
 ├── fish/.config/fish/       # → ~/.config/fish/
-├── mise/.config/mise/       # → ~/.config/mise/
+├── mise/.config/mise/       # → ~/.config/mise/ (work)
+├── mise-omarc/.config/mise/ # → ~/.config/mise/ (personal)
 └── flo/.config/flo/         # → ~/.config/flo/
 ```
