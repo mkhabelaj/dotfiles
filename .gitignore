@@ -23,3 +23,6 @@ herdr/.config/herdr/.plugins.lock
 
 # fish
 fish/.config/fish/conf.d/fish_frozen_key_bindings.fish
+
+# hypr - machine-specific, rewritten by omarchy-hyprland-monitor-scaling
+hypr/.config/hypr/monitors.lua

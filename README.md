@@ -17,6 +17,8 @@ git clone https://github.com/jacksonmkhabela/dotfiles.git ~/dotfiles && cd ~/dot
 # Stow only one of the two -- they both target ~/.config/mise/config.toml.
 stow nvim nvim-octo nvim-notes tmux herdr ghostty fish mise flo visidata
 
+# On a personal omarchy machine, also stow hypr (see "Hyprland (`hypr`)" below).
+
 # 4. Install dev tools
 mise install
 ```
@@ -31,6 +33,7 @@ mise install
 | `tmux` | Tmux |
 | `herdr` | Herdr terminal workspace manager |
 | `ghostty` | Ghostty terminal (GPU, inline images) |
+| `hypr` | Hyprland user overrides (omarchy machines only; `monitors.lua` is gitignored) |
 | `fish` | Fish shell |
 | `mise` | mise tool manager (work machines, no AI tools) |
 | `mise-omarc` | mise tool manager (personal omarchy machines, merges omarchy's AI tools) |
@@ -130,6 +133,34 @@ from obsidian-ls; a small contextual source adds callout types after `> [!`
 **Other**: `zz`/`zZ` zen mode · `us`/`uw`/`uc` toggle spell/wrap/word-count ·
 floating `:` cmdline (noice).
 
+## Hyprland (`hypr`)
+
+Omarchy's own defaults live in `/usr/share/omarchy/default/hypr/`; the files
+in `~/.config/hypr` are the user-override layer that loads after them, so
+package updates don't rewrite them. This package tracks that layer:
+`hyprland.lua`, `bindings.lua`, `input.lua`, `looknfeel.lua`, `autostart.lua`,
+`hyprsunset.conf`, `xdph.conf`, `.luarc.json`.
+
+`monitors.lua` is **gitignored**. Omarchy rewrites it in place
+(`omarchy-hyprland-monitor-scaling` edits the scale values) and its contents
+are specific to this machine's display. The file stays on disk in the package
+directory, but isn't committed.
+
+On a fresh omarchy install, `~/.config/hypr` already exists (from the
+installer's skeleton), so move it aside before stowing, then restore or
+recreate `monitors.lua`, since `hyprland.lua` requires it:
+
+```bash
+mv ~/.config/hypr ~/.config/hypr.orig
+stow hypr
+cp ~/.config/hypr.orig/monitors.lua ~/.config/hypr/
+```
+
+Omarchy can still edit these files through the symlink (a migration during
+`omarchy-update`, or `omarchy-refresh-hyprland`, which overwrites them with
+the shipped defaults). Run `git status` in this repo after an update to spot
+any change.
+
 ## Stow Usage
 
 ```bash
@@ -156,6 +187,7 @@ dotfiles/
 ├── tmux/.config/tmux/       # → ~/.config/tmux/
 ├── herdr/.config/herdr/     # → ~/.config/herdr/
 ├── alacritty/.config/alacritty/  # → ~/.config/alacritty/
+├── hypr/.config/hypr/       # → ~/.config/hypr/ (omarchy only)
 ├── fish/.config/fish/       # → ~/.config/fish/
 ├── mise/.config/mise/       # → ~/.config/mise/ (work)
 ├── mise-omarc/.config/mise/ # → ~/.config/mise/ (personal)
