@@ -51,6 +51,7 @@
 --   Keybindings               SUPER + K      ->  SUPER + B  (B for bindings)
 --   Toggle workspace layout   SUPER + L      ->  SUPER + CTRL + SHIFT + L
 --   Tmux keybindings          SUPER + ALT + K ->  SUPER + CTRL + ALT + K
+--   Toggle dictation          SUPER + CTRL + X ->  SUPER + D  (D for dictate)
 --
 -- Dropped with no replacement: group prev/next on SUPER + CTRL + LEFT/RIGHT.
 -- SUPER + CTRL + H/L are Hardware menu / Lock system, so they stay as they are.
@@ -97,6 +98,14 @@ o.bind("SUPER + CTRL + SHIFT + J", "Toggle window split", hl.dsp.layout("toggles
 o.bind("SUPER + B", "Keybindings", "omarchy-menu-keybindings")
 o.bind("SUPER + CTRL + SHIFT + L", "Toggle workspace layout", "omarchy-hyprland-workspace-layout-toggle")
 o.bind("SUPER + CTRL + ALT + K", "Tmux keybindings", "omarchy-menu-tmux-keybindings")
+
+-- ---- dictation: shorter toggle ----
+-- Same guard as Omarchy's voxtype.lua, so this is a no-op where voxtype is
+-- missing. F9 push-to-talk is left as shipped.
+if o.cmd_present("voxtype") then
+  hl.unbind("SUPER + CTRL + X")
+  o.bind("SUPER + D", "Toggle dictation", "voxtype record toggle")
+end
 
 -- ---- screenshot region picker: hjkl selects the window to capture ----
 -- Same pattern as Omarchy's own handler (utilities.lua): the binds exist only
