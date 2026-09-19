@@ -26,6 +26,7 @@ yazi = "latest"
 "pipx:visidata" = "latest"
 # fzf = "latest" # system package
 "github:mkhabelaj/hub" = "0.4.1"
+usage = "latest"
 
 # Omarchy sets this globally so `mise up` never prunes the install dir a
 # running AI-tool wrapper is executing from.
