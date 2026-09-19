@@ -20,7 +20,6 @@ rust = "latest"
 uv = "latest"
 yazi = "latest"
 # zoxide = "latest" # system package
-"github:mkhabelaj/flo-releases" = { version = "latest", bin = "flo" }
 # jq = "latest" # system package
 "pipx:visidata" = "latest"
 # fzf = "latest" # system package
