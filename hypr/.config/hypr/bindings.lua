@@ -114,6 +114,40 @@ end
 hl.unbind("SUPER + W")
 o.bind("SUPER + Q", "Close window", hl.dsp.window.close())
 
+-- ---- AI webapp: Claude instead of ChatGPT ----
+hl.unbind("SUPER + SHIFT + A")
+o.bind("SUPER + SHIFT + A", "Claude", { webapp = "https://claude.ai" })
+
+-- ---- Music: Apple Music instead of Spotify ----
+-- Opened in Zen, not the Omarchy webapp launcher: that uses Chromium, which
+-- has no Widevine, so Apple Music can't play protected audio there. Zen
+-- fetches Widevine itself on first playback. Refocuses an existing window.
+hl.unbind("SUPER + SHIFT + M")
+o.bind("SUPER + SHIFT + M", "Apple Music", {
+  focus = "Apple Music",
+  launch = "zen-browser --new-window https://music.apple.com",
+})
+
+-- ---- Media controls without media keys ----
+-- Same commands as Omarchy's XF86Audio* binds. Play/pause is M, not SPACE:
+-- SUPER+ALT+SPACE is the Apps menu.
+o.bind("SUPER + ALT + N", "Next track", "omarchy-shell media next", { locked = true })
+o.bind("SUPER + ALT + P", "Previous track", "omarchy-shell media previous", { locked = true })
+o.bind("SUPER + ALT + M", "Play/pause", "omarchy-shell media playPause", { locked = true })
+
+-- ---- Mail and calendar: Google instead of Hey ----
+hl.unbind("SUPER + SHIFT + E")
+hl.unbind("SUPER + SHIFT + ALT + E")
+hl.unbind("SUPER + SHIFT + C")
+o.bind("SUPER + SHIFT + E", "Email", { webapp = "https://mail.google.com" })
+o.bind("SUPER + SHIFT + ALT + E", "New email", { webapp = "https://mail.google.com/mail/?view=cm&fs=1" })
+o.bind("SUPER + SHIFT + C", "Calendar", { webapp = "https://calendar.google.com" })
+
+-- ---- Move window to next/previous monitor (cycles through any number) ----
+-- Mirrors Omarchy's CTRL+ALT+TAB "focus next monitor", plus SUPER.
+o.bind("SUPER + CTRL + ALT + TAB", "Move window to next monitor", hl.dsp.window.move({ monitor = "+1" }))
+o.bind("SUPER + CTRL + ALT + SHIFT + TAB", "Move window to previous monitor", hl.dsp.window.move({ monitor = "-1" }))
+
 -- ---- Herdr keybindings: my own searchable, annotated menu ----
 -- Replaces Omarchy's omarchy-menu-herdr-keybindings. Descriptions live in
 -- ~/.config/herdr/herdr-learn.toml; Learn > Herdr in the Omarchy menu points at
