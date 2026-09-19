@@ -110,6 +110,10 @@ if o.cmd_present("voxtype") then
   o.bind("SUPER + D", "Toggle dictation", "voxtype record toggle")
 end
 
+-- ---- close window: Q (quit) instead of W ----
+hl.unbind("SUPER + W")
+o.bind("SUPER + Q", "Close window", hl.dsp.window.close())
+
 -- ---- Herdr keybindings: my own searchable, annotated menu ----
 -- Replaces Omarchy's omarchy-menu-herdr-keybindings. Descriptions live in
 -- ~/.config/herdr/herdr-learn.toml; Learn > Herdr in the Omarchy menu points at
