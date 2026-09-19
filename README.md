@@ -17,7 +17,8 @@ git clone https://github.com/jacksonmkhabela/dotfiles.git ~/dotfiles && cd ~/dot
 # Stow only one of the two -- they both target ~/.config/mise/config.toml.
 stow nvim nvim-octo nvim-notes tmux herdr ghostty fish mise flo visidata
 
-# On a personal omarchy machine, also stow hypr (see "Hyprland (`hypr`)" below).
+# On a personal omarchy machine, also stow hypr and omarchy (see "Hyprland
+# (`hypr`)" and "Herdr learn menu" below).
 
 # 4. Install dev tools
 mise install
@@ -34,6 +35,7 @@ mise install
 | `herdr` | Herdr terminal workspace manager |
 | `ghostty` | Ghostty terminal (GPU, inline images) |
 | `hypr` | Hyprland user overrides (omarchy machines only; `monitors.lua` is gitignored) |
+| `omarchy` | Omarchy menu extension only (omarchy machines only): Learn > Herdr row -> `herdr-learn.py` |
 | `fish` | Fish shell |
 | `mise` | mise tool manager (work machines, no AI tools) |
 | `mise-omarc` | mise tool manager (personal omarchy machines, merges omarchy's AI tools) |
@@ -161,6 +163,26 @@ Omarchy can still edit these files through the symlink (a migration during
 the shipped defaults). Run `git status` in this repo after an update to spot
 any change.
 
+## Herdr learn menu (`herdr` + `omarchy`)
+
+Omarchy's **Learn > Herdr** menu (and `SUPER+CTRL+K`) is replaced by
+`herdr/.config/herdr/herdr-learn.py`: a searchable list of every herdr key with a
+one-line description, so you can find a key by what it does ("sidebar",
+"rename", "side by side") instead of by name. It also lists the custom
+`CTRL+H/J/K/L` pane-nav keys and shows the tmux equivalent where there is one.
+
+- The action list and default keys come from `herdr --default-config`, then
+  `config.toml` overrides them, so it follows herdr updates on its own.
+- Descriptions, groups and tmux hints live in `herdr-learn.toml`. An action with
+  no entry is still listed, just without a description. After updating herdr,
+  run `herdr-learn.py --check` to see what needs one; `--print` dumps the rows.
+- Needs `python3` >= 3.11 (for `tomllib`).
+- The `omarchy` package tracks **only**
+  `~/.config/omarchy/extensions/omarchy-menu.jsonc`, which points the Learn >
+  Herdr row at this script. The rest of `~/.config/omarchy` (themes, hooks,
+  branding, `shell.toml`) is Omarchy-managed and deliberately not tracked.
+- `SUPER+CTRL+K` is rebound in the `hypr` package's `bindings.lua`.
+
 ## Stow Usage
 
 ```bash
@@ -188,6 +210,7 @@ dotfiles/
 ├── herdr/.config/herdr/     # → ~/.config/herdr/
 ├── alacritty/.config/alacritty/  # → ~/.config/alacritty/
 ├── hypr/.config/hypr/       # → ~/.config/hypr/ (omarchy only)
+├── omarchy/.config/omarchy/extensions/  # → ~/.config/omarchy/extensions/ (omarchy only, one file)
 ├── fish/.config/fish/       # → ~/.config/fish/
 ├── mise/.config/mise/       # → ~/.config/mise/ (work)
 ├── mise-omarc/.config/mise/ # → ~/.config/mise/ (personal)

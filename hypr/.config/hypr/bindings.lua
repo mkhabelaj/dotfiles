@@ -53,6 +53,9 @@
 --   Tmux keybindings          SUPER + ALT + K ->  SUPER + CTRL + ALT + K
 --   Toggle dictation          SUPER + CTRL + X ->  SUPER + D  (D for dictate)
 --
+-- Same key, different command:
+--   Herdr keybindings         SUPER + CTRL + K  runs my herdr-learn.py menu
+--
 -- Dropped with no replacement: group prev/next on SUPER + CTRL + LEFT/RIGHT.
 -- SUPER + CTRL + H/L are Hardware menu / Lock system, so they stay as they are.
 -- SUPER + ALT + TAB (and + SHIFT + TAB) already do the same thing.
@@ -106,6 +109,13 @@ if o.cmd_present("voxtype") then
   hl.unbind("SUPER + CTRL + X")
   o.bind("SUPER + D", "Toggle dictation", "voxtype record toggle")
 end
+
+-- ---- Herdr keybindings: my own searchable, annotated menu ----
+-- Replaces Omarchy's omarchy-menu-herdr-keybindings. Descriptions live in
+-- ~/.config/herdr/herdr-learn.toml; Learn > Herdr in the Omarchy menu points at
+-- the same script (see omarchy/.config/omarchy/extensions/omarchy-menu.jsonc).
+hl.unbind("SUPER + CTRL + K")
+o.bind("SUPER + CTRL + K", "Herdr keybindings", "~/.config/herdr/herdr-learn.py")
 
 -- ---- screenshot region picker: hjkl selects the window to capture ----
 -- Same pattern as Omarchy's own handler (utilities.lua): the binds exist only

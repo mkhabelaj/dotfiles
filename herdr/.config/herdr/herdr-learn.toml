@@ -1,0 +1,327 @@
+# Descriptions for herdr-learn.py (the searchable Herdr keybinding menu).
+#
+# The list of actions and their default keys come from `herdr --default-config`
+# and your config.toml; this file only ADDS words to them. An action with no
+# entry here is still shown (humanized name, group "other"), so a herdr update
+# that adds an action never hides it. Run `herdr-learn.py --check` to see which
+# actions still need a description.
+#
+# Search matches the description too, so write what you would type when you
+# don't remember the name ("sidebar", "rename", "side by side", ...).
+#
+#   [actions.<action_id>]   desc  (required)  one line, no tabs
+#                           group (optional)  key of [groups] below
+#                           tmux  (optional)  the tmux equivalent, shown as a hint
+#   [custom."<key>"]        for [[keys.command]] entries in config.toml, matched
+#                           by their `key`; name / desc / group / tmux
+
+[groups.session]
+icon = ""   # terminal
+order = 1
+
+[groups.pane]
+icon = ""   # columns
+order = 2
+
+[groups.tab]
+icon = ""   # clone
+order = 3
+
+[groups.workspace]
+icon = ""   # cube
+order = 4
+
+[groups.agent]
+icon = ""   # robot
+order = 5
+
+[groups.mode]
+icon = ""   # cogs
+order = 6
+
+[groups.other]
+icon = ""   # question
+order = 7
+
+# ---------------------------------------------------------------------------
+# Session: the prefix itself and herdr-wide commands
+# ---------------------------------------------------------------------------
+
+[actions.prefix]
+group = "session"
+desc = "Press this first, then an action key. Every 'PREFIX + ...' shortcut starts here."
+tmux = "prefix (C-a)"
+
+[actions.help]
+group = "session"
+desc = "Show herdr's built-in help."
+
+[actions.settings]
+group = "session"
+desc = "Open herdr's settings."
+
+[actions.detach]
+group = "session"
+desc = "Detach and leave everything running in the background. Run 'herdr' to reattach."
+tmux = "prefix d"
+
+[actions.reload_config]
+group = "session"
+desc = "Reload config.toml without restarting herdr."
+tmux = "prefix r"
+
+[actions.open_notification_target]
+group = "session"
+desc = "Open the target of the latest notification, i.e. jump to whatever raised it."
+
+[actions.remote_image_paste]
+group = "session"
+desc = "herdr --remote only: paste an image from the clipboard. Kept off CTRL+V so nvim's visual-block still works."
+
+[actions.workspace_picker]
+group = "workspace"
+desc = "Open a picker to search for and switch to a workspace."
+
+[actions.goto]
+group = "session"
+desc = "Open the 'goto' picker to jump somewhere by name (your replacement for the tmux sesh popup)."
+tmux = "prefix J / K (sesh)"
+
+# ---------------------------------------------------------------------------
+# Workspaces (like tmux sessions)
+# ---------------------------------------------------------------------------
+
+[actions.new_workspace]
+group = "workspace"
+desc = "Create a new workspace."
+
+[actions.new_worktree]
+group = "workspace"
+desc = "Create a new workspace backed by a new git worktree."
+
+[actions.open_worktree]
+group = "workspace"
+desc = "Open an existing git worktree as a workspace."
+
+[actions.remove_worktree]
+group = "workspace"
+desc = "Remove a git worktree (asks for confirmation first)."
+
+[actions.rename_workspace]
+group = "workspace"
+desc = "Rename the current workspace."
+
+[actions.close_workspace]
+group = "workspace"
+desc = "Close the current workspace."
+
+[actions.previous_workspace]
+group = "workspace"
+desc = "Switch to the previous workspace (b = back)."
+
+[actions.next_workspace]
+group = "workspace"
+desc = "Switch to the next workspace (f = forward)."
+
+[actions.switch_workspace]
+group = "workspace"
+desc = "Jump straight to workspace number 1 to 9."
+
+# ---------------------------------------------------------------------------
+# Agents (the agent rows in the sidebar)
+# ---------------------------------------------------------------------------
+
+[actions.previous_agent]
+group = "agent"
+desc = "Move to the previous agent row in the sidebar."
+
+[actions.next_agent]
+group = "agent"
+desc = "Move to the next agent row in the sidebar."
+
+[actions.focus_agent]
+group = "agent"
+desc = "Jump straight to agent row number 1 to 9."
+
+# ---------------------------------------------------------------------------
+# Tabs (like tmux windows)
+# ---------------------------------------------------------------------------
+
+[actions.new_tab]
+group = "tab"
+desc = "Open a new tab."
+tmux = "prefix c"
+
+[actions.rename_tab]
+group = "tab"
+desc = "Rename the current tab."
+
+[actions.previous_tab]
+group = "tab"
+desc = "Switch to the previous tab."
+tmux = "prefix p"
+
+[actions.next_tab]
+group = "tab"
+desc = "Switch to the next tab."
+tmux = "prefix n"
+
+[actions.move_tab_previous]
+group = "tab"
+desc = "Move the current tab toward the front of the tab bar."
+
+[actions.move_tab_next]
+group = "tab"
+desc = "Move the current tab toward the back of the tab bar."
+
+[actions.switch_tab]
+group = "tab"
+desc = "Jump straight to tab number 1 to 9."
+tmux = "prefix 1..9"
+
+[actions.close_tab]
+group = "tab"
+desc = "Close the current tab."
+
+# ---------------------------------------------------------------------------
+# Panes
+# ---------------------------------------------------------------------------
+
+[actions.split_vertical]
+group = "pane"
+desc = "Split the pane side by side."
+tmux = "prefix |"
+
+[actions.split_horizontal]
+group = "pane"
+desc = "Split the pane stacked, one above the other."
+tmux = "prefix -"
+
+[actions.close_pane]
+group = "pane"
+desc = "Close the focused pane."
+tmux = "prefix x"
+
+[actions.zoom]
+group = "pane"
+desc = "Toggle fullscreen for the focused pane."
+tmux = "prefix m"
+
+[actions.rename_pane]
+group = "pane"
+desc = "Rename the focused pane."
+
+[actions.edit_scrollback]
+group = "pane"
+desc = "Open the pane's scrollback in your editor to search and copy. Herdr's replacement for tmux copy-mode."
+tmux = "copy-mode"
+
+[actions.focus_pane_left]
+group = "pane"
+desc = "Move focus to the pane on the left."
+
+[actions.focus_pane_down]
+group = "pane"
+desc = "Move focus to the pane below."
+
+[actions.focus_pane_up]
+group = "pane"
+desc = "Move focus to the pane above."
+
+[actions.focus_pane_right]
+group = "pane"
+desc = "Move focus to the pane on the right."
+
+[actions.cycle_pane_next]
+group = "pane"
+desc = "Cycle focus to the next pane."
+
+[actions.cycle_pane_previous]
+group = "pane"
+desc = "Cycle focus to the previous pane."
+
+[actions.last_pane]
+group = "pane"
+desc = "Jump back to the pane you were on before this one."
+tmux = "prefix ;"
+
+[actions.toggle_sidebar]
+group = "pane"
+desc = "Show or hide the sidebar (workspace and agent list)."
+
+# ---------------------------------------------------------------------------
+# Modes: resizing and navigate mode
+# ---------------------------------------------------------------------------
+
+[actions.resize_mode]
+group = "mode"
+desc = "Enter resize mode to change pane sizes."
+tmux = "prefix h/j/k/l (repeatable)"
+
+[actions.resize_pane_left]
+group = "mode"
+desc = "Resize the focused pane to the left, without entering resize mode."
+
+[actions.resize_pane_down]
+group = "mode"
+desc = "Resize the focused pane downward, without entering resize mode."
+
+[actions.resize_pane_up]
+group = "mode"
+desc = "Resize the focused pane upward, without entering resize mode."
+
+[actions.resize_pane_right]
+group = "mode"
+desc = "Resize the focused pane to the right, without entering resize mode."
+
+[actions.navigate_workspace_up]
+group = "mode"
+desc = "Navigate mode: move to the workspace above."
+
+[actions.navigate_workspace_down]
+group = "mode"
+desc = "Navigate mode: move to the workspace below."
+
+[actions.navigate_pane_left]
+group = "mode"
+desc = "Navigate mode: move focus to the pane on the left."
+
+[actions.navigate_pane_down]
+group = "mode"
+desc = "Navigate mode: move focus to the pane below."
+
+[actions.navigate_pane_up]
+group = "mode"
+desc = "Navigate mode: move focus to the pane above."
+
+[actions.navigate_pane_right]
+group = "mode"
+desc = "Navigate mode: move focus to the pane on the right."
+
+# ---------------------------------------------------------------------------
+# Custom keys from config.toml ([[keys.command]])
+# ---------------------------------------------------------------------------
+
+[custom."ctrl+h"]
+name = "Focus pane left (nvim-aware)"
+group = "pane"
+desc = "No prefix needed. In nvim it moves between nvim splits first and only crosses into herdr at the edge."
+tmux = "C-h (vim-tmux-navigator)"
+
+[custom."ctrl+j"]
+name = "Focus pane down (nvim-aware)"
+group = "pane"
+desc = "No prefix needed. In nvim it moves between nvim splits first and only crosses into herdr at the edge."
+tmux = "C-j (vim-tmux-navigator)"
+
+[custom."ctrl+k"]
+name = "Focus pane up (nvim-aware)"
+group = "pane"
+desc = "No prefix needed. In nvim it moves between nvim splits first and only crosses into herdr at the edge."
+tmux = "C-k (vim-tmux-navigator)"
+
+[custom."ctrl+l"]
+name = "Focus pane right (nvim-aware)"
+group = "pane"
+desc = "No prefix needed. In nvim it moves between nvim splits first and only crosses into herdr at the edge."
+tmux = "C-l (vim-tmux-navigator)"
