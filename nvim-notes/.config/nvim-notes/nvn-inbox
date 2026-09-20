@@ -1,0 +1,7 @@
+#!/bin/bash
+# Start a new inbox note in nvim-notes: prompts for a title, then drops into
+# insert mode in ~/vault/inbox/YYYY-MM-DD_slug.md.
+#
+# NVIM_APPNAME is set here, not by the caller: the Omarchy launch helpers start
+# the terminal through uwsm-app, which drops the caller's environment.
+exec env NVIM_APPNAME=nvim-notes nvim '+InboxNew'

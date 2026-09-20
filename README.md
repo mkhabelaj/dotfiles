@@ -35,7 +35,7 @@ mise install
 | `herdr` | Herdr terminal workspace manager |
 | `ghostty` | Ghostty terminal (GPU, inline images) |
 | `hypr` | Hyprland user overrides (omarchy machines only; `monitors.lua` is gitignored) |
-| `omarchy` | Omarchy menu extension only (omarchy machines only): Learn > Herdr row -> `herdr-learn.py`; Personal > Notes -> today's note in `nvn` |
+| `omarchy` | Omarchy menu extension only (omarchy machines only): Learn > Herdr row -> `herdr-learn.py`; Personal > Notes -> today's note in `nvn`, Personal > Inbox -> new inbox note |
 | `fish` | Fish shell |
 | `mise` | mise tool manager (work machines, no AI tools) |
 | `mise-omarc` | mise tool manager (personal omarchy machines, merges omarchy's AI tools) |
@@ -104,7 +104,10 @@ active; a vault not cloned on a given machine is just skipped, no error.
 
 **From the Omarchy menu:** Personal > Notes runs `nvn-today`, which opens `nvn`
 straight onto today's daily note (`:Obsidian today`), or focuses the window if
-it's already open. The script sets `NVIM_APPNAME` itself because `uwsm-app`
+it's already open. Personal > Inbox runs `nvn-inbox`, which opens a new `nvn`
+window at the inbox title prompt (`:InboxNew`, same as `<leader>ni`), always a
+fresh window so each press starts a new capture. The scripts set `NVIM_APPNAME`
+themselves because `uwsm-app`
 (used by Omarchy's launchers) drops the caller's environment, so a
 `NVIM_APPNAME=... omarchy-launch-editor` prefix never reaches nvim. Bare `nvn`
 in a terminal still opens the dashboard.

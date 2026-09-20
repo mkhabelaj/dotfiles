@@ -234,11 +234,16 @@ end
 -- own dated note in inbox/ — NOT the flat notes/ pool and NOT one big
 -- inbox.md. inbox/ is explicitly the staging area you sort into notes/ later
 -- (browse it with <leader>si). Title is optional: blank = a timestamp slug so
--- a jot is frictionless. Filename matches the vault's YYYY-MM-DD_slug rule.
+-- a jot is frictionless; <Esc> cancels without creating anything. Filename
+-- matches the vault's YYYY-MM-DD_slug rule.
 local function new_inbox_note()
 	local dir = vault_root() .. "/inbox"
 	vim.fn.mkdir(dir, "p")
 	vim.ui.input({ prompt = "Inbox note title (optional): " }, function(title)
+		-- <Esc> cancels (nil); a blank <CR> ("") still makes a timestamped note.
+		if title == nil then
+			return
+		end
 		local date = os.date("%Y-%m-%d")
 		local slug
 		if title and title ~= "" then
@@ -266,6 +271,13 @@ local function new_inbox_note()
 		vim.cmd("startinsert!")
 	end)
 end
+
+-- Exposed as a command so it can be started from outside nvim (see nvn-inbox).
+-- Deferred: at startup a `+cmd` runs before the dashboard draws, which would
+-- otherwise land on top of the title prompt.
+vim.api.nvim_create_user_command("InboxNew", function()
+	vim.schedule(new_inbox_note)
+end, { desc = "New inbox note (prompts for a title)" })
 
 -- Browse the inbox for triage: just the files under inbox/, newest sorting
 -- done by hand into notes/.

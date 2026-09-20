@@ -34,6 +34,13 @@
     // Focuses the window if it is already open.
     "action": "omarchy-launch-or-focus-tui --app-id=org.omarchy.nvn ~/.config/nvim-notes/nvn-today"
   },
+  // Always a fresh window (omarchy-launch-tui, not launch-or-focus): each press
+  // starts a new capture, so it must not just refocus an old inbox window.
+  "personal.inbox": {
+    "icon": "󰚇",
+    "label": "Inbox",
+    "action": "omarchy-launch-tui --app-id=org.omarchy.nvn-inbox ~/.config/nvim-notes/nvn-inbox"
+  },
   "personal.files": {
     "icon": "",
     "label": "Files",
