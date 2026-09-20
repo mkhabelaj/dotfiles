@@ -21,10 +21,18 @@
     "icon": "",
     "label": "Personal"
   },
+  "personal.qnotes": {
+    "icon": "󰎞",
+    "label": "Quick Notes",
+    "action": "omarchy-launch-editor ~/notes"
+  },
   "personal.notes": {
     "icon": "󰎞",
     "label": "Notes",
-    "action": "omarchy-launch-editor ~/notes"
+    // nvn-today sets NVIM_APPNAME itself: uwsm-app drops the caller's env, so a
+    // `NVIM_APPNAME=... omarchy-launch-editor` prefix never reaches nvim.
+    // Focuses the window if it is already open.
+    "action": "omarchy-launch-or-focus-tui --app-id=org.omarchy.nvn ~/.config/nvim-notes/nvn-today"
   },
   "personal.files": {
     "icon": "",

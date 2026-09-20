@@ -1,0 +1,6 @@
+#!/bin/bash
+# Open today's daily note in nvim-notes (creates it from templates/daily.md).
+#
+# NVIM_APPNAME is set here, not by the caller: the Omarchy launch helpers start
+# the terminal through uwsm-app, which drops the caller's environment.
+exec env NVIM_APPNAME=nvim-notes nvim '+Obsidian today'
