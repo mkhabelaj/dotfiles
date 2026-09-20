@@ -1,0 +1,224 @@
+#!/usr/bin/env python3
+"""Keep the nvn vaults in sync with GitHub, and surface what isn't.
+
+  nvn-sync status   one-line Waybar-style JSON for the Omarchy bar. Prints
+                    nothing when everything is synced: the bar falls back to
+                    showing the raw output when JSON `text` is empty, so only
+                    truly empty output hides the widget.
+  nvn-sync files    full list of unsynced files, for a terminal
+  nvn-sync sync     commit local changes, pull --rebase, push (both vaults)
+
+Wired up as a `command` module in ~/.config/omarchy/shell.json.
+"""
+
+import json
+import os
+import socket
+import subprocess
+import sys
+import time
+from dataclasses import dataclass, field
+from datetime import datetime
+from pathlib import Path
+
+HOME = Path.home()
+VAULTS = [HOME / "vault", HOME / "work-vault"]  # personal, work; missing ones are skipped
+if os.environ.get("NVN_SYNC_VAULTS"):  # override, for testing
+    VAULTS = [Path(p) for p in os.environ["NVN_SYNC_VAULTS"].split()]
+FETCH_EVERY = 300  # seconds between background fetches
+MAX_FILES = 12  # files listed per vault in the tooltip
+STATE = Path(os.environ.get("XDG_CACHE_HOME") or HOME / ".cache") / "nvn-sync"
+ICON = ""
+
+
+def git(repo, *args, remote=False, capture=True, timeout=None):
+    """Run git in `repo`.
+
+    Remote commands can't prompt (the bar has no terminal): HTTPS remotes
+    authenticate through gh's stored token without touching the user's git
+    config, and SSH remotes fail fast instead of asking for a passphrase.
+    Local commands skip optional locks so the 30s poll never makes a
+    concurrent `git add` in sync fail with "index.lock exists".
+    """
+    cmd = ["git"]
+    env = {**os.environ, "GIT_OPTIONAL_LOCKS": "0"}
+    if remote:
+        cmd += ["-c", "credential.helper=", "-c", "credential.helper=!gh auth git-credential"]
+        env |= {
+            "GIT_TERMINAL_PROMPT": "0",
+            "GIT_SSH_COMMAND": "ssh -o BatchMode=yes -o ConnectTimeout=10",
+        }
+    cmd += ["-C", str(repo), *args]
+    return subprocess.run(
+        cmd, env=env, text=True, capture_output=capture, timeout=timeout or (120 if remote else None)
+    )
+
+
+@dataclass
+class VaultState:
+    name: str
+    changes: list = field(default_factory=list)  # (kind, path)
+    ahead: int = 0
+    behind: int = 0
+    remote_files: list = field(default_factory=list)
+    fetch_failed: bool = False
+
+    @property
+    def synced(self):
+        return not (self.changes or self.ahead or self.behind)
+
+
+def active_vaults():
+    return [v for v in VAULTS if (v / ".git").is_dir()]
+
+
+def has_upstream(repo):
+    return git(repo, "rev-parse", "--abbrev-ref", "@{u}").returncode == 0
+
+
+def maybe_fetch(repo):
+    """Fetch at most every FETCH_EVERY seconds. The stamp is touched on failure
+    too, so being offline costs one attempt per interval rather than one per poll."""
+    stamp = STATE / f"{repo.name}.fetched"
+    try:
+        last = stamp.stat().st_mtime
+    except FileNotFoundError:
+        last = 0
+    if time.time() - last < FETCH_EVERY:
+        return True
+    STATE.mkdir(parents=True, exist_ok=True)
+    stamp.touch()
+    try:
+        return git(repo, "fetch", "--quiet", remote=True, timeout=20).returncode == 0
+    except subprocess.TimeoutExpired:
+        return False
+
+
+def local_changes(repo):
+    """(kind, path) for each unsaved file, untracked files expanded."""
+    out = git(repo, "status", "--porcelain=v1", "--untracked-files=all", "-z").stdout
+    entries = out.split("\0")
+    changes, i = [], 0
+    while i < len(entries):
+        entry = entries[i]
+        i += 1
+        if not entry:
+            continue
+        code, path = entry[:2], entry[3:]
+        if code[0] in "RC":  # -z lists a rename's original path as its own entry
+            path = f"{entries[i]} -> {path}"
+            i += 1
+        if code == "??" or "A" in code:
+            kind = "new"
+        elif "D" in code:
+            kind = "deleted"
+        elif code[0] == "R":
+            kind = "renamed"
+        else:
+            kind = "modified"
+        changes.append((kind, path))
+    return changes
+
+
+def collect(repo, fetch):
+    state = VaultState(name=repo.name)
+    if fetch:
+        state.fetch_failed = not maybe_fetch(repo)
+    state.changes = local_changes(repo)
+    if has_upstream(repo):
+        counts = git(repo, "rev-list", "--left-right", "--count", "HEAD...@{u}").stdout.split()
+        state.ahead, state.behind = int(counts[0]), int(counts[1])
+        if state.behind:
+            diff = git(repo, "diff", "--name-only", "-z", "HEAD...@{u}").stdout
+            state.remote_files = [p for p in diff.split("\0") if p]
+    return state
+
+
+def render(state, limit):
+    """Report lines for one vault; `limit` caps listed files (0 = all)."""
+    if state.synced:
+        return []
+    lines = [state.name]
+    if state.changes:
+        shown = state.changes[:limit] if limit else state.changes
+        lines.append(f"  {len(state.changes)} unsaved file(s):")
+        lines += [f"    {kind:<9} {path}" for kind, path in shown]
+        if limit and len(state.changes) > limit:
+            lines.append(f"    … and {len(state.changes) - limit} more")
+    if state.ahead:
+        lines.append(f"  {state.ahead} commit(s) to push")
+    if state.behind:
+        lines.append(f"  {state.behind} commit(s) to pull")
+        remote = state.remote_files[:limit] if limit else state.remote_files
+        lines += [f"    on GitHub: {path}" for path in remote]
+    if state.fetch_failed:
+        lines.append("  (could not reach GitHub; remote state may be stale)")
+    return lines
+
+
+def cmd_status():
+    states = [collect(v, fetch=True) for v in active_vaults()]
+    parts = []
+    for symbol, total in (
+        ("●", sum(len(s.changes) for s in states)),
+        ("↑", sum(s.ahead for s in states)),
+        ("↓", sum(s.behind for s in states)),
+    ):
+        if total:
+            parts.append(f"{symbol}{total}")
+    if not parts:
+        return 0
+    tooltip = "\n".join(line for s in states for line in render(s, MAX_FILES))
+    tooltip += "\n\nClick: sync  ·  Right-click: full list"
+    print(json.dumps({"text": f"{ICON} {' '.join(parts)}", "tooltip": tooltip, "class": "active"}, ensure_ascii=False, separators=(",", ":")))
+    return 0
+
+
+def cmd_files():
+    lines = [line for v in active_vaults() for line in render(collect(v, fetch=False), 0)]
+    print("\n".join(lines) if lines else "Everything is synced.")
+    return 0
+
+
+def sync_vault(repo):
+    print(f"── {repo.name} ──")
+    if git(repo, "status", "--porcelain").stdout.strip():
+        message = f"sync: {socket.gethostname()} {datetime.now():%Y-%m-%d %H:%M}"
+        if git(repo, "add", "-A", capture=False).returncode or git(repo, "commit", "-q", "-m", message, capture=False).returncode:
+            print("commit failed")
+            return False
+        print("committed local changes")
+    if not has_upstream(repo):
+        print("no upstream branch; skipping pull/push")
+    else:
+        if git(repo, "pull", "--rebase", remote=True, capture=False).returncode:
+            print(f"pull failed; resolve it in {repo} (git status), then run sync again")
+            return False
+        if git(repo, "push", remote=True, capture=False).returncode:
+            print("push failed")
+            return False
+    print("synced")
+    return True
+
+
+def cmd_sync():
+    ok = True
+    for repo in active_vaults():
+        ok = sync_vault(repo) and ok
+        print()
+    for stamp in STATE.glob("*.fetched"):  # re-check the remote on the next poll
+        stamp.unlink(missing_ok=True)
+    return 0 if ok else 1
+
+
+COMMANDS = {"status": cmd_status, "files": cmd_files, "sync": cmd_sync}
+
+if __name__ == "__main__":
+    # The bar's login shell may run in the C locale; line buffering keeps our
+    # messages ordered with git's own output when both go to one terminal.
+    sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
+    command = COMMANDS.get(sys.argv[1] if len(sys.argv) > 1 else "status")
+    if command is None:
+        print("usage: nvn-sync [status|files|sync]", file=sys.stderr)
+        sys.exit(2)
+    sys.exit(command())

@@ -112,6 +112,24 @@ themselves because `uwsm-app`
 `NVIM_APPNAME=... omarchy-launch-editor` prefix never reaches nvim. Bare `nvn`
 in a terminal still opens the dashboard.
 
+**Sync indicator in the Omarchy bar:** `nvn-sync` watches both vaults and shows
+` ●N ↑N ↓N` (unsaved files / commits to push / commits to pull) next to the
+clock, hidden when everything is synced. Hover lists the unsaved files by name
+(remote changes are only counted, plus a few filenames); left-click runs
+`nvn-sync sync` (commit, `pull --rebase`, push, both vaults) in a floating
+terminal; right-click shows the full file list. It is a `command` module in
+`~/.config/omarchy/shell.json` (not stowed, since Omarchy rewrites that file):
+
+```json
+{ "id": "nvn-sync", "type": "command", "interval": 30,
+  "exec": "~/.config/nvim-notes/nvn-sync status",
+  "onClick": "omarchy-launch-floating-terminal-with-presentation ~/.config/nvim-notes/nvn-sync sync",
+  "onRightClick": "omarchy-launch-floating-terminal-with-presentation ~/.config/nvim-notes/nvn-sync files" }
+```
+
+It fetches at most every 5 minutes and authenticates HTTPS remotes through
+`gh`'s stored token, since the bar has no terminal to prompt in.
+
 Requires `ripgrep` (for search/completion). First launch clones plugins via
 `vim.pack` (**must be run interactively** — the install confirmation prompt
 can't be answered headlessly); run `:Themify install` once for colorschemes.
