@@ -5,6 +5,10 @@ return {
 	lazy = false,
 	opts = {
 		default_file_explorer = true,
+		win_options = {
+			-- room for oil-git-status index + working tree signs
+			signcolumn = "yes:2",
+		},
 	},
 	keys = {
 		{

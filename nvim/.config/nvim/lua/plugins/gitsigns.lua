@@ -1,13 +1,21 @@
 return {
 	"lewis6991/gitsigns.nvim",
 	event = { "BufReadPre", "BufNewFile" },
+	opts = {
+		-- off by default; toggle with <leader>gi
+		current_line_blame = false,
+		current_line_blame_opts = {
+			delay = 300,
+		},
+		current_line_blame_formatter = "<author>, <author_time:%R> • <summary>",
+	},
 	keys = {
 		{
-			"<leader>ga",
+			"<leader>gi",
 			function()
-				require("gitsigns").blame()
+				require("gitsigns").toggle_current_line_blame()
 			end,
-			desc = "Toggle Line Blame (gitsigns)",
+			desc = "Toggle Inline Blame (gitsigns)",
 		},
 		{
 			"<leader>gD",

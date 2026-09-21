@@ -25,3 +25,9 @@ history       = ""    # give the wordy ones glyphs
 notes         = "≣"
 run           = ""
 filter        = ""
+
+[plugin.ps.backend]
+meta = "python /home/jackson/dev/sandbox/plugin/herdr.py metaData" 
+goto = "python /home/jackson/dev/sandbox/plugin/herdr.py goto"
+
+

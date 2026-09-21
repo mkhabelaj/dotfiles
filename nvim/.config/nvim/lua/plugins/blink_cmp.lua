@@ -8,6 +8,7 @@ return {
 			build = "make install_jsregexp",
 			dependencies = { "rafamadriz/friendly-snippets" },
 		},
+		"mikavilpas/blink-ripgrep.nvim",
 	},
 	---@module "blink.cmp"
 	---@type blink.cmp.Config
@@ -26,7 +27,15 @@ return {
 		},
 		snippets = { preset = "luasnip" },
 		sources = {
-			default = { "lsp", "path", "snippets", "buffer" },
+			default = { "lsp", "path", "snippets", "buffer", "ripgrep" },
+			providers = {
+				ripgrep = {
+					module = "blink-ripgrep",
+					name = "Ripgrep",
+					-- rank project-wide matches below lsp/buffer results
+					score_offset = -3,
+				},
+			},
 		},
 		completion = {
 			documentation = {

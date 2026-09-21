@@ -24,7 +24,14 @@ return {
 					{ "<leader>lr", vim.lsp.buf.rename, buffer = ev.buf, desc = "Rename" },
 					{
 						mode = { "n", "v" },
-						{ "<leader>la", vim.lsp.buf.code_action, buffer = ev.buf, desc = "Code action" },
+						{
+							"<leader>la",
+							function()
+								require("tiny-code-action").code_action()
+							end,
+							buffer = ev.buf,
+							desc = "Code action",
+						},
 					},
 				})
 				wk.add({
