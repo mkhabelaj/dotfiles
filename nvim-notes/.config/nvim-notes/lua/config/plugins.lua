@@ -16,11 +16,22 @@ vim.pack.add({
 	-- used; messages/popupmenu stay native to keep this writing config light.
 	{ src = "https://github.com/MunifTanjim/nui.nvim" },
 	{ src = "https://github.com/folke/noice.nvim" },
+	-- Vault-wide search & replace (rg-backed). `:Obsidian rename` only covers
+	-- note filenames + their links; this is for the prose itself (renaming a
+	-- #tag everywhere, fixing a term used across 40 notes).
+	{ src = "https://github.com/MagicDuck/grug-far.nvim" },
 })
 
 require("nvim-treesitter").install({ "markdown", "markdown_inline", "yaml" })
 
 require("mini.icons").setup()
+
+-- Both ship with mini.nvim (already added above), so no extra plugin:
+-- ai = a/i text objects (ci", cin(, dif...), surround = sa/sd/sr to add,
+-- delete or replace quotes/brackets around a selection — both earn their
+-- keep in prose, not just code.
+require("mini.ai").setup()
+require("mini.surround").setup()
 
 -- Current obsidian workspace name (personal/work). Global `Obsidian` is set by
 -- obsidian.setup below; read via a function so statusline/dashboard stay live
@@ -118,6 +129,8 @@ require("noice").setup({
 	lsp = { progress = { enabled = false } },
 	notify = { enabled = false },
 })
+
+require("grug-far").setup({})
 
 require("render-markdown").setup({
 	preset = "obsidian", -- mimic Obsidian's own markdown UI (headers/checkboxes/wikilinks)
@@ -470,6 +483,23 @@ wk.add({
 		"<leader>st",
 		open_todos,
 		desc = "Open todos (vault)",
+	},
+	-- Paths prefilled with the active vault: cwd is wherever nvn was started
+	-- from, which is rarely the vault, and a vault-wide replace is the point.
+	{
+		"<leader>sr",
+		function()
+			require("grug-far").open({ prefills = { paths = vault_root() } })
+		end,
+		desc = "Search & replace (vault-wide)",
+	},
+	{
+		"<leader>sr",
+		function()
+			require("grug-far").with_visual_selection({ prefills = { paths = vault_root() } })
+		end,
+		desc = "Search & replace selection (vault-wide)",
+		mode = "v",
 	},
 
 	-- Note lifecycle: create / edit / link / navigate. All *search* actions
